@@ -21,8 +21,6 @@ public class DataCollectionMenuController {
 	@Autowired
 	private SapDataCollectionService sapDataCollectionService;
 	
-	
-	
 	@RequestMapping(value=("/{roleId}"))
 	public ModelAndView index(@PathVariable long roleId){
 		Map map = new HashMap();
