@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+	
+   <context:component-scan base-package="com.sapGarden">
+   		 <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+   </context:component-scan>
+   <!-- 平台启动时执行：定时任务和动态注册数据库连接 -->
+   <!-- spring的SchedulerFactoryBean中有个dataSource属性。如果这个属性不为空，则用数据库来持久化储存quartz的任务。去掉beans的default-autowire="byName"属性就可以了-->
+   <bean id="startUp" class="com.sapGarden.system.startUp.StartUp">
+   		<property name="startUpInitialServiceList">
+   			<list>
+   				<ref bean="initialSchedulingService"/>
+   				<ref bean="initialDbConnectionService"/>
+   			</list>
+   		</property>
+   </bean>
+   <bean id="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"/> 
+   <!-- 启用aspectj aop代理 -->
+   <aop:aspectj-autoproxy/>
+   <!--bean id="exceptionLog" class="com.sapGarden.system.log.CommonLog"/>
+   <aop:config>
+   		<aop:aspect ref="exceptionLog">
+   			<aop:after-throwing pointcut="execution(* com.sapGarden..*.*(..))"   method="afterThrowingAdvice"  arg-names="exception"  throwing="exception"/>
+   		</aop:aspect>
+   </aop:config-->
+</beans>

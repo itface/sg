@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+	
+	 <!--读资源文件 -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="locations">
+	      <list>
+	          <value>classpath:resources.properties</value>
+	      </list>
+	    </property>
+	</bean>
+	<!-- proxool数据库连接池：本示例使用proxool-0.9.1版本，请添加proxool-0.9.1.jar和proxool-cglib.jar到类路径 -->
+    <!--bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
+        <property name="driver" value="${db.driver.class}" />
+        <property name="driverUrl" value="${db.url}" />
+        <property name="user" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+        <property name="maximumConnectionCount" value="${proxool.maxConnCount}" />
+        <property name="minimumConnectionCount" value="${proxool.minConnCount}" />
+        <property name="houseKeepingSleepTime" value="${proxool.houseKeepingSleepTime}"/>
+        <property name="maximumNewConnections" value="${proxool.maximumNewConnections}"/>
+        <property name="statistics" value="${proxool.statistics}"/>
+        <property name="simultaneousBuildThrottle" value="${proxool.simultaneousBuildThrottle}"/>
+        <property name="trace" value="${proxool.trace}" />
+    </bean-->
+	<!--bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+	    <property name="targetDataSource" ref="basicdataSource"/>
+	</bean-->
+	<bean id="defaultDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">   
+	      <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>   
+	      <property name="url" value="jdbc:oracle:thin:@192.168.9.116:1521:GARDEN"/>   
+	      <property name="username" value="SAP_GARDEN"/>   
+	      <property name="password" value="SAPGARDEN"/>   
+    </bean>
+    <!--动态选择数据源-->  
+    <bean id="dataSource" class="com.sapGarden.system.db.DynamicDataSource">  
+        <property name="targetDataSources">  
+            <map key-type="java.lang.String">  
+                <entry key="defaultDataSource" value-ref="defaultDataSource"/>
+            </map>  
+        </property>  
+        <property name="defaultTargetDataSource" ref="defaultDataSource"/>
+    </bean>  
+	<!-- 
+	
+	LocalContainerEntityManagerFactoryBean:指定使用本地容器管理EntityManagerFactory，从而进行细粒度控制；
+	dataSource属性指定使用Spring定义的数据源；
+	persistenceXmlLocation指定JPA配置文件为chapter8/persistence.xml，且该配置文件非常简单，具体配置完全在Spring中进行；
+	persistenceUnitName指定持久化单元名字，即JPA配置文件中指定的;
+	persistenceProvider:指定JPA持久化提供商，此处使用Hibernate实现HibernatePersistence类；
+	jpaVendorAdapter：指定实现厂商专用特性，即generateDdl= false表示不自动生成DDL，database= HSQL表示使用hsqldb数据库；
+	jpaDialect：如果指定jpaVendorAdapter此属性可选，此处为HibernateJpaDialect；
+	jpaProperties：此处指定“hibernate.show_sql =true”表示在日志系统debug级别下将打印所有生成的SQL。
+	
+	 -->
+   <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"/>
+		<property name="persistenceUnitName" value="persistenceUnit"></property>
+		<!--property name="persistenceProvider" ref="persistenceProvider"/-->
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="true" />
+				<property name="generateDdl" value="false" />
+			</bean>
+		</property>
+		<!--property name="jpaProperties">
+	        <props>
+	            <prop key="hibernate.show_sql">true</prop>
+	        </props>
+	    </property-->
+		<!--property name="jpaDialect" ref="jpaDialect"/-->
+	</bean>
+	<!--bean id="persistenceProvider" class="org.hibernate.ejb.HibernatePersistence"/>
+	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/-->
+	<!-- enables interpretation of the @PersistenceUnit/@PersistenceContext annotations providing convenient
+ access to EntityManagerFactory/EntityManager -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<!--property name="dataSource" ref="dataSource"/-->
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!--jpa:repositories base-package="org.springframework.data.jpa.example.repository.simple" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"-->
+	<jpa:repositories base-package="com.sapGarden" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"/>
+	<!--  Spring提供的<tx:annotation-driven/>用于开启对注解事务管理的支持，从而能识别Bean类上的@Transactional注解元数据
+			transaction-manager：指定事务管理器名字，默认为transactionManager，当使用其他名字时需要明确指定；
+			proxy-target-class：表示将使用的代码机制，默认false表示使用JDK代理，如果为true将使用CGLIB代理
+			order：定义事务通知顺序，默认Ordered.LOWEST_PRECEDENCE，表示将顺序决定权交给AOP来处理。
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="transactionOperation"
+			expression="execution(* com.test..*Facade.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="transactionOperation" order="1"/>
+	</aop:config>
+
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="update*" propagation="REQUIRED" rollback-for="Throwable"/>
+			<tx:method name="insert*" propagation="REQUIRED" rollback-for="Throwable"/>
+			<tx:method name="delete*" propagation="REQUIRED" rollback-for="Throwable"/>
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<tx:annotation-driven transaction-manager="txManager" order="0"/>
+	 -->
+	
+</beans>

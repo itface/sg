@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="sg"
+  id="myeclipse.1372149574430"
+  context-root="/sg"
+  j2ee-spec="6.0"
+  archive="sg.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+
