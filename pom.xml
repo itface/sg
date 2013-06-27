@@ -362,7 +362,7 @@
 		<version>4.2.0.Final</version>
 	</dependency>
 	<!--******************************** hibernate end *******************************************************-->
-	<!--******************************** other util begin *******************************************************-->
+	<!--******************************** Jakarta Commons相关工具包 begin *******************************************************-->
 	<dependency>
 		<groupId>commons-codec</groupId>
 		<artifactId>commons-codec</artifactId>
@@ -393,7 +393,7 @@
 		<artifactId>commons-lang</artifactId>
 		<version>2.6</version>
 	</dependency>
-	<!--******************************** other util end *******************************************************-->
+<!--******************************** Jakarta Commons相关工具包 end *******************************************************-->
   </dependencies>
   <build>
     <plugins>

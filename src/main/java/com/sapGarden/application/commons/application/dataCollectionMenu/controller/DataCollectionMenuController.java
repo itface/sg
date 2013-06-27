@@ -20,7 +20,6 @@ import com.sapGarden.application.commons.dataCollection.service.SapDataCollectio
 public class DataCollectionMenuController {
 	@Autowired
 	private SapDataCollectionService sapDataCollectionService;
-	
 	@RequestMapping(value=("/{roleId}"))
 	public ModelAndView index(@PathVariable long roleId){
 		Map map = new HashMap();
