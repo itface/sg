@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="sys_basetable")
 public class BaseTableModel implements Serializable{
-
+	
 	private static final long serialVersionUID = 115L;
 	@Id
 	private long id;
