@@ -7157,11 +7157,11 @@ $.jgrid.extend({
 		});
 	},
 	editGridRow : function(rowid, p){
-		var funAfterShowForm = $.jgrid.edit.afterShowForm;
+		var funAfterShowForm = p.afterShowForm;
 		if(funAfterShowForm){
-			$.jgrid.edit.afterShowForm=function(formid){funAfterShowForm();$('[role=dialog]').css('border','4px solid rgba(0,0,0,0.2)');};
+			p.afterShowForm=function(formid){funAfterShowForm.call(this,formid);$('[role=dialog]').css('border','4px solid rgba(0,0,0,0.2)');};
 		}else{
-			$.jgrid.edit.afterShowForm=function(formid){$('[role=dialog]').css('border','4px solid rgba(0,0,0,0.2)');};
+			p.afterShowForm=function(formid){$('[role=dialog]').css('border','4px solid rgba(0,0,0,0.2)');};
 		}
 		p = $.extend({
 			top : 0,
