@@ -81,7 +81,7 @@ $(function(){
 			},
 			ondblClickRow:function(rowid,iCol,cellcontent,e){
 		    	//editData为添加的参数，是为了让参数能正常的put到后台
-		    	$('#list').jqGrid('editGridRow',rowid,{editData:{_method:'put'},top:50,left:400,width:650,reloadAfterSubmit:true,closeAfterEdit:true,modal:true,recreateForm:true,mtype: "POST", url: basePath,viewPagerButtons:false,afterComplete:function(response, postdata, formid){if(response.responseText==null||response.responseText=="")alert("更新成功");else alert(response.responseText);},errorTextFormat:function(response){return "更新失败";},afterShowForm:function(){}});
+		    	$('#list').jqGrid('editGridRow',rowid,{editData:{_method:'put'},top:50,left:400,width:650,reloadAfterSubmit:true,closeAfterEdit:true,modal:true,recreateForm:true,mtype: "POST", url: basePath,viewPagerButtons:false,afterComplete:function(response, postdata, formid){if(response.responseText==null||response.responseText=="")alert("更新成功");else alert(response.responseText);},errorTextFormat:function(response){return "更新失败";}});
 		    }
 		});
 		jQuery("#list").jqGrid('navGrid','',{edit:false,cloneToTop:true},{},{mtype: "POST",top:50,left:400,width:650,recreateForm:true,closeAfterAdd:true,reloadAfterSubmit:true,clearAfterAdd:true,modal:true,url:basePath,viewPagerButtons:false,afterComplete:function(response, postdata, formid){if(response.responseText==null||response.responseText=="")alert("新增成功");else alert(response.responseText);},errorTextFormat:function(response){return "新增失败";}},{url:basePath,reloadAfterSubmit:true,jqModal:false});
@@ -265,6 +265,7 @@ $(function(){
         }
 	}
 	*/
+	
 });
 </script>
 </html>

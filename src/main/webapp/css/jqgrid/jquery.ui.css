@@ -56,9 +56,9 @@
 
 /* Component containers
 ----------------------------------*/
-.ui-widget { font-family: Lucida Grande, Lucida Sans, Arial, sans-serif; font-size: 1.1em; }
+.ui-widget { font-family:宋体; font-size: 12px; }
 .ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Lucida Grande, Lucida Sans, Arial, sans-serif; font-size: 1em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family:宋体; font-size: 1em; }
 .ui-widget-content { border: 1px solid #dcdcdc; background: #fcfdfd url(images/ui-bg_inset-hard_100_fcfdfd_1x100.png) 50% bottom repeat-x; color: #222222; }
 .ui-widget-content a { color: #476aad; }
 .ui-widget-header { border: 1px solid #dcdcdc; background: #f5f5f5  url(images/tilt_bg.png)  repeat-x; color: #515151; font-weight: bold; height:25px; line-height:22px; font-size:12px; font-family:宋体; }

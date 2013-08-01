@@ -690,7 +690,7 @@ $.fn.jqGrid = function( pin ) {
 			onRightClickRow: null,
 			onPaging: null,
 			onSelectAll: null,
-			loadComplete: null,
+			loadComplete: function(){$("tr:even").addClass("odd");$("tr:odd").addClass("even");},
 			gridComplete: null,
 			loadError: null,
 			loadBeforeSend: null,
@@ -7157,6 +7157,12 @@ $.jgrid.extend({
 		});
 	},
 	editGridRow : function(rowid, p){
+		var funAfterShowForm = $.jgrid.edit.afterShowForm;
+		if(funAfterShowForm){
+			$.jgrid.edit.afterShowForm=function(formid){funAfterShowForm();$('[role=dialog]').css('border','4px solid rgba(0,0,0,0.2)');};
+		}else{
+			$.jgrid.edit.afterShowForm=function(formid){$('[role=dialog]').css('border','4px solid rgba(0,0,0,0.2)');};
+		}
 		p = $.extend({
 			top : 0,
 			left: 0,
