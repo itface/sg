@@ -2,8 +2,8 @@ package com.sapGarden.application.fi.company.model;
 
 import java.io.Serializable;
 
+import com.sapGarden.application.commons.jco.model.CommonCompareDataModel;
 import com.sapGarden.application.fi.company.model.bapi_companyCode_getDetail.Export_companyCode_detail;
-import com.sapGarden.application.jco.commons.model.CommonCompareDataModel;
 
 public class CompanyCompareDataModel extends CommonCompareDataModel implements Serializable {
 	private long dataid;

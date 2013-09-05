@@ -1,0 +1,150 @@
+/************************************************************************
+*************************************************************************
+@Name :       	Selectyze - jQuery Plugin CSS
+@Revison :    	1.0
+@Date : 		19/12/2011
+@Author:     	Mickael SURREL - ALPIXEL Agency - (www.myjqueryplugins.com - www.alpixel.fr) 
+@License :		 Open Source - MIT License : http://www.opensource.org/licenses/mit-license.php
+ 
+**************************************************************************
+*************************************************************************/
+
+/***************************/
+/** Common to every theme **/
+/***************************/
+.DivSelectyze {
+	position:relative;
+	float:left;
+
+}
+.DivSelectyze .selectyzeValue {
+	position:relative;
+	z-index:10;
+	display:block;
+	text-decoration:none;
+}
+.DivSelectyze ul {
+	list-style:none;
+}
+.DivSelectyze .UlSelectize {
+	position:absolute;
+	z-index:9999;
+	display:none;
+}
+.DivSelectyze li a {
+	display:block;
+	text-decoration:none;
+}
+.optgroupTitle {
+	display:block;
+}
+/*******************************/
+/** END COMMON TO EVERY THEME **/
+/*******************************/
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+
+
+/*----------------------------------
+ You can add your own theme below !!
+ To add your theme, be sure to have 5 CSS elements :
+ 
+ .your_theme .selectyzeValue {} 		-> Appearance of your select element
+ .your_theme .UlSelectize {} 			-> Appearance of the dropdown list
+ .your_theme li a {} 					-> Appearance of the items into the dropdown list
+ .your_theme li a:hover {} 				-> items on hover
+ .your_theme .optgroupTitle {} 			-> Appearance of the optgroup label !! only if you have <optgroup> element into your list 
+
+	
+	/****************/
+	/** orange THEME **/
+	/****************/
+.orange .selectyzeValue {
+	background:url(../../images/login_select_bg.png);
+	padding: 11px 10px 11px 10px;
+    width: 232px;
+	color: #fff;
+	font-family:Î¢ÈíÑÅºÚ;
+	font-family:arial;
+	font-size:14px;
+	line-height:18px;
+	margin-bottom:8px;
+	
+}
+.orange .UlSelectize {
+	top:35px;
+	left:0px;
+	width:250px;
+	background-color:#171717;
+		border:1px solid #070707;
+}
+.orange li a {
+
+	font-size:14px;
+	height:20px;
+	font-family:Î¢ÈíÑÅºÚ;
+	font-family:arial;
+	background-color:transparent;
+	color:#6b6b6b;
+	text-align:left;
+	padding:3px 10px;
+	
+}
+.orange li a:hover {
+	background-color:#2f487b;
+	color:#fff;
+}
+.orange .optgroupTitle {
+	margin-top:15px;
+	font-size:17px;
+	font-style:italic;
+	padding-left:10px;
+	background-color:#3e3d3d;
+	color:#fff;
+	font-weight:700
+}
+
+	
+	/****************/
+	/** orange THEME **/
+	/****************/
+.orange_short .selectyzeValue {
+	background:url(../aws_img/main/selcet_arrow.png) no-repeat right;
+	padding: 6px 10px 6px 10px;
+	border:1px solid #eaeaea;
+	width: 70px;
+	color: #868686;
+	font-family:Î¢ÈíÑÅºÚ;
+	font-family:arial;
+	font-size:12px;
+	line-height:18px;
+	float:left; margin-left:9px;
+}
+.orange_short .UlSelectize {
+	top:31px;
+	left:9px;
+	width:150px;
+	background-color:#fafafa;
+		border:1px solid #eaeaea;
+}
+.orange_short li a {
+	font:12px/20px Arial;
+	background-color:transparent;
+	color:#868686;
+	text-align:left;
+	padding:3px 10px;
+}
+.orange_short li a:hover {
+	background-color:#fb7a1f;
+	color:#fff;
+}
+.orange_short .optgroupTitle {
+	margin-top:15px;
+	font-size:17px;
+	font-style:italic;
+	padding-left:10px;
+	background-color:#3e3d3d;
+	color:#fff;
+	font-weight:700
+}

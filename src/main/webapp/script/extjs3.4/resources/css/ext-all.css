@@ -4,7 +4,7 @@
  * licensing@sencha.com
  * http://www.sencha.com/license
  */
-html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}img,body,html{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul {list-style:none;}caption,th {text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;}q:before,q:after{content:'';}
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0; }img,body,html{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul {list-style:none;}caption,th {text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;}q:before,q:after{content:'';}
 
 .ext-forced-border-box, .ext-forced-border-box * {
     -moz-box-sizing: border-box;
@@ -885,9 +885,9 @@ ul.x-tab-strip li.x-tab-edge {
 
 /* ---- text fields ---- */
 .x-form-text, textarea.x-form-field{
-    padding:1px 3px;
     background:repeat-x 0 0;
     border:1px solid;
+	padding:4px 5px;
 }
 
 textarea.x-form-field {
@@ -1212,7 +1212,7 @@ textarea {
     height:19px;
 }
 
-.ext-webkit .x-small-editor .x-form-text{padding-top:3px;font-size:100%;}
+.ext-webkit .x-small-editor .x-form-text{font-size:100%;}
 
 .ext-strict .ext-webkit .x-small-editor .x-form-text{
     height:14px !important;
@@ -1918,6 +1918,8 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
 
 .x-toolbar-left {
     width: 100%;
+	padding-top:2px;
+	padding-left:3px;
 }
 
 .x-toolbar .x-item-disabled .x-btn-icon {
@@ -2736,9 +2738,9 @@ a.x-grid3-hd-btn:hover {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 13px;
-    font-family: tahoma;
+    font-family: 宋体;
 }
 
 .x-pivotgrid .x-grid3-row-headers {
@@ -2757,8 +2759,8 @@ a.x-grid3-hd-btn:hover {
     padding: 2px 7px 0 0;
     text-align: right;
     text-overflow: ellipsis;
-    font-size: 11px;
-    font-family: tahoma;
+    font-size: 12px;
+   font-family: 宋体;
 }
 
 .ext-gecko .x-pivotgrid .x-grid3-row-headers table td {
@@ -2771,8 +2773,8 @@ a.x-grid3-hd-btn:hover {
     position: absolute;
     text-align: center;
     vertical-align: middle;
-    font-family: tahoma;
-    font-size: 11px;
+       font-family: 宋体;
+    font-size: 12px;
     padding: auto 1px;
     display: table-cell;
 }
@@ -2997,6 +2999,8 @@ input.x-tree-node-cb {
 .x-tree-node a span, .x-dd-drag-ghost a span{
 	text-decoration:none;
 	padding:1px 3px 1px 2px;
+
+	
 }
 
 .x-tree-node .x-tree-node-disabled .x-tree-node-icon{
@@ -3827,6 +3831,7 @@ a.x-menu-item {
     border-top:0 none;
     overflow:hidden;
     position: relative; /* added for item scroll positioning */
+	padding-top:5px;
 }
 
 .x-panel-bbar .x-toolbar, .x-panel-tbar .x-toolbar {
@@ -5522,11 +5527,12 @@ ul.x-tab-strip-bottom{
 }.x-form-field {
     font:normal 12px tahoma, arial, helvetica, sans-serif;
 }
-
+/*我在这里*/
 .x-form-text, textarea.x-form-field {
     background-color:#fff;
-    background-image:url(../images/default/form/text-bg.gif);
-    border-color:#b5b8c8;
+    background-image:;
+    border-color:#dcdcdc;
+
 }
 
 .x-form-select-one {
@@ -5608,7 +5614,7 @@ ul.x-tab-strip-bottom{
 
 .x-form-invalid-msg {
     color:#c0272b;
-    font:normal 11px tahoma, arial, helvetica, sans-serif;
+    font:12px 宋体;
     background-image:url(../images/default/shared/warning.gif);
 }
 
@@ -5617,11 +5623,11 @@ ul.x-tab-strip-bottom{
 }
 
 .x-small-editor .x-form-field {
-    font:normal 11px arial, tahoma, helvetica, sans-serif;
+    font:12px 宋体;
 }
 
 .ext-webkit .x-small-editor .x-form-field {
-    font:normal 11px arial, tahoma, helvetica, sans-serif;
+    font:12px 宋体;
 }
 
 .x-form-invalid-icon {
@@ -5633,15 +5639,15 @@ ul.x-tab-strip-bottom{
 }
 
 .x-fieldset legend {
-    font:bold 11px tahoma, arial, helvetica, sans-serif;
+    font:12px 宋体;
     color:#15428b;
 }
 .x-btn{
-	font:normal 11px tahoma, verdana, helvetica;
+	font:12px 宋体;
 }
 
 .x-btn button{
-    font:normal 11px arial,tahoma,verdana,helvetica;
+    font:12px 宋体;
     color:#333;
 }
 
@@ -5723,10 +5729,14 @@ ul.x-tab-strip-bottom{
 
 .x-btn-group-notitle .x-btn-group-tc {
 	background-image: url(../images/default/button/group-tb.gif);
-}.x-toolbar{
-	border-color:#a9bfd3;
-    background-color:#d0def0;
-    background-image:url(../images/default/toolbar/bg.gif);
+}
+/*我在这里*/
+.x-toolbar{
+	border-color:#dcdcdc;
+   
+    background:url(../../../../images/tilt_bg.png) repeat-x #f5f5f5;
+	height:28px;
+	
 }
 
 .x-toolbar td,.x-toolbar span,.x-toolbar input,.x-toolbar div,.x-toolbar select,.x-toolbar label{
@@ -5853,7 +5863,7 @@ ul.x-tab-strip-bottom{
 }
 
 .x-grid-panel .x-panel-mc .x-panel-body {
-    border-color:#99bbe8;
+    border-color:#dcdcdc;
 }
 
 .x-grid3-row td, .x-grid3-summary-row td{
@@ -6249,7 +6259,7 @@ td.grid-hd-group-cell {
 
 .x-tree-node{
 	color:#000;
-	font: normal 11px arial, tahoma, helvetica, sans-serif;
+	font:12px/10px 宋体;
 }
 
 .x-tree-node a, .x-dd-drag-ghost a{
@@ -6580,7 +6590,7 @@ a.x-menu-item {
 .x-box-mc {
 	background-color: #eee;
     background-image: url(../images/default/box/tb.gif);
-	font-family: "Myriad Pro","Myriad Web","Tahoma","Helvetica","Arial",sans-serif;
+   font-family: 宋体;
 	color: #393939;
 	font-size: 12px;
 }
@@ -6671,27 +6681,27 @@ a.x-menu-item {
 .x-panel-header {
     color:#15428b;
 	font-weight:bold; 
-    font-size: 11px;
-    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 12px;
+      font-family: 宋体;
     border-color:#99bbe8;
     background-image: url(../images/default/panel/white-top-bottom.gif);
 }
-
+/*我在这里*/
 .x-panel-body {
-    border-color:#99bbe8;
-    background-color:#fff;
+    border-color:#dcdcdc;
+    background-color:#fafafa;
 }
 
 .x-panel-bbar .x-toolbar, .x-panel-tbar .x-toolbar {
-    border-color:#99bbe8;
+    border-color:#dcdcdc;
 }
 
 .x-panel-tbar-noheader .x-toolbar, .x-panel-mc .x-panel-tbar .x-toolbar {
-    border-top-color:#99bbe8;
+    border-top-color:#dcdcdc;
 }
 
 .x-panel-body-noheader, .x-panel-mc .x-panel-body {
-    border-top-color:#99bbe8;
+    border-top-color:#dcdcdc;
 }
 
 .x-panel-tl .x-panel-header {
@@ -6835,7 +6845,7 @@ body.x-body-masked .x-window-plain .x-window-mc {
 }
 
 .x-panel-noborder .x-panel-tbar-noborder .x-toolbar {
-    border-bottom-color:#99bbe8;
+    border-bottom-color:#ffffff;
 }
 
 .x-panel-noborder .x-panel-bbar-noborder .x-toolbar {

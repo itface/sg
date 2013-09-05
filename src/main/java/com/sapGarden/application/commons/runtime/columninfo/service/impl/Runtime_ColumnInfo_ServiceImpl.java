@@ -15,6 +15,7 @@ import com.sapGarden.application.commons.runtime.columninfo.model.JqgirdNewRunti
 import com.sapGarden.application.commons.runtime.columninfo.model.RuntimeColumnInfo;
 import com.sapGarden.application.commons.runtime.columninfo.service.Runtime_ColumnInfo_Service;
 import com.sapGarden.global.jqgrid.model.Jqgrid_DataJson;
+import com.sapGarden.system.db.DbContextHolder;
 
 @Service
 public  class Runtime_ColumnInfo_ServiceImpl implements Runtime_ColumnInfo_Service{

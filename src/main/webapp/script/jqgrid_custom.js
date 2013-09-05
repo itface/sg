@@ -13,6 +13,7 @@
 				this.baseUrl = this.contextPath+this.baseUrl;
 			}
 			this.width = this.config.width||900;
+			this.autoWidth = this.config.autoWidth||false;
 			this.height = this.config.height||400;
 			this.caption=this.config.caption;
 			this.columnConfigLength=this.config.columnConfigLength;
@@ -22,6 +23,7 @@
 			this.editable=this.config.editable;
 			this.searchable=this.config.searchable||false;
 			this.multiselect = this.config.multiselect||false,
+			this.afterInsertRow = this.config.afterInsertRow||null,
 			this.updater={
 				editData:{_method:'put'},
 				top:200,
@@ -124,19 +126,20 @@
 				    jsonReader:{
 				    	repeatitems:false
 				    },
-					autowidth: true,
-				    //width:this.width,
+					autowidth: this.autoWidth,
+				    width:this.width,
 				    height:this.height,
 				   	colNames:this.columnNames,
 				   	colModel:this.columnModel,
 				   	shrinkToFit:false,//超出width出滚动条
 				   	forceFit:true,//调整列宽时，调整width总长度
+				   	//autoScroll: false,
 				   	pginput:false,
 				   	toppager: true,
 				    viewrecords:true,
 				    rownumbers:true,
 				    rownumWidth:40,
-				    loadtext:'正在加载...',
+				    loadtext:'loading...',
 				    loadui:'block',
 				    sortable:true,
 				    multiselect: this.multiselect,
@@ -151,6 +154,7 @@
 				    editurl:'',
 				    rowNum:'100000',//不分页
 				    caption:this.caption,
+				    afterInsertRow: this.afterInsertRow,
 					ondblClickRow:function(rowid,iCol,cellcontent,e){
 				    	//editData为添加的参数，是为了让参数能正常的put到后台
 				    	if(this.editable){
@@ -169,12 +173,18 @@
 			$("#search_"+this.id+"_top", topPagerDiv).remove();
 			$("#add_"+this.id+"_top", topPagerDiv).remove();
 			$("#del_"+this.id+"_top", topPagerDiv).remove();
+			$('.ui-jqgrid-titlebar-close.HeaderButton').remove();
+			$('#gbox_'+this.id).css('overflow','auto');
+			$('#'+this.id+'_toppager').css('width',this.width);
+			$('#gbox_'+this.id+' .ui-jqgrid-hdiv').css('width',this.width);
+			$('#gbox_'+this.id+' .ui-jqgrid-bdiv').css('width',this.width);
 			//*************初始化查询条件*****************
+			/*
 			var html = this._initSearchForm();
 			jQuery("#gbox_"+this.id).before(html);
 			if($('#custon_search')){
 				$('#custon_search').bind('click',this._custom_search);
-			}
+			}*/
 			//jQuery("#hideshow").jqGrid('hideCol',["amount","tax"]);
 		}
 	});

@@ -7,4 +7,5 @@ public interface MenuService {
 	public JSONArray findCheckedTreeJson();
 	public JSONArray findNotSystemMenuCheckedTree(long roleId);
 	public JSONArray getMenuCheckedTreeByRoleId(long roleId);
+	public JSONArray getDataCollectionTreeByRoleId(long roleId);
 }

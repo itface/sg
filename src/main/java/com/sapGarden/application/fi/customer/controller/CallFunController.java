@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.service.constructJqgridService.Common_ConstructJqgrid_Service;
-import com.sapGarden.application.fi.customer.constants.CustomerContants;
 import com.sapGarden.application.fi.customer.service.CallFun_GetSapCustomer_TestCall_Service;
 import com.sapGarden.system.org.model.User;
 
@@ -36,16 +36,16 @@ public class CallFunController {
 	public void setCallFun_GetSapCustomer_TestCall_Service(CallFun_GetSapCustomer_TestCall_Service callFun_GetSapCustomer_TestCall_Service) {
 		this.callFun_GetSapCustomer_TestCall_Service = callFun_GetSapCustomer_TestCall_Service;
 	}
-	//*************************************³õÊ¼»¯µ÷ÓÃº¯ÊıÒ³Ãæ*****************************************************************
+	//*************************************åˆå§‹åŒ–è°ƒç”¨å‡½æ•°é¡µé¢*****************************************************************
 	@RequestMapping
 	public ModelAndView callFunConfigIndex(HttpServletRequest request){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("type",CustomerContants.TYPE);
+		map.put("type",SjlxTypeName.TYPE_CUSTOMER);
 		map.put("basePath", request.getRequestURI());
-		map.put("kna1GridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Kna1","kna1Grid","¿Í»§Ò»°ãÊı¾İ","","#kna1Pager"));
-		map.put("knb1GridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Knb1","knb1Grid","¿Í»§¹«Ë¾´úÂëÊı¾İ","","#knb1Pager"));
-		map.put("knvvGridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Knvv","knvvGrid","¿Í»§ÏúÊÛÊı¾İ","","#knvvPager"));
+		map.put("kna1GridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Kna1","kna1Grid","å®¢æˆ·ä¸€èˆ¬æ•°æ®","","#kna1Pager"));
+		map.put("knb1GridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Knb1","knb1Grid","å®¢æˆ·å…¬å¸ä»£ç æ•°æ®","","#knb1Pager"));
+		map.put("knvvGridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Knvv","knvvGrid","å®¢æˆ·é”€å”®æ•°æ®","","#knvvPager"));
 		return new ModelAndView(basePagePath+"/callFunctionConfig",map);
 	}
 	//****************************************************************************************

@@ -55,7 +55,9 @@ $(function(){
 		var api = frameElement.api;
 		var  W = api.opener; 
 		var tree = W.$.dialog.data('tree');
-		tree.tree('reload'); 
+		if(tree){
+			tree.getRootNode().reload()
+		}
 		var menu = W.$.dialog.data('menu');
 		if(menu){
 			menu.getRootNode().reload()

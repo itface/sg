@@ -202,7 +202,7 @@ isFullyAuthenticated()	 如果用户不是通过匿名也不是通过remember-me
 	<bean id="sas" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
 		<constructor-arg index="0" ref="sessionRegistry" />
 		<!--把maximumSession属性设置为-1，允许无限的会话-->
-		<property name="maximumSessions" value="1"/>
+		<property name="maximumSessions" value="2"/>
 		<property name="exceptionIfMaximumExceeded" value="false"/>
 	</bean>
 	<!-- 校验成功后的动作 -->

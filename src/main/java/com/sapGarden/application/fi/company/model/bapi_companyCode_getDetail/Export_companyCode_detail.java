@@ -2,7 +2,7 @@ package com.sapGarden.application.fi.company.model.bapi_companyCode_getDetail;
 
 import java.io.Serializable;
 
-import com.sapGarden.application.jco.commons.model.CommonExportModel;
+import com.sapGarden.application.commons.jco.model.CommonExportModel;
 
 public class Export_companyCode_detail implements Serializable,CommonExportModel{
 

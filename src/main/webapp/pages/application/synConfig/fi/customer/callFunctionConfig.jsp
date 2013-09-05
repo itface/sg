@@ -3,6 +3,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link href="${ctx}/css/sapgarden/base.css" rel="stylesheet" type="text/css" />
+<link href="${ctx}/css/sapgarden/garden.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/default/easyui.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/icon.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.jqgrid.css'/>">
@@ -18,65 +20,19 @@
 <script src="<c:url value='/script/jquery.easyui/easyui-lang-zh_CN.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
 <style>
-.outter{
-	position:absolute;
-	margin:0px;
-	top:0px;
-	left:0px;
-	width:100%;
-	height:100%;
-}
-.tbar{
-	width:100%;
-	height:25px;
-}
-.tbar_button{
-	text-align:right;
-	padding-right:30px;
-	padding-top:5px;
-}
-.fold{
-	height:20px;
-	text-align:left;
-	padding-left:15px;
-	cursor:pointer;
-	background:#DFEFFC;
-	margin-top:2px;
-	margin-bottom:2px;
-}
-.contentBlock{
-	height:200px;
-	overflow:hidden;
-}
-.paramInfoDiv{
-	padding-left:200px;
-}
-.runFunTableDiv{
-	width:80%;
-	padding-top:20px;
-	padding-left:50px;
-}
-.runFunTable{
-	width:100%;
-}
-.runFunTable tr{
-	height:30px;
-	border:1px solid #ccc;
-}
-.dataTable{
-	width:100%;
-	border-collapse:collapse;
-}
-.dataTable td{
-	height:30px;
-	border:1px solid #ccc;
-	text-align:center;
-	
-}
 </style>
 </head>
 <body>
-<div class="outter">
+<div class="toolbar">
+  <div class="prompt_message">本功能根据数据的关键字,从SAP中读取相应的数据，可以测试系统的连通性，也可以同步指定的SAP数据到Garden</div>
+  <div class="toolbar_left"> 
+    <a href="#" class="btn" id='testCallFun' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">测试执行</a>  </div>
+  
+</div>
+<div style="padding:5px 10px; clear:both">
+  <div id="mainTabPanel" class="easyui-tabs"></div>
+</div>
+<!-- div class="outter">
 	<form:form id='paramInfoForm'>
 		<div class="fold">参数设置</div>
 	</form:form>
@@ -85,7 +41,7 @@
 		<div><input type='button' value='测试执行' id='testCallFun'/></div>
 		<div id="mainTabPanel" class="easyui-tabs"></div>
 	</form:form>
-</div>
+</div-->
 </body>
 <script>
 $(function(){
@@ -101,15 +57,15 @@ $(function(){
 		var knb1GridOptions=${knb1GridOptions};
 		var knvvGridOptions=${knvvGridOptions};
 		if(kna1GridOptions!=null){
-			$.extend(kna1GridOptions,{datatype:'local',contextPath:"${ctx}"});
+			$.extend(kna1GridOptions,{datatype:'local',contextPath:"${ctx}",width:1000});
 			new commonGrid(kna1GridOptions);
 		}
 		if(knb1GridOptions!=null){
-			$.extend(knb1GridOptions,{datatype:'local',contextPath:"${ctx}"});
+			$.extend(knb1GridOptions,{datatype:'local',contextPath:"${ctx}",width:1000});
 			new commonGrid(knb1GridOptions);
 		}
 		if(knvvGridOptions!=null){
-			$.extend(knvvGridOptions,{datatype:'local',contextPath:"${ctx}"});
+			$.extend(knvvGridOptions,{datatype:'local',contextPath:"${ctx}",width:1000});
 			new commonGrid(knvvGridOptions);
 		}
 	}

@@ -1,8 +1,17 @@
 package com.sapGarden.application.fi.company.service;
 
-import com.sapGarden.application.jco.commons.service.BasicService;
+import java.util.Date;
+import java.util.List;
 
-public interface CompanyLogService extends BasicService{
+import net.sf.json.JSONObject;
 
-	
+import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
+import com.sapGarden.application.fi.company.model.CompanyLog;
+
+
+
+public interface CompanyLogService{
+
+	public List<CompanyLog> find(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate);
+	public JSONObject findJqgridData(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate);
 }

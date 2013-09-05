@@ -3,6 +3,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link href="${ctx}/css/sapgarden/base.css" rel="stylesheet" type="text/css" />
+<link href="${ctx}/css/sapgarden/garden.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/default/easyui.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/icon.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.jqgrid.css'/>">
@@ -17,71 +19,31 @@
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/lhgdialog/lhgdialog.js?skin=default'/>" type="text/javascript"></script>
 <style>
-.outter{
-	position:absolute;
-	margin:0px;
-	padding-top:10px;
-	top:0px;
-	left:0px;
-	width:100%;
-	height:100%;
-}
-.tbar{
-	width:100%;
-	height:25px;
-}
-.tbar_button{
-	text-align:right;
-	padding-right:30px;
-	padding-top:5px;
-}
-.fold{
-	height:20px;
-	text-align:left;
-	padding-left:15px;
-	cursor:pointer;
-	background:#DFEFFC;
-	margin-bottom:2px;
-}
-.contentBlock{
-	height:200px;
-	overflow:auto;
-}
-.schedulingTableDiv{
-	width:50%;
-	padding-left:300px;
-	padding-top:20px;
-}
-.schedulingTable{
-	width:100%;
-	height:100%;
-	border:1px solid #ccc;
-}
-.schedulingTable tr{
-	height:40px;
-}
-.dbReflectTableDiv{
-	width:80%;
-	padding-left:200px;
-	
-}
-.dbReflectTable{
-	width:80%;
-	
-	border:1px solid #ccc
-}
-.dbReflectTable tr{
-	height:40px;
-}
-.activateDiv{
-	width:50%;
-	padding-left:500px;
-}
 </style>
 </head>
 <body>
-<div class="outter">
+<div class="toolbar">
+  <div class="prompt_message">关键功能：本功能设置当前数据和SAP同步的方式，以及同步的内容。根据业务需要非关键字段可以不同步，但建议全部同步。</div>
+  <div class="toolbar_left">
+	   <a href="#" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" onclick="zwyd();">变更运行状态</a> 
+	   <div class="toolbar_text">当前运行状态：实时同步运行中; 起始时间：2013.03.20 8:00</div>
+   </div>
+</div>
+<div style="padding:5px 10px; clear:both">
+	<div>
+		<table id="pna1Grid"></table>
+	</div>
+	<div>
+	<table id="pnb1Grid"></table>
+	</div>
+	<div>
+	<table id="pnvvGrid"></table>
+	
+	</div>
+</div>
+<!-- div class="outter">
 	<form:form id='basicInfoForm' action='${basePath}/basicInfo' method='post' modelAttribute='basicInfo'>
 		<div class="fold">激活状态</div>
 		<div class="contentBlock" style='height:100px'>
@@ -210,57 +172,22 @@
 		</br>
 		<table id="pnvvGrid"></table>
 		<div id="pnvvPager"></div> 
-		<!-- div class="contentBlock">
-			<div class="tbar">
-				<div class="tbar_button">
-					<input type='button' value="保存" class='saveForm'/>
-				</div>	
-			</div>
-			<div class="dbReflectTableDiv">
-				<table class="dbReflectTable">
-					<tr>
-						<td width='20%' align='right'>表名：</td>
-						<td width='80%' align='left'>${kna1TableName}<form:hidden id='reflectTable' path='reflectTable' value='${kna1TableName}'/></td>
-					</tr>
-					<tr>
-						<td align='right'>描述：</td>
-						<td align='left'><form:input id='reflectTableMemo' path='reflectTableMemo' size='80'/></td>
-					</tr>
-					<tr>
-						<td align='right'>&nbsp;</td>
-						<td align='left'><form:hidden id='sapclient' path='sapclient' value='${sapclient}'/></td>
-					</tr>
-					<tr>
-						<td colspan='2'>
-							
-							<br/>
-						</td>
-					</tr>
-					<tr>
-						<td colspan='2'>
-							<table id="pnb1Grid"></table>
-							<div id="pnb1Pager"></div> 
-							<br/>
-						</td>
-					</tr>
-					<tr>
-						<td colspan='2'>
-							<table id="pnvvGrid"></table>
-							<div id="pnvvPager"></div> 
-							<br/>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div style='display:none'>
-			<form:input path='id' id='id'/>
-			<form:input path='businesstype' id='businesstype' value='${type}'/>
-		</div-->
 	</form:form>
-	</div>
+	</div-->
 </body>
 <script>
+function zwyd() {
+	$.dialog({
+		title:'变更运行状态',
+		width: '540px',
+    	height: '240px',
+		resize:false,
+          max: false,
+          min: false,
+		content: 'url:${ctx}/application/commonScheduling/realtime/fi/customer'
+		
+	});
+}
 $(function(){
 	var type='${type}';
 	init();
@@ -368,6 +295,7 @@ $(function(){
 			caption:'客户一般数据',
 			rownum:100,
 			height:300,
+			width:900,
 			pager:'#pna1Pager',
 			editable:true,
 			datatype:'json',
@@ -412,7 +340,7 @@ $(function(){
 						}else{
 							$.ajax({
 								url:'${ctx}/application/common/columnInfo/updateStatus',
-								data:{id:rowid,status:status?'ACTIVATE':'INACTIVE'},
+								data:{id:rowid,status:(checked=='checked'?'ACTIVATE':'INACTIVE')},
 								success:function(){
 									alert('设置成功');
 								}
@@ -453,6 +381,7 @@ $(function(){
 			caption:'客户公司代码数据',
 			rownum:100,
 			height:300,
+			width:900,
 			pager:'#pnb1Pager',
 			editable:true,
 			datatype:'json',
@@ -538,6 +467,7 @@ $(function(){
 			caption:'客户销售数据',
 			rownum:100,
 			height:300,
+			width:900,
 			pager:'#pnvvPager',
 			editable:true,
 			datatype:'json',

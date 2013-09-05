@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sapGarden.application.commons.constants.LogConstants;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
+import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
 import com.sapGarden.application.commons.service.commonService.CommonService;
 import com.sapGarden.application.fi.customer.model.Kna1Compared;
 import com.sapGarden.application.fi.customer.model.Knb1Compared;
@@ -35,7 +35,7 @@ public class ManualSynServiceImpl implements ManualSynService{
 		List<Kna1Compared> kna1List = commonService.findBySapclient(Kna1Compared.class, sapDataCollection.getId());
 		List<Knb1Compared> knb1List = commonService.findBySapclient(Knb1Compared.class, sapDataCollection.getId());
 		List<KnvvCompared> knvvList = commonService.findBySapclient(KnvvCompared.class, sapDataCollection.getId());
-		compareDataService.comparedDataToLocal(sapDataCollection.getId(), user, LogConstants.OPTTYPE_MANUALSYN, kna1List, knb1List, knvvList);
+		compareDataService.comparedDataToLocal(sapDataCollection.getId(), user, CommonServiceWithLog.OPTTYPE_MANUALSYN, kna1List, knb1List, knvvList);
 	}
 
 }

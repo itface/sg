@@ -11,14 +11,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 @Entity
 @Table(name="kna1")
 public class Kna1 implements Serializable{
-	private static final long serialVersionUID = -113L;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6529848690813609201L;
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_kna1")
-	@SequenceGenerator(name="seq_kna1",sequenceName="seq_kna1",allocationSize=1)
+	@TableGenerator(name = "kna1_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
+	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
+	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
+	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
+	                pkColumnValue = "kna1_pk",//在持久化的表中，该生成策略所对应的主键
+	                initialValue = 100,             //默认主键值为50
+	                allocationSize = 1)           //每次主键值增加的大小
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "kna1_gen")
 	private long id;
 	private long sapclient;
 	private int garden_flag=0;

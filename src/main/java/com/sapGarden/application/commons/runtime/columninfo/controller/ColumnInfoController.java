@@ -28,7 +28,7 @@ public class ColumnInfoController {
 	@RequestMapping(value=("/{tablename}"),method=RequestMethod.GET)
 	public @ResponseBody Object getDbReflectOfColumnData(@PathVariable String tablename,@RequestParam int page,@RequestParam int rows) throws JpaException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = runtime_ColumnInfo_Service.findJsonByBusinesstype(page,rows,user.getCurrentSapDataCollection(),tablename);
+		JSONObject json = runtime_ColumnInfo_Service.findJsonByBusinesstype(page,rows,user.getCurrentSapDataCollection(),tablename.toUpperCase());
 		return json==null?"{}":json;
 	}
 	@RequestMapping(value=("/{tablename}"),method=RequestMethod.POST)

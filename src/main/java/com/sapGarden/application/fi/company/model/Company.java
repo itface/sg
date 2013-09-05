@@ -6,8 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -16,14 +16,20 @@ import com.sapGarden.application.fi.company.model.bapi_companyCode_getList.Table
 import com.sapGarden.system.org.model.User;
 
 @Entity
-@Table(name="bo_fin_company")
+@Table(name="company")
 public class Company implements Serializable{
 
 	private static final long serialVersionUID = 8961653795826720695L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_fin_company")
-	@SequenceGenerator(name="seq_fin_company",sequenceName="seq_fin_company",allocationSize=1)
+	@TableGenerator(name = "company_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
+	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
+	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
+	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
+	                pkColumnValue = "company_pk",//在持久化的表中，该生成策略所对应的主键
+	                initialValue = 100,             //默认主键值为50
+	                allocationSize = 1)           //每次主键值增加的大小
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "company_gen")
 	private long id;
 	private String comp_code;
 	private String comp_name;
@@ -72,7 +78,7 @@ public class Company implements Serializable{
 			this.sapclient=user.getCurrentSapClientModel().getId();
 		}*/
 	}
-	public Company(Export_companyCode_detail detail){
+	public Company(Export_companyCode_detail detail,long sapclient){
 		if(detail!=null){
 			this.comp_code = detail.getComp_code();
 			this.comp_name = detail.getComp_name();
@@ -86,9 +92,36 @@ public class Company implements Serializable{
 			this.company=detail.getCompany();
 			this.addr_no=detail.getAddr_no();
 		}
-		if(SecurityContextHolder.getContext()!=null&&SecurityContextHolder.getContext().getAuthentication()!=null&&SecurityContextHolder.getContext().getAuthentication().getPrincipal()!=null){
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			this.sapclient=user.getCurrentSapDataCollection().getId();
+		this.sapclient=sapclient;
+	}
+	/*
+	[2.1]boolean型，计算(f ? 0 : 1); 
+	[2.2]byte,char,short型，计算(int); 
+	[2.3]long型，计算(int) (f ^ (f>>>32)); 
+	[2.4]float型，计算Float.floatToIntBits(afloat); 
+	[2.5]double型，计算Double.doubleToLongBits(adouble)得到一个long，再执行[2.3]; 
+	*/
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		int result = 17;
+		result = 37*result+(int) (id ^ (id>>>32));
+		//result = 37*result+(name==null?0:name.hashCode());
+		//result = 37*result+displayOrder;
+		//result = 37*result+(this.url==null?0:url.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(!(obj instanceof Company)){
+			return false;
+		}
+		Company obj2 = (Company)obj;
+		if(this.id>0){
+			return this.id==obj2.getId();
+		}else{
+			return false;
 		}
 	}
 	public long getId() {

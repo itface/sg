@@ -24,7 +24,6 @@
    <bean id="startUp" class="com.sapGarden.system.startUp.StartUp">
    		<property name="startUpInitialServiceList">
    			<list>
-   				<ref bean="initialSchedulingService"/>
    				<ref bean="initialDbConnectionService"/>
    			</list>
    		</property>

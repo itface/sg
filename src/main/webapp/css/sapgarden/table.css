@@ -1,0 +1,91 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*审批表格样式*/
+.wr_table table {
+	border:0px solid #ebebeb;
+	color:#727272;
+
+	word-wrap:break-word;
+	word-break:break-all;
+	border-collapse: collapse;
+}
+.wr_table table td {
+	width:30px;
+}
+.wr_table_header {
+	background: url(../images/main/table_head_bg.jpg) #fafafa repeat-x;
+	background-repeat:repeat-x;
+	background-position:top;
+	border-bottom:1px solid #dcdcdc;
+	font-size:12px;
+}
+.wr-table-hd-inner {
+	text-align:center;
+	overflow:hidden;
+	-o-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color:#686868;
+	-moz-box-shadow:1px 1px 1px #fff;
+	text-shadow:0px 1px 1px #fff;
+	text-align:center;
+	cursor:pointer;
+	padding:1px 2px 1px 2px;
+	line-height:25px;
+	height:25px;
+	font-weight:bold;
+	font-family:"Arial", "宋体",;
+	background:url(../images/table_tit_bg.png);
+	font-size:12px;
+}
+.wr-table-hd-inner td {
+	border-left:1px solid;
+	border-right:1px solid;
+	border:1px solid #dcdcdc;
+}
+.wr-table-td-inner {
+	table-layout:fixed;
+	word-break: break-all;
+	word-wrap: break-word;
+	text-align:left;
+	overflow:hidden;
+	background-color:#fafafa;
+	line-height:18px;
+	border:1px solid #dcdcdc;
+	color:#222;
+	background:#fff;
+}
+.wr-table-td-inner td {
+	padding:0px 6px 0px 6px;
+	border-bottom:1px solid #dcdcdc;
+	font-size:12px;
+	table-layout:fixed;
+	word-break: break-all;
+	word-wrap: break-word;
+	height:25px;
+	line-height:25px;
+}
+.wr-table-tr-row td {
+	background: url(../images/main/table_head_bg.jpg) #fafafa repeat-x;
+	background-repeat:repeat-x;
+	height:25px;
+	line-height:25px;
+}
+.wr-table-td-selected td {
+	background-color: #fef9e0;
+	background-image: none;
+	padding:5px 6px 5px 6px;
+	height:25px;
+	line-height:25px;
+}
+.wr-table-td-inner td {
+	padding:0px 6px 0px 6px;
+	border:1px solid #dcdcdc;
+	font-size:12px;
+	table-layout:fixed;
+	word-break: break-all;
+	word-wrap: break-word;
+	height:25px;
+	line-height:25px;
+}

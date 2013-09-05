@@ -20,7 +20,7 @@ public class CallFun_GetSapCustomer_TestCall_ServiceImpl implements CallFun_GetS
 		return null;
 	}
 
-	/*
+/*
 	private CallFun_GetSapCustomer_Service callFun_GetSapCustomer_Service;
 	@Autowired
 	public void setCallFun_GetSapCustomer_Service(CallFun_GetSapCustomer_Service callFun_GetSapCustomer_Service) {

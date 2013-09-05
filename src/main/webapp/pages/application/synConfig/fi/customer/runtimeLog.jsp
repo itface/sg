@@ -3,6 +3,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link href="${ctx}/css/sapgarden/base.css" rel="stylesheet" type="text/css" />
+<link href="${ctx}/css/sapgarden/garden.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/default/easyui.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/icon.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.jqgrid.css'/>">
@@ -20,7 +22,16 @@
 </head>
 <body>
 <form>
-<div id="mainTabPanel" class="easyui-tabs" style='position:absolute;left:0px;'>
+<div class="toolbar">
+  <div class="prompt_message">本功能用来浏览Garden系统中的日志。直接点击&ldquo;查询&rdquo;查询全部数据，也可以根据关键字查询</div>
+  <!-- div class="toolbar_left"> 
+  		<input type="text" class="input1"  value="请输入数据关键字">
+    	<a href="#" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询</a> 
+        <a href="#" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">导出数据</a> 
+   </div-->
+</div>
+<br>
+<div id="mainTabPanel" class="easyui-tabs">
 </div>
 </form>
 </body>

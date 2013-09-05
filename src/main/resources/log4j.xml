@@ -22,7 +22,7 @@
 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%-5p][%c{1}] - %m%n"/>
 		</layout>
 	</appender>
-	<logger name="errorLog">
+	<logger name="com.sapGarden">
 		<level value="ERROR"></level>
 		<appender-ref ref="ERRORFILE"/>
 	</logger>

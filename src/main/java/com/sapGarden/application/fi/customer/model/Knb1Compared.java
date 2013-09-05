@@ -1,5 +1,6 @@
 package com.sapGarden.application.fi.customer.model;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,15 +12,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 @Entity
 @Table(name="knb1_compared")
-public class Knb1Compared {
-	private static final long serialVersionUID = -133L;
+public class Knb1Compared implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3397410354939709192L;
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_knb1_compared")
-	@SequenceGenerator(name="seq_knb1_compared",sequenceName="seq_knb1_compared",allocationSize=1)
+	@TableGenerator(name = "knb1_compared_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
+	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
+	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
+	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
+	                pkColumnValue = "knb1_compared_pk",//在持久化的表中，该生成策略所对应的主键
+	                initialValue = 100,             //默认主键值为50
+	                allocationSize = 1)           //每次主键值增加的大小
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "knb1_compared_gen")
 	private long id;
 	private long sapclient;
 	private long optid;

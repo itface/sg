@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sapGarden.application.commons.constants.LogConstants;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
+import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
 import com.sapGarden.application.commons.runtime.columninfo.model.RuntimeColumnInfo;
 import com.sapGarden.application.commons.runtime.columninfo.service.Runtime_ColumnInfo_Service;
 import com.sapGarden.application.commons.service.commonService.CommonService;
@@ -603,7 +603,7 @@ public class CompareDataServiceImpl implements CompareDataService{
 			JSONArray jsonArray = json.getJSONArray("list");
 			knvvList =JSONArray.toList(jsonArray,KnvvCompared.class);
 		}
-		this.comparedDataToLocal(sapclient, user, LogConstants.OPTTYPE_COMPAREDATA, kna1List, knb1List, knvvList);
+		this.comparedDataToLocal(sapclient, user, CommonServiceWithLog.OPTTYPE_COMPAREDATA, kna1List, knb1List, knvvList);
 	}
 	@Override
 	public String getComparedResult(SapDataCollection sapDataCollection) {

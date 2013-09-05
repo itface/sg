@@ -3,6 +3,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link href="${ctx}/css/sapgarden/base.css" rel="stylesheet" type="text/css" />
+<link href="${ctx}/css/sapgarden/garden.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.jqgrid.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.ui.css'/>">
 <script src="<c:url value='/script/jquery-1.7.2.min.js'/>" type="text/javascript"></script>
@@ -75,7 +77,8 @@ $(function(){
 				var ids = jQuery("#list").jqGrid('getDataIDs');
 				for(var i=0;i < ids.length;i++){
 					var cl = ids[i];
-					be = "<input type='button' value='测试连接' onclick=\"javascript:(function(){$.ajax({url:'${ctx}/system/testConnection',async:false,cache:false,type:'POST',data:{id:'"+cl+"'},success:function(msg){if(msg!=null&&msg!='null'&&msg!=''){alert(msg);}else{alert('连接成功');}}});})();\"/>"; 
+					//be = "<input type='button' value='测试连接' onclick=\"javascript:(function(){$.ajax({url:'${ctx}/system/testConnection',async:false,cache:false,type:'POST',data:{id:'"+cl+"'},success:function(msg){if(msg!=null&&msg!='null'&&msg!=''){alert(msg);}else{alert('连接成功');}}});})();\"/>"; 
+					be="<a href='javascript:void(0);' class='btn' onMouseDown='this.className=btn_mousedown' onMouseUp='this.className=btn' onMouseOver='this.className=btn_hover' onMouseOut='this.className=btn' onclick=\"javascript:(function(){$.ajax({url:'${ctx}/system/testConnection',async:false,cache:false,type:'POST',data:{id:'"+cl+"'},success:function(msg){if(msg!=null&&msg!='null'&&msg!=''){alert(msg);}else{alert('连接成功');}}});})();\">测试执行</a>";
 					jQuery("#list").jqGrid('setRowData',ids[i],{act:be});
 				}	
 			},

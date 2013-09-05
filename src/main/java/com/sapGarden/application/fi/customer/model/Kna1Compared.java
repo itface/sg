@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 @Entity
@@ -21,8 +22,14 @@ public class Kna1Compared implements Serializable{
 	private static final long serialVersionUID = 123L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_kna1_compared")
-	@SequenceGenerator(name="seq_kna1_compared",sequenceName="seq_kna1_compared",allocationSize=1)
+	@TableGenerator(name = "kna1_compared_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
+	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
+	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
+	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
+	                pkColumnValue = "kna1_compared_pk",//在持久化的表中，该生成策略所对应的主键
+	                initialValue = 100,             //默认主键值为50
+	                allocationSize = 1)           //每次主键值增加的大小
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "kna1_compared_gen")
 	private long id;
 	private long sapclient;
 	private long optid;

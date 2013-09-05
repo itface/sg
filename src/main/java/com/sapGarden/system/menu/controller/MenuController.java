@@ -41,4 +41,9 @@ public class MenuController {
 		JSONArray jsonArray = menuService.getMenuCheckedTreeByRoleId(roleId);
 		return jsonArray;
 	}
+	@RequestMapping(value="/getDataCollectionExtTreeByRoleId/{roleId}",method=RequestMethod.GET)
+	public @ResponseBody Object getDataCollectionExtTreeByRoleId(@PathVariable long roleId){
+		JSONArray jsonArray = menuService.getDataCollectionTreeByRoleId(roleId);
+		return jsonArray;
+	}
 }

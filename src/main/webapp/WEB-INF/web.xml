@@ -47,14 +47,14 @@
 	  -->
 	  <!-- 指定org.springframework.orm.jpa.LocalEntityManagerFactoryBean在spring配置文件中的名称,默认值为entityManagerFactory
    		如果LocalEntityManagerFactoryBean在spring中的名称不是entityManagerFactory,该参数一定要指定,否则会出现找不到entityManagerFactory的例外 -->
-	 <!--filter>
+	 <filter>
         <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
         <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping-->
+    </filter-mapping>
     <!-- 
     结束配置OpenEntityManagerInViewFilter，用了这类Filter以后会降低一定的运行效率，但是一般的web项目都会加入一些开源的缓存管理框架，这样一来，对效率的影响就变得很小了。
      -->
@@ -94,7 +94,8 @@
 	           <param-name>contextConfigLocation</param-name>
 	           <param-value>classpath:springmvc-servlet.xml</param-value>
 	  </init-param>
-      <load-on-startup>2</load-on-startup>
+	  <!-- 优先级，标记容器是否在启动的时候就加载这个servlet(实例化并调用其init()方法) -->
+      <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
       <servlet-name>springmvc</servlet-name>

@@ -2,9 +2,16 @@ package com.sapGarden.application.commons.basetable.model;
 
 import java.io.Serializable;
 
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+/**
+ * 母表
+ * @author Administrator
+ *
+ */
 @Entity
 @Table(name="sys_basetable")
 public class BaseTableModel implements Serializable{

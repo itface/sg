@@ -43,38 +43,40 @@ jQuery("#list").jqGrid({
     	repeatitems:false
     },
 	autowidth: false,
-    width:900,
-    height:600,
+	width:1000,
+    height:400,
    	colNames:['ID','帐号','密码','再次输入密码','姓名','使用状态','使用状态','创建时间','最后登录时间','登录次数','角色','用户类型','用户类型','sap权限2','授权范围','说明'],
    	colModel:[
    		{name:'id',index:'id',hidden:true, width:1,key:true,editable:true},
-   		{name:'username',index:'username', width:100,editable:true,editrules:{required:true,custom:true,custom_func:validateLength}},
+   		{name:'username',index:'username', width:150,editable:true,editrules:{required:true,custom:true,custom_func:validateLength}},
    		
-   		{name:'repassword',index:'repassword',hidden:true,edittype:'password', width:100,editable:true,editrules:{required:true,edithidden:true}},
-   		{name:'password',index:'password',hidden:true,edittype:'password', width:100,editable:true,editrules:{required:true,edithidden:true}},
-   		{name:'name',index:'name', width:100, align:"right",editable:true,editrules:{required:true,custom:true,custom_func:validateLength}},
+   		{name:'repassword',index:'repassword',hidden:true,edittype:'password', width:150,editable:true,editrules:{required:true,edithidden:true}},
+   		{name:'password',index:'password',hidden:true,edittype:'password', width:150,editable:true,editrules:{required:true,edithidden:true}},
+   		{name:'name',index:'name', width:150, align:"right",editable:true,editrules:{required:true,custom:true,custom_func:validateLength}},
    		
-   		{name:'userstatus',index:'userstatus', width:100, align:"right",editable:true,edittype:'select',editoptions:{value:"1:激活;0:非激活"},editrules:{required:true},hidden: true,editrules:{edithidden:true}},
-   		{name:'status',index:'status', width:100, align:"right",editable:false},
+   		{name:'userstatus',index:'userstatus', width:150, align:"right",editable:true,edittype:'select',editoptions:{value:"1:激活;0:非激活"},editrules:{required:true},hidden: true,editrules:{edithidden:true}},
+   		{name:'status',index:'status', width:150, align:"right",editable:false},
    		
-   		{name:'usercreatetime',index:'usercreatetime', width:100,editable:true,hidden: true},
-   		{name:'lastlogintime',index:'lastlogintime', width:100, align:"right",editable:true,hidden:true},
-   		{name:'logincount',index:'logincount', width:100,editable:true,hidden: true},
+   		{name:'usercreatetime',index:'usercreatetime', width:150,editable:true,hidden: true},
+   		{name:'lastlogintime',index:'lastlogintime', width:150, align:"right",editable:true,hidden:true},
+   		{name:'logincount',index:'logincount', width:150,editable:true,hidden: true},
    		{name:'roleIds',index:'roleIds',editable:true,hidden:true},
-   		{name:'usertype',index:'usertype', width:100, align:"right",editable:true,edittype:'select',hidden:true,editrules:{required:true,edithidden:true},
+   		{name:'usertype',index:'usertype', width:150, align:"right",editable:true,edittype:'select',hidden:true,editrules:{required:true,edithidden:true},
 			editoptions:{
   				dataUrl:"${ctx}/system/role/getRoleSelect"
   			}
    		},
-   		{name:'type',index:'type', width:100, align:"right",editable:false},
-   		{name:'sapDataCollections',index:'sapDataCollections', width:80, align:"right",editable:true,hidden:true},
-   		{name:'tempSapDataCollections',index:'tempSapDataCollections', width:120, align:"right",editable:true,editrules:{required:true}},
-   		{name:'userdescription',index:'userdescription',edittype:'textarea', width:80, align:"right",editable:true}
+   		{name:'type',index:'type', width:150, align:"right",editable:false},
+   		{name:'sapDataCollections',index:'sapDataCollections', width:150, align:"right",editable:true,hidden:true},
+   		{name:'tempSapDataCollections',index:'tempSapDataCollections', width:150, align:"right",editable:true,editrules:{required:true}},
+   		{name:'userdescription',index:'userdescription',edittype:'textarea', width:150, align:"right",editable:true}
    	],
    	pginput:false,
    	toppager: true,
     viewrecords:false,
     rownumbers:true,
+    shrinkToFit:false,//超出width出滚动条
+	forceFit:true,//调整列宽时，调整width总长度
    	sortname: 'id',
     viewrecords: true,
     sortorder: "desc",

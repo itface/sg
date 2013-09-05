@@ -2,53 +2,40 @@ package com.sapGarden.system.startUp.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sapGarden.system.scheduling.common.SchedulingAction;
-import com.sapGarden.system.scheduling.constans.SchedulingConstans;
-import com.sapGarden.system.scheduling.exception.SchedulingException;
-import com.sapGarden.system.scheduling.model.Scheduling;
-import com.sapGarden.system.scheduling.service.SchedulingService;
-import com.sapGarden.system.startUp.service.StartUpInitialService;
+import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
+import com.sapGarden.application.commons.runtime.scheduling.exception.SchedulingException;
+import com.sapGarden.application.commons.runtime.scheduling.service.CommonSchedulingService;
+import com.sapGarden.system.db.DbContextHolder;
 
 @Service("initialSchedulingService")
-public class InitialSchedulingServiceImpl implements StartUpInitialService{
+public class InitialSchedulingServiceImpl implements Runnable{
 
-	private final static transient Logger log = LoggerFactory.getLogger("errorLog");
-	private SchedulingAction schedulingAction;
-	private SchedulingService schedulingService;
+	private final static transient Logger log = LoggerFactory.getLogger(InitialSchedulingServiceImpl.class);
+	private CommonSchedulingService commonSchedulingService;
 	@Autowired
-	public InitialSchedulingServiceImpl(SchedulingAction schedulingAction,SchedulingService schedulingService){
-		this.schedulingAction=schedulingAction;
-		this.schedulingService=schedulingService;
+	public InitialSchedulingServiceImpl(CommonSchedulingService commonSchedulingService){
+		this.commonSchedulingService=commonSchedulingService;
 	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		//因为平台启动时要初努化所有sapclient，所以执行初始化之前要设置连的是哪个sapclient,每次取一个
+		SapDataCollection sapclient = SapclientCollections.getNext();
+		if(sapclient!=null){
+			DbContextHolder.setDbType("dataSource"+sapclient.getId());
+		}
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		String now = sd.format(Calendar.getInstance().getTime());
 		try {
-			List<Scheduling> list = (List<Scheduling>)schedulingService.findAllAvailableScheduling();
-			if(list!=null&&list.size()>0){
-				for(Scheduling scheduling : list){
-					if(SchedulingConstans.JOB_EXECUTEFREQUENCY_STARTUP.equals(scheduling.getExecuteFrequency())){
-						schedulingAction.addStartUpTrigger(scheduling);
-					}else{
-						schedulingAction.addTrigger(scheduling);
-					}
-				}
-			}
+			commonSchedulingService.initAllJob(sapclient);
 		} catch (SchedulingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			log.error(now,e);
-		}catch(RuntimeException e){
-			e.printStackTrace();
 			log.error(now,e);
 		}
 	}

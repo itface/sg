@@ -1,7 +1,13 @@
 .Wdate{
-	border:#999 1px solid;
-	height:20px;
-	background:#fff url(datePicker.gif) no-repeat right;
+
+	background:#fff url(schedule.png) no-repeat right;
+		border:1px solid #d8d8d8;
+	width:90px;
+	height:26px;
+	padding:0px 10px;
+	float:left;
+	margin-right:5px;
+	color:#747373
 }
 
 .WdateFmtErr{

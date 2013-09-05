@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.service.commonService.CommonLogService;
 import com.sapGarden.application.commons.service.constructJqgridService.Common_ConstructJqgrid_Service;
-import com.sapGarden.application.fi.customer.constants.CustomerContants;
 import com.sapGarden.application.fi.customer.model.Kna1Log;
 import com.sapGarden.application.fi.customer.model.Knb1Log;
 import com.sapGarden.application.fi.customer.model.KnvvLog;
@@ -46,7 +46,7 @@ public class RuntimeLogController {
 	public ModelAndView index() {
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("type", CustomerContants.TYPE);
+		map.put("type", SjlxTypeName.TYPE_CUSTOMER);
 		map.put("kna1LogGridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Kna1","kna1LogGrid","客户一般数据日志","/application/fi/customer/log/kna1Log","#kna1LogPager"));
 		map.put("knb1LogGridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Knb1","knb1LogGrid","客户公司代码数据日志","/application/fi/customer/log/knb1Log","#knb1LogPager"));
 		map.put("knvvLogGridOptions",common_ConstructJqgrid_Service.construct(user.getCurrentSapDataCollection(),"Knvv","knvvLogGrid","客户销售数据日志","/application/fi/customer/log/knvvLog","#knvvLogPager"));

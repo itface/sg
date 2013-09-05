@@ -1,0 +1,124 @@
+@charset "utf-8";
+/* CSS Document */
+
+@charset "utf-8";
+/* CSS Document */
+
+@charset "utf-8";
+* {
+	margin:0px;
+	padding:0px;
+}
+img {
+	border:0px;
+}
+body {
+	font-size:12px;
+	font-family:宋体;
+	font-family:Arial;
+	background:#021335;
+}
+a:link {
+	text-decoration:none;
+	color:#0e91dd;
+}
+a:visited {
+	text-decoration:none;
+	color:#0e91dd;
+}
+a:hover {
+	text-decoration:none;
+	color:#0e91dd;
+}
+a:active {
+	text-decoration:none;
+	color:#0e91dd;
+}
+a {
+blr:expression(this.onFocus=this.blur())
+}
+.font1{ color:#b1b1b1}
+.login_bg {
+	background:url(../../images/sap_login_bg.jpg) repeat-x #021335;
+	height:618px;
+}
+.login_logo {
+	background:url(../../images/login_sap_logo2.png);
+	height:33px;
+	width:315px;
+	position:absolute;
+	left:50%;
+	margin-left:-400px;
+	top:230px
+}
+.login_box {
+	background:url(../../images/login_box_bg.png) no-repeat;
+	width:356px;
+	height:397px;
+	position:absolute;
+	left:50%;
+	top:50px;
+	padding:80px 0px 0px 48px;
+}
+.login_box h1 {
+	font-size:14px;
+	color:#fff;
+	font-family:'arial', '微软雅黑';
+	line-height:24px;
+	margin-top:8px;
+	clear:both
+}
+	
+
+.login_box_select {
+	background:url(../../images/login_select_bg.png);
+	height:39px;
+	border:0px;
+	width:250px;
+	color:#fff;
+	font-size:14px;
+	padding-left:10px;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-right:5px;
+font-family:微软雅黑;
+
+	
+}
+.login_box_input {
+	background:url(../../images/login_input_bg.png);
+	height:39px;
+	line-height:39px;
+	border:0px;
+	width:240px;
+	color:#fff;
+	font-size:14px;
+	padding-left:10px;
+	font-family:微软雅黑;
+}
+.login_btn_a {
+	background:url(../../images/login_btn_a.png);
+	width:253px;
+	height:40px;
+	line-height:40px;
+	color:#fff;
+	font-size:14px;
+	border:0 none;
+	cursor:pointer;
+	font-weight:bold;
+	margin-top:20px;
+font-family:微软雅黑;
+}
+.login_btn_b {
+	background:url(../../images/login_btn_b.png);
+	width:253px;
+	height:40px;
+	line-height:40px;
+	color:#fff;
+	font-size:14px;
+	border:0 none;
+	cursor:pointer;
+	font-weight:bold;
+	margin-top:20px;
+font-family:微软雅黑;
+}

@@ -40,35 +40,30 @@ table.ui_border,table.ui_dialog{ width:auto;border-spacing:0;*border-collapse:co
 .ui_state_tips .ui_content{ margin-top:-2px;padding:8px 10px!important; }
 .ui_state_tips .ui_icon_bg{ margin:5px 0 6px 9px; }
 .ui_state_tips .ui_title,.ui_state_tips .ui_title_buttons,.ui_res{ display:none; } /* 还原按钮也在这里隐藏，这样可节省代码，注间这段一定要写在上面那段代码的下面*/
+
+#ldg_lockmask{ background:#DCE2F1;filter:alpha(opacity=60);opacity:.6; }
 /*==================制作新皮肤到这里结束复制==================*/
 
 /*样式层开始*/
-.ui_inner{ border:1px solid #999; }
+.ui_inner{ border:1px solid #7b8aa9; }
 .ui_border{ border-radius:4px; }
 
 .ui_lt,.ui_rt,.ui_lb,.ui_rb{ width:6px;height:6px;display:block; }
 .ui_lt{ border-radius:4px 0 0 0; }.ui_rt{ border-radius:0 4px 0 0; }.ui_rb{ border-radius:0 0 4px 0; }.ui_lb{ border-radius:0 0 0 4px; }
-.ui_lt,.ui_rt,.ui_l,.ui_r,.ui_lb,.ui_b,.ui_t,.ui_rb{ background:rgba(102,102,102,.3);background:#666\9;filter:alpha(opacity=30); }
+.ui_lt,.ui_rt,.ui_l,.ui_r,.ui_lb,.ui_b,.ui_t,.ui_rb{ background:rgba(47,70,171,.7);background:#2f4679\9; opacity:0.2;filter:alpha(opacity=30); }
 
 /*标题栏样式*/
-.ui_title_bar{ position:relative;height:100%;border-bottom:1px solid #317ebd; }
-.ui_title{ height:26px;line-height:26px;font-size:14px;font-weight:bold;color:#DDD;padding-left:7px;border-bottom:1px solid #6da6e1;
-background:linear-gradient(top,#46a0e1,#3280bf);
-background:-webkit-gradient(linear,0% 0%, 0% 100%,from(#46a0e1),to(#3280bf)); 
-background:-moz-linear-gradient(top,#46a0e1,#3280bf); 
-background:-o-linear-gradient(top,#46a0e1,#3280bf);
-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#46a0e1',endColorstr='#3280bf');*background:#DDD; }
+.ui_title_bar{ position:relative;height:100% border-top:1px solid #283e6e; box-shadow:0px 1px 10px #6c6c6c; height:32px; line-height:32px }
+.ui_title{font-size:12px;font-weight:bold;color:#fff;padding-left:7px; text-shadow:#000 0px 1px;
+background:url(../../../images/alert_title_bg.png);height:32px; line-height:28px }
  
 .ui_state_focus .ui_title{ color:#FFF;text-shadow:0 1px 0 #333; }
 .ui_state_drag .ui_title { border-bottom:1px solid #82bee6;text-shadow: 0 -1px 0 #333;
-background:linear-gradient(top,#3280bf,#46a0e1); 
-background:-moz-linear-gradient(top,#3280bf,#46a0e1); 
-background:-webkit-gradient(linear,0% 0%, 0% 100%,from(#3280bf),to(#46a0e1));
-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3280bf',endColorstr='#46a0e1'); }
+background:url(../../../images/alert_title_bg.png) }
 
 /*标题纯CSS按钮定位部分*/
 .ui_title_buttons{ top:3px;right:5px; }
-.ui_min,.ui_max,.ui_close,.ui_res{ color:#FFF;font-size:22px;width:22px;height:22px;line-height:18px; }
+.ui_min,.ui_max,.ui_close,.ui_res{ color:#FFF;font-size:22px;width:22px;height:22px;line-height:22px; }
 .ui_min_b{ top:10px;left:5px;width:12px;height:2px;border-bottom:2px solid #FFF; }
 .ui_max_b{ top:5px;left:5px;width:10px;height:7px; }
 .ui_res_t,.ui_res_b{ top:8px;left:3px;width:10px;height:5px; }
@@ -77,7 +72,7 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3280bf',endCol
 .ui_res_t{ background:#3d8cce; }
 .ui_min:hover b,.ui_max:hover b,.ui_res:hover b{ border-color:#555; }
 .ui_close{ vertical-align:baseline;_line-height:22px; }
-.ui_close:hover,.ui_close:focus{ color:#c93333; }
+.ui_close:hover,.ui_close:focus{ color:#fff; }
 
 /*底部按钮样式*/
 .ui_buttons{ white-space:nowrap;padding:4px 8px;text-align:right;background-color:#F6F6F6;border-top:solid 1px #DADEE5; }

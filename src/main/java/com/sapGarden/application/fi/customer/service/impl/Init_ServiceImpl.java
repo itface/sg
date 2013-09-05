@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sapGarden.application.commons.constants.LogConstants;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
+import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
 import com.sapGarden.application.commons.progress.model.Progress;
 import com.sapGarden.application.commons.progress.model.ProgressModel;
 import com.sapGarden.application.commons.runtime.columninfo.model.RuntimeColumnInfo;
@@ -60,7 +60,7 @@ public class Init_ServiceImpl implements Init_Service{
 			return;
 		}else{
 			progress.setPercent(99);
-			//Ö´ÐÐ
+			//Ö´ï¿½ï¿½
 			long e = System.currentTimeMillis();
 			progress.setEndTime(e);
 		}
@@ -169,7 +169,7 @@ public class Init_ServiceImpl implements Init_Service{
 					if(ift!=null){
 						fun = ift.getFunction();
 						ParameterList inParam = fun.getImportParameterList();
-						//ÉèÖÃ´«Èë²ÎÊý
+						//ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						inParam.setValue(perNum, "MAX_LINES");
 						inParam.setValue(kna1s, "I_FIELDS_KNA1");
 						inParam.setValue(knb1s, "I_FIELDS_KNB1");
@@ -332,15 +332,15 @@ public class Init_ServiceImpl implements Init_Service{
 	private void save(List<Kna1> kna1List,List<Knb1> knb1List,List<Knvv> knvvList,String user,SapDataCollection sapDataCollection){
 		if(kna1List!=null&&kna1List.size()>0){
 			//kna1Dao.save(kna1List);
-			commonService.saveList(LogConstants.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Kna1.class, Kna1Log.class, kna1List);
+			commonService.saveList(CommonServiceWithLog.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Kna1.class, Kna1Log.class, kna1List);
 		}
 		if(knb1List!=null&&knb1List.size()>0){
 			//knb1Dao.save(knb1List);
-			commonService.saveList(LogConstants.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Knb1.class, Knb1Log.class, knb1List);
+			commonService.saveList(CommonServiceWithLog.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Knb1.class, Knb1Log.class, knb1List);
 		}
 		if(knvvList!=null&&knvvList.size()>0){
 			//knvvDao.save(knvvList);
-			commonService.saveList(LogConstants.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Knvv.class, KnvvLog.class, knvvList);
+			commonService.saveList(CommonServiceWithLog.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Knvv.class, KnvvLog.class, knvvList);
 		}
 	}
 	@Override

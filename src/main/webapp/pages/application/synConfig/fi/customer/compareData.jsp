@@ -3,6 +3,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link href="${ctx}/css/sapgarden/base.css" rel="stylesheet" type="text/css" />
+<link href="${ctx}/css/sapgarden/garden.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/default/easyui.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/icon.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.jqgrid.css'/>">
@@ -21,7 +23,62 @@
 </head>
 <body>
 <form>
-	<div>
+<div class="toolbar">
+  <div class="prompt_message">本功能用来检查SAP和Garden数据的一致性，有差异的数据可以从SAP同步到Garden。如果数据量大，运行时间可能较长</div>
+  <div class="toolbar_left"> 
+	  <div>
+			<input type='text' id='kunnr' class='input3' value="客户编号"/>
+			<input type='text' id='bukrs' class='input3' value="公司代码"/>
+			<input type='text' id='vkorg' class='input3' value="销售组织"/>
+			<input type='text' id='vtweg' class='input3' value="分销渠道"/>
+			<input type='text' id='spart' class='input3' value='产口组'/>
+			 <a href="#" class="btn" id='compareData' onMouseDown="this.className='btn_mousedown'" id='compareData' onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">开始校对</a> 
+     <a href="#" class="btn" id='sapToLocal' onMouseDown="this.className='btn_mousedown'" id='sapToLocal' onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">从SAP同步到Garden</a>  
+		</div>
+		<div>
+   
+    	</div>
+     </div>
+   <div class="check_text"></div>
+</div>
+<div style="padding:5px 10px; clear:both">
+  <div id="mainTabPanel" class="easyui-tabs" style="height:500px">
+		<div title="客户一般数据" style="height:400px">  
+	        <div style='width:100%;overflow:auto;height:100%'>
+	        	<table id='kna1Table' class='comparedTable' style="border:1px solid #ccc;border-collapse:collapse;width:${kna1TableWidth}px">
+	        		<thead>
+	        			${kna1TableHeader}
+	        		</thead>
+	        		<tbody id='kna1Tbody'>
+	        		</tbody>
+	        	</table>
+	        </div>
+	    </div> 
+	    <div title="客户公司代码数据" style="height:400px">  
+	         <div style='width:100%;overflow:auto;height:100%'>
+	        	<table id='knb1Table' class='comparedTable' style="border:1px solid #ccc;border-collapse:collapse;width:${knb1TableWidth}px">
+	        		<thead>
+	        			${knb1TableHeader}
+	        		</thead>
+	        		<tbody id='knb1Tbody'>
+	        		</tbody>
+	        	</table>
+	        </div>
+	    </div> 
+	    <div title="客户销售数据" style="height:400px">  
+	        <div style='width:100%;overflow:auto;height:100%'>
+	        	<table id='knvvTable' class='comparedTable' style="border:1px solid #ccc;border-collapse:collapse;width:${knvvTableWidth}px">
+	        		<thead>
+	        			${knvvTableHeader}
+	        		</thead>
+	        		<tbody id='knvvTbody'>
+	        		</tbody>
+	        	</table>
+	        </div>
+	    </div>  
+	</div>
+</div>
+	<!-- div>
 		客户编号:<input type='text' id='kunnr'/>
 		公司代码:<input type='text' id='bukrs'/>
 		<br/>
@@ -68,7 +125,7 @@
 	        	</table>
 	        </div>
 	    </div>  
-	</div>
+	</div-->
 </form>
 </body>
 <script>
@@ -122,6 +179,17 @@ $(function(){
 		});
 	}
 	function initElEvent(){
+		$(".input3").focus(function(){
+			  $(this).attr('class','input3_onfocus');
+			  if($(this).val() ==this.defaultValue){  
+                  $(this).val("");           
+			  } 
+		}).blur(function(){
+			  $(this).attr('class','input3');
+			 if ($(this).val() == '') {
+                $(this).val(this.defaultValue);
+             }
+		});
 		$('.gridCheckboxAll').bind('click',function(e){
 			var checked = $(e.target).attr('checked');
 			var table = $(e.target).parents('.comparedTable');

@@ -3,6 +3,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<link href="${ctx}/css/sapgarden/base.css" rel="stylesheet" type="text/css" />
+<link href="${ctx}/css/sapgarden/garden.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/default/easyui.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/icon.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.jqgrid.css'/>">
@@ -17,11 +19,19 @@
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/easyui-lang-zh_CN.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/lhgdialog/lhgdialog.js'/>" type="text/javascript"></script>
+<!-- script src="<c:url value='/script/lhgdialog/lhgdialog.min.js?skin=default'/>" type="text/javascript"></script-->
+<script src="<c:url value='/script/lhgdialog/lhgdialog.js?skin=default'/>" type="text/javascript"></script>
 </head>
 <body>
 <form>
-	<input type='button' value='初始化' id='initData'/>
+<div class="toolbar">
+  <div class="prompt_message">慎重操作！本功能用来将SAP中的数据初始化到Garden系统中，初始化将清空已有的数据。</div>
+  <div class="toolbar_left"> 
+      <a href="#" class="btn" id='initData' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">开始初始化</a> 
+     <a href="#" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">导出数据</a>  
+     </div>
+</div>
+	<!-- input type='button' value='初始化' id='initData'/-->
 </form>
 </body>
 <script>

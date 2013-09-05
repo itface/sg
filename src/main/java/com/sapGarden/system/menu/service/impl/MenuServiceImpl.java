@@ -287,4 +287,66 @@ public class MenuServiceImpl implements MenuService{
 		}
 		return null;
 	}
+	@Override
+	public JSONArray getDataCollectionTreeByRoleId(long roleId) {
+		// TODO Auto-generated method stub
+		Role role = roleService.findRoleById(roleId);
+		if(role!=null){
+			Set<Resource> resources = role.getResources();
+			if(resources!=null){
+				List<Resource> resourceList = new LinkedList<Resource>();
+				resourceList.addAll(resources);
+				if(resourceList!=null&&resourceList.size()>0){
+					List<Menu> menuList = new LinkedList<Menu>();
+					this.dataCollectionExtTree(menuList,resourceList,null);
+					if(menuList.size()>0){
+						menuList.get(0).text=role.getRoleName();
+						JSONArray jsonArray = JSONArray.fromObject(menuList); 
+						return jsonArray;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	private void dataCollectionExtTree(List<Menu> menuList,List<Resource> resourceList,Menu father){
+		//如果father为空，说明是根节点，第一层菜单
+		if(father==null){
+			father = new Menu();
+			for(Resource resource : resourceList){
+				//循环找出父节点为根节点的节点
+				if(resource.getParentId()==0){
+					father.setId(resource.getId());
+					father.setText(resource.getResourceName());
+					father.setUrl(resource.getUrl());
+					//递归调用本方法，以当前节点为父节点，找出当前节点的子节点
+					this.dataCollectionExtTree(menuList,resourceList,father);
+					//只用添加根目录到menulist中就行，其它都是根目录的子节点，在根目录的children中
+					menuList.add(father);
+				}
+			}
+		}else{
+			//如果father不为空，说明不是根目录，都在根children中
+			List<Menu> sonList = new LinkedList<Menu>();
+			for(Resource resource : resourceList){
+				if(resource.getParentId()==father.getId()){
+					Menu son = new Menu();
+					son.setId(resource.getId());
+					son.setText(resource.getResourceName());
+					son.setUrl(resource.getUrl());
+					//递归，找出子节点的子节点
+					this.dataCollectionExtTree(menuList,resourceList,son);
+					sonList.add(son);
+				}
+			}
+			//如果有子节点，说明不是根结点，同时把子节点放到father中。否则说明是叶子节点，返回，是递归出口
+			if(sonList.size()>0){
+				father.setLeaf(false);
+				father.setChildren(sonList);
+			}else{
+				father.setLeaf(true);
+			}
+		}
+		
+	}
 }

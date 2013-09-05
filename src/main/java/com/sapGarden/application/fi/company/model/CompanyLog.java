@@ -7,24 +7,31 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import com.sapGarden.application.jco.commons.model.CommonLogModel;
-import com.sapGarden.system.org.model.User;
+import com.sapGarden.application.commons.log.model.CommonLogModel;
 @Entity
-@Table(name="bo_fin_company_log")
+@Table(name="company_log")
 public class CompanyLog extends CommonLogModel implements Serializable{
 
 	private static final long serialVersionUID = 8961653795826721700L;
 	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="seq_fin_company_log")
-	@SequenceGenerator(name="seq_fin_company_log",sequenceName="seq_fin_company_log",allocationSize=1)
+	@TableGenerator(name = "companylog_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
+	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
+	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
+	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
+	                pkColumnValue = "companylog_pk",//在持久化的表中，该生成策略所对应的主键
+	                initialValue = 100,             //默认主键值为50
+	                allocationSize = 1)           //每次主键值增加的大小
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "companylog_gen")
 	private long id;
 	private String comp_code;
 	private String comp_name;
@@ -48,24 +55,53 @@ public class CompanyLog extends CommonLogModel implements Serializable{
 	private String vat_reg_no_old;
 	private String company_old;
 	private String addr_no_old;
-	@Temporal(TemporalType.TIMESTAMP)
+	
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date opttime;
 	private String optuser;
 	private String opt;
 	private long optid;
 	private String optflag;
 	private String opttype;
+	@Length(max=1000)
 	private String optmsg;
 	private String processstatus;
 	private long sapclient;
+	
 	public CompanyLog(){
-		this.opttime = new Date();
-		if(SecurityContextHolder.getContext()!=null&&SecurityContextHolder.getContext().getAuthentication()!=null&&SecurityContextHolder.getContext().getAuthentication().getPrincipal()!=null){
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			this.sapclient=user.getCurrentSapDataCollection().getId();
+		
+	}
+	/*
+	[2.1]boolean型，计算(f ? 0 : 1); 
+	[2.2]byte,char,short型，计算(int); 
+	[2.3]long型，计算(int) (f ^ (f>>>32)); 
+	[2.4]float型，计算Float.floatToIntBits(afloat); 
+	[2.5]double型，计算Double.doubleToLongBits(adouble)得到一个long，再执行[2.3]; 
+	*/
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		int result = 17;
+		result = 37*result+(int) (id ^ (id>>>32));
+		//result = 37*result+(name==null?0:name.hashCode());
+		//result = 37*result+displayOrder;
+		//result = 37*result+(this.url==null?0:url.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(!(obj instanceof CompanyLog)){
+			return false;
+		}
+		CompanyLog obj2 = (CompanyLog)obj;
+		if(this.id>0){
+			return this.id==obj2.getId();
+		}else{
+			return false;
 		}
 	}
-	public CompanyLog(CompanyCompareDataModel compareDataModel){
+	public CompanyLog(CompanyCompareDataModel compareDataModel,long sapclient){
 		//CompanyCompareDataModel compareDataModel = (CompanyCompareDataModel)commonCompareDataModel;
 		if(compareDataModel!=null){
 			this.comp_code=compareDataModel.getComp_code_s();
@@ -94,12 +130,9 @@ public class CompanyLog extends CommonLogModel implements Serializable{
 			this.addr_no_old=compareDataModel.getAddr_no_g();
 			this.optid=compareDataModel.getDataid();
 		}
-		if(SecurityContextHolder.getContext()!=null&&SecurityContextHolder.getContext().getAuthentication()!=null&&SecurityContextHolder.getContext().getAuthentication().getPrincipal()!=null){
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			this.sapclient=user.getCurrentSapDataCollection().getId();
-		}
+		this.sapclient=sapclient;
 	}
-	public CompanyLog(Company company,Company oldCompany){
+	public CompanyLog(Company company,Company oldCompany,long sapclient){
 		this.opttime = new Date();
 		if(company!=null){
 			this.comp_code=company.getComp_code();
@@ -131,10 +164,7 @@ public class CompanyLog extends CommonLogModel implements Serializable{
 			this.addr_no_old=oldCompany.getAddr_no();
 			this.optid=oldCompany.getId();
 		}
-		if(SecurityContextHolder.getContext()!=null&&SecurityContextHolder.getContext().getAuthentication()!=null&&SecurityContextHolder.getContext().getAuthentication().getPrincipal()!=null){
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			this.sapclient=user.getCurrentSapDataCollection().getId();
-		}
+		this.sapclient=sapclient;
 	}
 	public long getId() {
 		return id;
@@ -208,6 +238,7 @@ public class CompanyLog extends CommonLogModel implements Serializable{
 	public void setAddr_no(String addr_no) {
 		this.addr_no = addr_no;
 	}
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getOpttime() {
 		return opttime;
 	}

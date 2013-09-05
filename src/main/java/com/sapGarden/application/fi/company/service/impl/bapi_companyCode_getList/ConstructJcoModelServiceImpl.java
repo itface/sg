@@ -6,14 +6,14 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
+import com.sapGarden.application.commons.jco.model.ExportModel;
+import com.sapGarden.application.commons.jco.model.ImportModel;
+import com.sapGarden.application.commons.jco.model.JcoModel;
+import com.sapGarden.application.commons.jco.model.TableExpModel;
+import com.sapGarden.application.commons.jco.model.TableImpModel;
+import com.sapGarden.application.commons.jco.service.ConstructJcoModelService;
 import com.sapGarden.application.fi.company.model.bapi_companyCode_getList.Export_return;
 import com.sapGarden.application.fi.company.model.bapi_companyCode_getList.TableExp_companycode_list;
-import com.sapGarden.application.jco.commons.model.ExportModel;
-import com.sapGarden.application.jco.commons.model.ImportModel;
-import com.sapGarden.application.jco.commons.model.JcoModel;
-import com.sapGarden.application.jco.commons.model.TableExpModel;
-import com.sapGarden.application.jco.commons.model.TableImpModel;
-import com.sapGarden.application.jco.commons.service.ConstructJcoModelService;
 @Service("bo_fin_company_getList_constructJcoModel_service")
 public class ConstructJcoModelServiceImpl implements ConstructJcoModelService{
 
