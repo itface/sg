@@ -12,6 +12,7 @@
 			if(this.contextPath!=null&&this.contextPath!=''&&this.baseUrl!=''){
 				this.baseUrl = this.contextPath+this.baseUrl;
 			}
+			this.pager = this.config.pager||'',
 			this.width = this.config.width||900;
 			this.autoWidth = this.config.autoWidth||false;
 			this.height = this.config.height||400;
@@ -134,11 +135,11 @@
 				   	shrinkToFit:false,//超出width出滚动条
 				   	forceFit:true,//调整列宽时，调整width总长度
 				   	//autoScroll: false,
-				   	pginput:false,
+				   
 				   	toppager: true,
 				    viewrecords:true,
 				    rownumbers:true,
-				    rownumWidth:40,
+				    rownumWidth:30,
 				    loadtext:'loading...',
 				    loadui:'block',
 				    sortable:true,
@@ -147,12 +148,14 @@
 				    	//alert(xhr.status);
 				    	//jQuery("#rsperror").html("Type: "+st+"; Response: "+ xhr.status + " "+xhr.statusText);
 				    },
-				    search:{groupOps: [ {op: "AND", text: "all"}]},
+				    //search:{groupOps: [ {op: "AND", text: "all"}]},
 				   	//sortname: 'opttime',
 				    //sortorder: "asc",
-				    //pager : "#tools",
+				    pager : this.pager,
 				    editurl:'',
-				    rowNum:'100000',//不分页
+					pginput:true,
+				    rowNum:100,//不分页
+				    rowList:[50,100,200],
 				    caption:this.caption,
 				    afterInsertRow: this.afterInsertRow,
 					ondblClickRow:function(rowid,iCol,cellcontent,e){
@@ -160,11 +163,17 @@
 				    	if(this.editable){
 				    		$('#'+this.id).jqGrid('editGridRow',rowid,this.updater);
 				    	}else{
-				    		$('#'+this.id).jqGrid('viewGridRow',rowid,{left:40,top:10,width:600});
+				    		//dataheight表示内容的高度，它的高度=总高度-标题西栏高度（33）-底部关闭按钮栏(62)-中间内容padding距离(上下各10)-底部边线border（1）
+				    		$('#'+this.id).jqGrid('viewGridRow',rowid,{
+				    			width:600,
+				    			height:400,
+				    			dataheight:(400-33-62-20-1)
+				    		});
 				    	}
 				    }
 			});
 			jQuery("#"+this.id).jqGrid('navGrid','',{edit:false,cloneToTop:true},{},this.adder,this.deleter,{multipleSearch:true, multipleGroup:false, showQuery: false});
+/*
 			var topPagerDiv = $("#"+this.id+"_toppager")[0];
 			$("#edit_"+this.id+"_top", topPagerDiv).remove();
 			$("#"+this.id+"_toppager_center", topPagerDiv).remove();
@@ -173,11 +182,31 @@
 			$("#search_"+this.id+"_top", topPagerDiv).remove();
 			$("#add_"+this.id+"_top", topPagerDiv).remove();
 			$("#del_"+this.id+"_top", topPagerDiv).remove();
-			$('.ui-jqgrid-titlebar-close.HeaderButton').remove();
-			$('#gbox_'+this.id).css('overflow','auto');
-			$('#'+this.id+'_toppager').css('width',this.width);
-			$('#gbox_'+this.id+' .ui-jqgrid-hdiv').css('width',this.width);
-			$('#gbox_'+this.id+' .ui-jqgrid-bdiv').css('width',this.width);
+*/
+			$("#"+this.id+"_toppager_left").empty();
+			if(this.pager!=null&&this.pager!=''){
+				//设置分页信息
+				$("#"+this.id+"_toppager_left").css('width',10);
+				$("#"+this.id+"_toppager_right .ui-paging-info").css("text-align","left");
+			}else{
+				$("#"+this.id+"_toppager_center").empty();
+				$("#"+this.id+"_toppager_right").empty();
+			}
+			{
+				//设置滚动条
+				$('.ui-jqgrid-titlebar-close.HeaderButton').remove();
+				$('#gbox_'+this.id).css('overflow','auto');
+				//标题行
+				$('#gbox_'+this.id+' .ui-jqgrid-titlebar').css('width',this.width);
+				//分页工具行，因为标题行的padding左右之和为17，所以要添加17
+				$('#'+this.id+'_toppager').css('width',this.width+17);
+				//子表head行，因为标题行的padding左右之和为17，所以要添加17
+				$('#gbox_'+this.id+' .ui-jqgrid-hdiv').css('width',this.width+17);
+				//子表内容行，因为标题行的padding左右之和为17，所以要添加17
+				$('#gbox_'+this.id+' .ui-jqgrid-bdiv').css('width',this.width+17);
+			}
+
+			
 			//*************初始化查询条件*****************
 			/*
 			var html = this._initSearchForm();

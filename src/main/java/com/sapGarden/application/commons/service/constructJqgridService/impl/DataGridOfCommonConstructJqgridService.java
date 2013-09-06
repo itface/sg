@@ -25,7 +25,7 @@ public class DataGridOfCommonConstructJqgridService implements CommonConstructJq
 		/**
 		 * 单例模式，每次要初始化，否则每调一次该方法，gridWidth都会double
 		 */
-		gridWidth = 300;
+		gridWidth = 200;
 		List<RuntimeColumnInfo> list = runtime_ColumnInfo_Service.findAllActiveData(sapDataCollection, type);
 		List<Jqgrid_columnModel> list2 = this.constructColumnModel(list);
 		Jqgrid_ConfigModel jqgrid_ConfigModel = new Jqgrid_ConfigModel("","",0,gridWidth,"","",false,false,false,this.costructColumnNames(list),list2);
@@ -57,7 +57,7 @@ public class DataGridOfCommonConstructJqgridService implements CommonConstructJq
 				Jqgrid_searchoptions searchoptions = null;
 				Jqgrid_columnModel jqgrid_columnModel = new Jqgrid_columnModel(name,index,width,true,false,editable,"",search,searchtype,searchoptions,null,null);
 				columnModelList.add(jqgrid_columnModel);
-				gridWidth+=200;
+				gridWidth+=150;
 			}
 		}
 		return columnModelList;

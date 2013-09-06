@@ -12,10 +12,11 @@ import com.sapGarden.application.fi.company.model.Company;
 
 public interface CompanyService extends CommonServiceWithLog<Company>{
 
+	public long findTotalNumByPage(SapDataCollection sapDataCollection,String companyCode);
+	public List<Company> findByPage(SapDataCollection sapDataCollection,String companyCode,int rows,int page);
 	public List<Company> find(SapDataCollection sapDataCollection);
 	public List<Company> findByCompanyCode(SapDataCollection sapDataCollection,String companyCode);
-	public JSONObject findJqgridDataByCompanyCode(SapDataCollection sapDataCollection,String companyCode);
-	public JSONObject findDataOfJqgrid(SapDataCollection sapDataCollection);
+	public JSONObject findDataOfJqgridByPage(SapDataCollection sapDataCollection,String companyCode,int rows,int page);
 	public void addList(List<Company> list);
 	public void add(Company company);
 	public void update(Company company);

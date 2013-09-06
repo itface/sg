@@ -26,7 +26,7 @@ public class MonitorGridOfCommonConstructJqgridService implements CommonConstruc
 		/**
 		 * 单例模式，每次要初始化，否则每调一次该方法，gridWidth都会double
 		 */
-		gridWidth = 200;
+		gridWidth = 250;
 		List<RuntimeColumnInfo> list = runtime_ColumnInfo_Service.findAllActiveData(sapDataCollection, type);
 		List<Jqgrid_columnModel> list2 = this.constructColumnModel(list);
 		Jqgrid_ConfigModel jqgrid_ConfigModel = new Jqgrid_ConfigModel("","",0,gridWidth,"","",true,false,false,this.costructColumnNames(list),list2);
@@ -41,9 +41,10 @@ public class MonitorGridOfCommonConstructJqgridService implements CommonConstruc
 			columnNames[1]="操作结果";
 			columnNames[2]="操作时间";
 			columnNames[3]="操作人";
-			columnNames[4]="异常信息";
-			columnNames[5]="操作";
-			columnNames[6]="操作类型";
+			columnNames[4]="操作";
+			columnNames[5]="操作类型";
+			columnNames[6]="异常信息";
+			
 			int count=7;
 			for(RuntimeColumnInfo runtimeColumnInfo : list){
 				columnNames[count++]=runtimeColumnInfo.getSourceColumnName();
@@ -57,19 +58,19 @@ public class MonitorGridOfCommonConstructJqgridService implements CommonConstruc
 		if(list!=null&&list.size()>0){
 			columnModelList=new LinkedList<Jqgrid_columnModel>();
 			Jqgrid_columnModel jqgrid_columnModel_1 = new Jqgrid_columnModel("id","id",100,true,true,false,"",false,"text",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_2 = new Jqgrid_columnModel("optflag","optflag",100,true,false,false,"date",true,"date",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_3 = new Jqgrid_columnModel("opttime","opttime",150,true,false,false,"date",true,"date",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_4 = new Jqgrid_columnModel("optuser","optuser",100,true,false,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_2 = new Jqgrid_columnModel("optflag","optflag",70,true,false,false,"date",true,"date",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_3 = new Jqgrid_columnModel("opttime","opttime",120,true,false,false,"date",true,"date",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_4 = new Jqgrid_columnModel("optuser","optuser",70,true,false,false,"",false,"text",null,null,null);
 			Jqgrid_columnModel jqgrid_columnModel_5 = new Jqgrid_columnModel("optmsg","optmsg",200,true,false,false,"",false,"text",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_6 = new Jqgrid_columnModel("opt","opt",100,true,false,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_6 = new Jqgrid_columnModel("opt","opt",70,true,false,false,"",false,"text",null,null,null);
 			Jqgrid_columnModel jqgrid_columnModel_7 = new Jqgrid_columnModel("opttype","opttype",100,true,false,false,"",false,"text",null,null,null);
 			columnModelList.add(jqgrid_columnModel_1);
 			columnModelList.add(jqgrid_columnModel_2);
 			columnModelList.add(jqgrid_columnModel_3);
 			columnModelList.add(jqgrid_columnModel_4);
-			columnModelList.add(jqgrid_columnModel_5);
 			columnModelList.add(jqgrid_columnModel_6);
 			columnModelList.add(jqgrid_columnModel_7);
+			columnModelList.add(jqgrid_columnModel_5);
 			gridWidth+=100+100+150+100+200+100+100;
 			for(RuntimeColumnInfo runtimeColumnInfo : list){
 				String name = runtimeColumnInfo.getSourceColumn().toLowerCase();

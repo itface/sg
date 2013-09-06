@@ -12,7 +12,7 @@ public class JsonUtils {
 	public static JSONObject objectToJSONObject(Object obj,String[] excludes){
 		if (obj != null) {
 			JsonConfig cfg = new JsonConfig();
-			cfg.registerJsonValueProcessor(java.util.Date.class,
+			cfg.registerJsonValueProcessor(Date.class,
 					new JsonValueProcessor() {
 						private final String format = "yyyy-MM-dd HH:mm:ss";
 						public Object processObjectValue(String key,Object value, JsonConfig arg2) {
@@ -22,10 +22,22 @@ public class JsonUtils {
 								String str = new SimpleDateFormat(format).format((Date) value);
 								return str;
 							}
-							return value.toString();
+							return value;
 						}
 						public Object processArrayValue(Object value,JsonConfig arg1) {
-							return null;
+							return value;
+						}
+					}
+			);
+			cfg.registerJsonValueProcessor(Object.class,
+					new JsonValueProcessor() {
+						public Object processObjectValue(String key,Object value, JsonConfig arg2) {
+							if (value == null)
+								return "";
+							return value;
+						}
+						public Object processArrayValue(Object value,JsonConfig arg1) {
+							return value;
 						}
 					}
 			);
@@ -33,11 +45,13 @@ public class JsonUtils {
 				cfg.setExcludes(excludes);
 			}
 			JSONObject jsonObject = JSONObject.fromObject(obj,cfg);
+			return jsonObject;
+			/*
 			if (jsonObject != null) {				
 				String jsonString = jsonObject.toString().replaceAll("null","\"\"");
 				jsonObject = JSONObject.fromObject(jsonString);
 				return jsonObject;
-			}
+			}*/
 		}
 		return null;
 	}

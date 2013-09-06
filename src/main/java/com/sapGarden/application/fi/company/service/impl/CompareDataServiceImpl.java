@@ -149,12 +149,14 @@ public class CompareDataServiceImpl implements CompareDataService{
 					}
 				}else{
 					//如果sap公司代码不为空，本系统的sap代码也不为空，则把本系统中的该公司记录删除，同时把sap的公司代码同步到本地						
-					Company company = new Company(comp_code_s,compareDataModel.getComp_name_s(),compareDataModel.getCity_s(),compareDataModel.getCountry_s(),compareDataModel.getCurrency_s(),compareDataModel.getLangu_s(),compareDataModel.getChrt_accts_s(),compareDataModel.getFy_variant_s(),compareDataModel.getVat_reg_no_s(),compareDataModel.getCompany_s(),compareDataModel.getAddr_no_s(),sapclient);
-					company.setId(compareDataModel.getDataid());
+					Company scompany = new Company(comp_code_s,compareDataModel.getComp_name_s(),compareDataModel.getCity_s(),compareDataModel.getCountry_s(),compareDataModel.getCurrency_s(),compareDataModel.getLangu_s(),compareDataModel.getChrt_accts_s(),compareDataModel.getFy_variant_s(),compareDataModel.getVat_reg_no_s(),compareDataModel.getCompany_s(),compareDataModel.getAddr_no_s(),sapclient);
+					scompany.setId(compareDataModel.getDataid());
 					if(ifLog){
-						companyService.updateWithLog(opttype, sapclient, user, Company.class, CompanyLog.class, company);
+						Company gcompany = new Company(comp_code_g,compareDataModel.getComp_name_g(),compareDataModel.getCity_g(),compareDataModel.getCountry_g(),compareDataModel.getCurrency_g(),compareDataModel.getLangu_g(),compareDataModel.getChrt_accts_g(),compareDataModel.getFy_variant_g(),compareDataModel.getVat_reg_no_g(),compareDataModel.getCompany_g(),compareDataModel.getAddr_no_g(),sapclient);
+						gcompany.setId(compareDataModel.getDataid());
+						companyService.updateWithLog(opttype, sapclient, user, Company.class, CompanyLog.class,scompany,gcompany);
 					}else{
-						companyService.update(company);
+						companyService.update(scompany);
 					}
 				}
 			}

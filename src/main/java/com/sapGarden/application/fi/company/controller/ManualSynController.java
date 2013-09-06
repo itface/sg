@@ -51,7 +51,7 @@ public class ManualSynController {
 	public @ResponseBody Object syn(String kunnr) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		synService.syn(user.getCurrentSapDataCollection(), CommonServiceWithLog.OPTTYPE_MANUALSYN, user.getUsername(), true);
-		return companyService.findDataOfJqgrid(user.getCurrentSapDataCollection());
+		return companyService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),null,10000,1);
 	}
 	
 	

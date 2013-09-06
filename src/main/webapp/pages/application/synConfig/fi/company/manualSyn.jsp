@@ -16,14 +16,17 @@
 <script src="<c:url value='/script/jqgrid/grid.locale-cn.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/jquery.jqGrid.src.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid_extend.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/commons.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_common.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_custom.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/extendJqgrid.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/easyui-lang-zh_CN.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/blockUI/blockUI.js'/>" type="text/javascript"></script>
+<style>
+.fm-button-icon-left{
+	display:none;
+}
+</style>
 </head>
 <body>
 <form>
@@ -48,8 +51,15 @@ $(function(){
 	}
 	function dynamicGrid(){
 		var resultGridOptions=${resultGridOptions};
-		$.extend(resultGridOptions,{contextPath:"${ctx}",autoWidth:true,id:"resultGrid",height:$(window).height()-200});
-		new customGrid(resultGridOptions);
+		$.extend(resultGridOptions,{
+				contextPath:"${ctx}",
+				autoWidth:true,
+				id:"resultGrid",
+				height:$(window).height()-200,
+			}
+		);
+		//new customGrid(resultGridOptions);
+		$("#resultGrid").extendJqgrid(resultGridOptions);
 	}
 	function initElEvent(){
 		$(".input1").focus(function(){

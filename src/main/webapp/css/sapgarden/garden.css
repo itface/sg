@@ -178,7 +178,7 @@ a.btn_mousedown {
 }
 .input1 {
 	border:1px solid #d8d8d8;
-	width:90px;
+	width:70px;
 	height:26px;
 	padding:0px 10px;
 	float:left;
@@ -187,7 +187,7 @@ a.btn_mousedown {
 }
 .input1_onfocus {
 	border:1px solid #9b9b9b;
-	width:90px;
+	width:70px;
 	height:26px;
 	padding:0px 10px;
 	float:left;

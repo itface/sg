@@ -12,11 +12,15 @@
 <script src="<c:url value='/script/jqgrid/grid.locale-cn.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/jquery.jqGrid.src.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid_extend.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/commons.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_custom.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/extendJqgrid.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/blockUI/blockUI.js'/>" type="text/javascript"></script>
+<style>
+.fm-button-icon-left{
+	display:none;
+}
+</style>
 </head>
 <body>
 <form>
@@ -54,24 +58,27 @@ $(function(){
 				autoWidth:true,
 				caption:'对比结果',
 				id:"compareDataGrid", 
-				afterInsertRow: function(rowid,rowdata,rowelem){
-					for(v in rowdata){
-						if(v.indexOf('_s')==(v.length-'_s'.length)){
-							var _g = v.substring(0,v.indexOf('_s'))+"_g";
-							if(rowdata[v]!=rowdata[_g]){
-								$('#compareDataGrid').setCell (rowid,v,rowdata[v],{background:"red"});
-							}
-						}else if(v.indexOf('_g')==(v.length-'_g'.length)){
-							var _s = v.substring(0,v.indexOf('_g'))+"_s";
-							if(rowdata[v]!=rowdata[_s]){
-								$('#compareDataGrid').setCell (rowid,v,rowdata[v],{background:"red"});
+				eventModels:{
+					afterInsertRow: function(rowid,rowdata,rowelem){
+						for(v in rowdata){
+							if(v.indexOf('_s')==(v.length-'_s'.length)){
+								var _g = v.substring(0,v.indexOf('_s'))+"_g";
+								if(rowdata[v]!=rowdata[_g]){
+									$('#compareDataGrid').setCell (rowid,v,rowdata[v],{background:"red"});
+								}
+							}else if(v.indexOf('_g')==(v.length-'_g'.length)){
+								var _s = v.substring(0,v.indexOf('_g'))+"_s";
+								if(rowdata[v]!=rowdata[_s]){
+									$('#compareDataGrid').setCell (rowid,v,rowdata[v],{background:"red"});
+								}
 							}
 						}
 					}
 				}
 			});
 		}
-		new customGrid(compareDataGridOptions);
+		//new customGrid(compareDataGridOptions);
+		$("#compareDataGrid").extendJqgrid(compareDataGridOptions);
 	}
 	function showCompareResult(totalSapNum,totalGardenNum,onlySapNum,onlyGardenNum,differenceNum,sameNum){
 		var s = "数据校对完成。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。SAP有Garden无的数据有"+onlySapNum+"条，Garden有SAP无的数据有"+onlyGardenNum+"条。完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";

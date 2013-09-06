@@ -12,11 +12,15 @@
 <script src="<c:url value='/script/jqgrid/grid.locale-cn.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/jquery.jqGrid.src.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid_extend.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/commons.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_custom.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/extendJqgrid.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/blockUI/blockUI.js'/>" type="text/javascript"></script>
+<style>
+.fm-button-icon-left{
+	display:none;
+}
+</style>
 </head>
 <body>
 <form>
@@ -46,9 +50,17 @@ $(function(){
 	function dynamicGrid(){
 		var dataGridOptions=${dataGridOptions};
 		if(dataGridOptions!=null){
-			$.extend(dataGridOptions,{contextPath:"${ctx}",height:$(window).height()-220,autoWidth:true,id:"dataGrid",caption:'公司代码'});
+			$.extend(dataGridOptions,{
+				contextPath:"${ctx}",
+				height:$(window).height()-220,
+				autoWidth:true,
+				id:"dataGrid",
+				caption:'公司代码',
+				pager:"#tbar"
+			});
 		}
-		new customGrid(dataGridOptions);
+		//new customGrid(dataGridOptions);
+		$("#dataGrid").extendJqgrid(dataGridOptions);
 	}
 	function initEvent(){
 		$(".input1").focus(function(){
@@ -63,11 +75,16 @@ $(function(){
              }
 		});
 		$('#queryBtn').bind('click',function(e){
-			$(window).blockUI();
 			var gsdm = $("#companyCode").val();
 			if(gsdm=='公司代码'){
 				gsdm='';
 			}
+			var url = '${ctx}/application/fi/company/runtimeData/findJqgridData';
+			jQuery('#dataGrid').jqGrid('setGridParam',{url:url,page:1});
+			var postdata=jQuery('#dataGrid').jqGrid('getGridParam','postData');
+			$.extend(postdata, {companyCode:gsdm});
+			jQuery("#dataGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
+			/*
 			$.ajax({
 				url:'${ctx}/application/fi/company/runtimeData/findJqgridData',
 				type: "GET",
@@ -89,7 +106,7 @@ $(function(){
 					alert('查询失败');
 					$(window).blockUI('remove');
 				}
-			});
+			});*/
 		});
 	}
 

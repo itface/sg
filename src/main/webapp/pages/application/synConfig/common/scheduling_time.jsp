@@ -50,11 +50,11 @@ a{ font-size:12px; text-decoration:none}
 <body style="overflow:hidden">
 <form  id='schedulingForm'>
 <div class="biangeng">
-  <div class="biangeng_main">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <div class="biangeng_main" style="height:160px">
+    <table width="100%"  border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td align="left"  class="alert_right_bold">当前运行状态：</td>
-        <td colspan="2">${currentStatus}</td>
+        <td width="400">${currentStatus}</td>
       </tr>
       <tr>
         <td align="left" class="alert_right_bold">变更运行状态：</td>
@@ -62,7 +62,7 @@ a{ font-size:12px; text-decoration:none}
         	<input type="checkbox" id="runstatus"/>&nbsp;启动运行
 		</td>
       </tr>
-      <tr>
+      <tr class='runStatusRow'>
         <td align="left" class="alert_right_bold" >定时同步，设定起始时间：</td>
         <td>
         	<div class="schedule">
@@ -113,9 +113,9 @@ a{ font-size:12px; text-decoration:none}
 			</div>
         </td>
       </tr>
-      <tr>
+      <tr class='runStatusRow'>
         <td align="left" class="alert_right_bold">间隔时间：</td>
-        <td width="400">
+        <td >
         	<form:input path='job.intervalminute' class="input2"/><div style="float:left;line-height:30px;color:#747373">分钟</div>    
         </td>
       </tr>
@@ -162,15 +162,21 @@ $(document).ready(function(){
 	}
 	function setFomrDisabled(){
 		if($('#runstatus').attr("checked")=="checked"){
+			$('.runStatusRow').show();
+			/*
 			$('#intervalminute').attr("disabled",false);
 			$('#begindate').attr("disabled",false);
 			$('#beginhour').attr("disabled",false);
 			$('#beginminute').attr("disabled",false);
+			*/
 		}else{
+			$('.runStatusRow').hide();
+			/*
 			$('#intervalminute').attr("disabled",true);
 			$('#begindate').attr("disabled",true);
 			$('#beginhour').attr("disabled",true);
 			$('#beginminute').attr("disabled",true);
+			*/
 		}
 	}
 	function initEvent(){

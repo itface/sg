@@ -1,5 +1,6 @@
 package com.sapGarden.application.fi.company.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -25,9 +26,35 @@ public class CompanyServiceImpl implements CompanyService{
 	@Autowired
 	private BaseDao<Company> dao;
 	@Override
+	public long findTotalNumByPage(SapDataCollection sapDataCollection,String companyCode) {
+		StringBuffer sql = new StringBuffer("select count(*) as nums from Company t where t.sapclient=?1");
+		List list = new ArrayList();
+		list.add(sapDataCollection.getId());
+		int index =2;
+		if(companyCode!=null&&!"".equals(companyCode)){
+			sql.append(" and t.comp_code=?"+(index++));
+			list.add(companyCode);
+		}
+		return dao.findTotalCount(sql.toString(), list.toArray());
+	}
+	@Override
 	public List<Company> find(SapDataCollection sapDataCollection) {
 		// TODO Auto-generated method stub
 		return dao.find("from Company t where t.sapclient=?1",new Object[]{sapDataCollection.getId()});
+	}
+	@Override
+	public List<Company> findByPage(SapDataCollection sapDataCollection,String companyCode, int rows, int page) {
+		// TODO Auto-generated method stub
+		StringBuffer sql = new StringBuffer("from Company t where t.sapclient=?1");
+		List list = new ArrayList();
+		list.add(sapDataCollection.getId());
+		int index =2;
+		if(companyCode!=null&&!"".equals(companyCode)){
+			sql.append(" and t.comp_code=?"+(index++));
+			list.add(companyCode);
+		}
+		sql.append(" order by t.comp_code asc");
+		return dao.findByPage(sql.toString(), list.toArray(),page,rows);
 	}
 	@Override
 	public List<Company> findByCompanyCode(SapDataCollection sapDataCollection,String companyCode) {
@@ -35,27 +62,18 @@ public class CompanyServiceImpl implements CompanyService{
 		return dao.find("from Company t where t.sapclient=?1 and t.comp_code like ?2",new Object[]{sapDataCollection.getId(),"%"+companyCode==null?"":companyCode+"%"});
 	}
 	@Override
-	public JSONObject findJqgridDataByCompanyCode(SapDataCollection sapDataCollection, String companyCode) {
+	public JSONObject findDataOfJqgridByPage(SapDataCollection sapDataCollection,String companyCode,int rows,int page){
 		// TODO Auto-generated method stub
-		List<Company> list = this.findByCompanyCode(sapDataCollection, companyCode);
+		List<Company> list = this.findByPage(sapDataCollection, companyCode,rows,page);
 		if(list!=null){
-			Jqgrid_DataJson jsonData = new Jqgrid_DataJson(0,0,0,list);
+			long total = this.findTotalNumByPage(sapDataCollection, companyCode);
+			Jqgrid_DataJson jsonData = new Jqgrid_DataJson(page,rows,total,list);
 			JSONObject jsonObject = JSONObject.fromObject(jsonData);
 			return jsonObject;
 		}
 		return null;
 	}
-	@Override
-	public JSONObject findDataOfJqgrid(SapDataCollection sapDataCollection) {
-		// TODO Auto-generated method stub
-		List<Company> list = this.find(sapDataCollection);
-		if(list!=null&&list.size()>0){
-			Jqgrid_DataJson jsonData = new Jqgrid_DataJson(0,0,0,list);
-			JSONObject jsonObject = JsonUtils.objectToJSONObject(jsonData,null);
-			return jsonObject;
-		}
-		return null;
-	}
+
 	
 	@Override
 	@Transactional
@@ -101,7 +119,7 @@ public class CompanyServiceImpl implements CompanyService{
 
 	@Override
 	@Transactional
-	public void updateWithLog(String opttype, long sapclient, String user,Class<Company> modelClass, Class<? extends CommonLogModel> logModelClass,Company t) {
+	public void updateWithLog(String opttype, long sapclient, String user,Class<Company> modelClass, Class<? extends CommonLogModel> logModelClass,Company t,Company oldt) {
 		// TODO Auto-generated method stub
 		dao.update(t);
 	}
@@ -112,6 +130,7 @@ public class CompanyServiceImpl implements CompanyService{
 		// TODO Auto-generated method stub
 		dao.deleteById(Company.class, t.getId());
 	}
+	
 	
 
 	

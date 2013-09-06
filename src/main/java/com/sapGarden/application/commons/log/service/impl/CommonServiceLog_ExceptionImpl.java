@@ -30,20 +30,20 @@ public class CommonServiceLog_ExceptionImpl{
 		String optflag = CommonServiceWithLog.OPTFLAG_FAIL;
 		if(object!=null){
 			Object logObj = logModelClass.getConstructor().newInstance();
-			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
-			initCommonLogModelMethod.invoke(logObj, new Object[]{object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
+			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
+			initCommonLogModelMethod.invoke(logObj, new Object[]{object,null,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
 			logDaoService.add(logObj);
 		}
 	}
-	@AfterThrowing(value="execution(* com.sapGarden.application.commons.log.service.CommonServiceWithLog.updateWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object)",argNames= "exception,opttype,sapclient,user,modelClass,logModelClass,object",throwing = "exception")
-	public void update_afterThrowingAdvice(Throwable exception,String opttype,long sapclient,String user,Class modelClass,Class logModelClass,Object object) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	@AfterThrowing(value="execution(* com.sapGarden.application.commons.log.service.CommonServiceWithLog.updateWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object,oldObject)",argNames= "exception,opttype,sapclient,user,modelClass,logModelClass,object,oldObject",throwing = "exception")
+	public void update_afterThrowingAdvice(Throwable exception,String opttype,long sapclient,String user,Class modelClass,Class logModelClass,Object object,Object oldObject) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		String msg = exception.toString();
 		String opt = CommonServiceWithLog.OPT_UPDATE;
 		String optflag = CommonServiceWithLog.OPTFLAG_FAIL;
 		if(object!=null){
 			Object logObj = logModelClass.getConstructor().newInstance();
-			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
-			initCommonLogModelMethod.invoke(logObj, new Object[]{object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
+			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
+			initCommonLogModelMethod.invoke(logObj, new Object[]{object,oldObject,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
 			logDaoService.add(logObj);
 		}
 	}
@@ -53,8 +53,8 @@ public class CommonServiceLog_ExceptionImpl{
 		String opt = CommonServiceWithLog.OPT_DELETE;
 		String optflag = CommonServiceWithLog.OPTFLAG_FAIL;
 		Object logObj = logModelClass.getConstructor().newInstance();
-		Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
-		initCommonLogModelMethod.invoke(logObj, new Object[]{object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
+		Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
+		initCommonLogModelMethod.invoke(logObj,new Object[]{null,object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
 		logDaoService.add(logObj);
 	}
 	/*

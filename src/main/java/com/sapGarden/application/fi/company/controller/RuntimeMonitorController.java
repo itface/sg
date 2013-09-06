@@ -57,9 +57,9 @@ public class RuntimeMonitorController {
 		return new ModelAndView("/application/synConfig/fi/company/runtimeMonitor",map);
 	}
 	@RequestMapping(value="/findLog")
-	public @ResponseBody Object findLog(String companyCode,String optflag,String bdate,String edate){
+	public @ResponseBody Object findLog(String companyCode,String optflag,String bdate,String edate,int rows,int page){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = companyLogService.findJqgridData(user.getCurrentSapDataCollection(), companyCode, optflag, bdate, edate);
+		JSONObject json = companyLogService.findJqgridData(user.getCurrentSapDataCollection(), companyCode, optflag, bdate, edate,rows,page);
 		return json;
 	}
 }

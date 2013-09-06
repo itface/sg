@@ -12,23 +12,27 @@
 <script src="<c:url value='/script/jquery-1.7.2.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/grid.locale-cn.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/jquery.jqGrid.src.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_extend.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_common.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/commons.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/extendJqgrid.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/easyui-lang-zh_CN.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/lhgdialog/lhgdialog.js?skin=default'/>" type="text/javascript"></script>
 <style>
-
+.toolbar_text {
+	font-family:微软雅黑;
+	font-size:12px;
+	line-height:30px;
+	float:left;
+	padding:0px 5px;
+	font-weight:bold;
+}
 </style>
 </head>
 <body>
 <div class="toolbar">
   <div class="prompt_message">关键功能：本功能设置当前数据和SAP同步的方式，以及同步的内容。根据业务需要非关键字段可以不同步，但建议全部同步。</div>
   <div class="toolbar_left" style="float:none">
-  		<div class="toolbar_text">当前运行状态：${jobMemo}</div>
+  		<div style="font-family:微软雅黑;font-size:12px;line-height:30px;float:left;padding:0px 5px;font-weight:bold;">当前运行状态：${jobMemo}</div>
 	   <div style='float:right'><a href="#" style="margin-right:0px" class="btn"  onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" onclick="zwyd();">变更运行状态</a></div> 
    </div>
 </div>
@@ -71,7 +75,6 @@ $(function(){
 			height:300,
 			width:900,
 			autoWidth:true,
-			pager:'#pager',
 			editable:true,
 			datatype:'json',
 			multiselect:true,
@@ -80,7 +83,7 @@ $(function(){
 			del:false,
 			refresh:false,
 			editable:false,
-			eventModel:{
+			eventModels:{
 			    gridComplete:function(){
 			    	var rowData= jQuery("#list").jqGrid('getRowData');
 			    	//var numberOfRecords  = jQuery("#list").jqGrid('getGridParam',"records");
@@ -148,7 +151,8 @@ $(function(){
 		   	],
 			baseUrl:basePath
 		};
-		new commonGrid(config);
+		//new commonGrid(config);
+		$("#list").extendJqgrid(config);
 		$("#jqgh_list_cb").append("<div><span>同步状态</span></div>");
 	}
 });

@@ -12,7 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public  class CommonLogModel {
 	
-	public  void initCommonLogModel(Object obj,Class modelClass,Class logClass,long sapclient,String optmsg,String opt,String optflag,String opttype,String optuser,Date opttime) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException{
+	public  void initCommonLogModel(Object obj,Object oldObj,Class modelClass,Class logClass,long sapclient,String optmsg,String opt,String optflag,String opttype,String optuser,Date opttime) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException{
 		Field[] fields = modelClass.getDeclaredFields();
 		Method method = logClass.getMethod("setSapclient", new Class[]{long.class});
 		method.invoke(this, new Object[]{sapclient});
@@ -29,10 +29,6 @@ public  class CommonLogModel {
 		method = logClass.getMethod("setOptflag", new Class[]{String.class});
 		method.invoke(this, new Object[]{optflag});
 		if(obj!=null){
-			method = modelClass.getMethod("getId", new Class[]{});
-			Object id = method.invoke(obj, new Object[]{});
-			method = logClass.getMethod("setOptid", new Class[]{long.class});
-			method.invoke(this, new Object[]{id});
 			for(int j=0;j<fields.length;j++){
 				String name = fields[j].getName();
 				if(!name.equals("serialVersionUID")&&!name.equals("id")&&!name.equals("sapclient")&&!name.equals("garden_flag")){
@@ -41,6 +37,24 @@ public  class CommonLogModel {
 					Method getMethod = modelClass.getMethod(getMethodName, new Class[]{});
 					Object value = getMethod.invoke(obj, new Object[]{});
 					String methodName = "set"+name.substring(0, 1).toUpperCase()+name.substring(1);
+					method = logClass.getMethod(methodName, new Class[]{fieldType});
+					method.invoke(this, new Object[]{value});
+				}
+			}
+		}
+		if(oldObj!=null){
+			method = modelClass.getMethod("getId", new Class[]{});
+			Object id = method.invoke(oldObj, new Object[]{});
+			method = logClass.getMethod("setOptid", new Class[]{long.class});
+			method.invoke(this, new Object[]{id});
+			for(int j=0;j<fields.length;j++){
+				String name = fields[j].getName();
+				if(!name.equals("serialVersionUID")&&!name.equals("id")&&!name.equals("sapclient")&&!name.equals("garden_flag")){
+					Class fieldType = fields[j].getType();
+					String getMethodName = "get"+name.substring(0, 1).toUpperCase()+name.substring(1);
+					Method getMethod = modelClass.getMethod(getMethodName, new Class[]{});
+					Object value = getMethod.invoke(oldObj, new Object[]{});
+					String methodName = "set"+name.substring(0, 1).toUpperCase()+name.substring(1)+"_old";
 					method = logClass.getMethod(methodName, new Class[]{fieldType});
 					method.invoke(this, new Object[]{value});
 				}

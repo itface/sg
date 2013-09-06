@@ -12,11 +12,14 @@
 <script src="<c:url value='/script/jqgrid/grid.locale-cn.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/jquery.jqGrid.src.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid_extend.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/commons.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_custom.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/extendJqgrid.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/blockUI/blockUI.js'/>" type="text/javascript"></script>
+<style>
+.fm-button-icon-left{
+	display:none;
+}
+</style>
 </head>
 <body>
 <form>
@@ -27,7 +30,7 @@
 	  </div>
 	  <div class="toolbar_right">
 	      <input type="text" class="input1" id="bdate"   onclick="WdatePicker()" value="${bdate}">
-	      <span style='float:left;margin-right:5px' id='dataSpan'>-</span>
+	      <span style='float:left;margin-right:5px;line-height:25px' id='dataSpan'>-</span>
 	      <input type="text" class="input1" id="edate" onclick="WdatePicker()" value="${edate}">
 	    <input type="text"  class="input1" id="companyCode" value="公司代码">
 	    <span style="float:left;padding:5px"><input type="checkbox" id="errorLog">&nbsp;仅异常日志</span>
@@ -59,12 +62,23 @@ $(function(){
 				contextPath:"${ctx}",
 				autoWidth:true,
 				id:"monitorGrid",
-				height:$(window).height()-200,
-				multiselect:false
+				height:$(window).height()-220,
+				multiselect:false,
+				caption:'运行监控',
+				pager:"#monitorGridTbar",
+				eventModels:{
+					loadComplete: function(){
+						$("#monitorGrid [aria-describedby='monitorGrid_optflag']").each(function(i,v){
+							var value = $(v).attr('title')=='S'?'操作成功':'操作失败';
+							$(v).attr('title',value);
+							$(v).html(value);
+						});
+					}
+				}
 			});
 		}
-		new customGrid(monitorGridOptions);
-
+		//new customGrid(monitorGridOptions);
+		$("#monitorGrid").extendJqgrid(monitorGridOptions);
 	}
 	function initElEvent(){
 		$(".input1").focus(function(){
@@ -79,12 +93,15 @@ $(function(){
              }
 		});
 		$(".queryLogBtn").bind('click',function(e){
-			$(window).blockUI();
+			//$(window).blockUI();
 			var bdate = '';
 			var edate = '';
 			var companyCode = '';
 			var errorLog = '';
 			var id = $(e.target).attr('id');
+			var url = '${ctx}/application/fi/company/runtimeMonitor/findLog';
+			jQuery('#monitorGrid').jqGrid('setGridParam',{url:url,page:1});
+			var postdata=jQuery('#monitorGrid').jqGrid('getGridParam','postData');
 			if(id=='queryLogOfCommon'){
 				bdate = $("#bdate").val();
 				edate = $("#edate").val();
@@ -103,6 +120,10 @@ $(function(){
 				companyCode = '';
 				jQuery("#monitorGrid").jqGrid('setCaption',"一周内日志");
 			}
+			$.extend(postdata, {bdate:bdate,edate:edate,companyCode:companyCode,optflag:errorLog});
+			jQuery("#monitorGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
+			//$(window).blockUI('remove');
+			/*
 			$.ajax({
 				data:{bdate:bdate,edate:edate,companyCode:companyCode,optflag:errorLog},
 				url:'${ctx}/application/fi/company/runtimeMonitor/findLog',
@@ -123,6 +144,7 @@ $(function(){
 					$(window).blockUI('remove');
 				}
 			});
+			*/
 		});
 	}
 });

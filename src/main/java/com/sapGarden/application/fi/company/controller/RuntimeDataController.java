@@ -36,9 +36,9 @@ public class RuntimeDataController {
 		return new ModelAndView("/application/synConfig/fi/company/runtimeData",map);
 	}
 	@RequestMapping(value="/findJqgridData")
-	public @ResponseBody Object findJqgridData(String companyCode){
+	public @ResponseBody Object findJqgridData(String companyCode,int rows,int page){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = companyService.findJqgridDataByCompanyCode(user.getCurrentSapDataCollection(), companyCode);
+		JSONObject json = companyService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), companyCode,rows,page);
 		return json;
 	}
 }

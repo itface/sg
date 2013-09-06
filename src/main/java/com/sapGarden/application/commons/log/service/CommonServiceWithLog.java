@@ -29,6 +29,6 @@ public interface CommonServiceWithLog<T> {
 	
 	
 	public void addWithLog(String opttype,long sapclient,String user,Class<T> modelClass,Class<? extends CommonLogModel> logModelClass,T t);
-	public void updateWithLog(String opttype,long sapclient,String user,Class<T> modelClass,Class<? extends CommonLogModel> logModelClass,T t);
+	public void updateWithLog(String opttype,long sapclient,String user,Class<T> modelClass,Class<? extends CommonLogModel> logModelClass,T t,T oldt);
 	public void deleteWithLog(String opttype,long sapclient,String user,Class<T> modelClass,Class<? extends CommonLogModel> logModelClass,T t);
 }

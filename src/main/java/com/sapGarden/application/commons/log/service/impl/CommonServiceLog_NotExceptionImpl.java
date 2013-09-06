@@ -30,20 +30,20 @@ public class CommonServiceLog_NotExceptionImpl{
 		String optflag = CommonServiceWithLog.OPTFLAG_SUCCESS;
 		if(object!=null){
 			Object logObj = logModelClass.getConstructor().newInstance();
-			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
-			initCommonLogModelMethod.invoke(logObj, new Object[]{object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
+			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
+			initCommonLogModelMethod.invoke(logObj, new Object[]{object,null,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
 			logDaoService.add(logObj);
 		}
 	}
-	@AfterReturning(value="execution(* com.sapGarden.application.commons.log.service.CommonServiceWithLog.updateWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object)",argNames= "opttype,sapclient,user,modelClass,logModelClass,object")
-	public void updateAfter_Advice(String opttype,long sapclient,String user,Class modelClass,Class logModelClass,Object object) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+	@AfterReturning(value="execution(* com.sapGarden.application.commons.log.service.CommonServiceWithLog.updateWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object,oldObject)",argNames= "opttype,sapclient,user,modelClass,logModelClass,object,oldObject")
+	public void updateAfter_Advice(String opttype,long sapclient,String user,Class modelClass,Class logModelClass,Object object,Object oldObject) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		String msg = "";
 		String opt = CommonServiceWithLog.OPT_UPDATE;
 		String optflag = CommonServiceWithLog.OPTFLAG_SUCCESS;
 		if(object!=null){
 			Object logObj = logModelClass.getConstructor().newInstance();
-			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
-			initCommonLogModelMethod.invoke(logObj, new Object[]{object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
+			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
+			initCommonLogModelMethod.invoke(logObj, new Object[]{object,oldObject,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
 			logDaoService.add(logObj);
 		}
 	}
@@ -54,8 +54,8 @@ public class CommonServiceLog_NotExceptionImpl{
 		String optflag = CommonServiceWithLog.OPTFLAG_SUCCESS;
 		if(object!=null){
 			Object logObj = logModelClass.getConstructor().newInstance();
-			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
-			initCommonLogModelMethod.invoke(logObj, new Object[]{object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
+			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
+			initCommonLogModelMethod.invoke(logObj, new Object[]{null,object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
 			logDaoService.add(logObj);
 		}
 	}

@@ -13,14 +13,10 @@
 <script src="<c:url value='/script/jqgrid/grid.locale-cn.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/jquery.jqGrid.src.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid_extend.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/commons.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_common.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_custom.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/extendJqgrid.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/easyui-lang-zh_CN.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
-<!-- script src="<c:url value='/script/lhgdialog/lhgdialog.min.js?skin=default'/>" type="text/javascript"></script-->
 <script src="<c:url value='/script/lhgdialog/lhgdialog.js?skin=default'/>" type="text/javascript"></script>
 </head>
 <body>
@@ -48,9 +44,17 @@ $(function(){
 		function dynamicGrid(){
 			var dataGridOptions=${dataGridOptions};
 			if(dataGridOptions!=null){
-				$.extend(dataGridOptions,{contextPath:"${ctx}",height:$(window).height()-220,autoWidth:true,id:"dataGrid",caption:'公司代码'});
+				$.extend(dataGridOptions,{
+					contextPath:"${ctx}",
+					height:$(window).height()-220,
+					autoWidth:true,
+					id:"dataGrid",
+					caption:'公司代码',
+					pager:"#tbar"
+				});
 			}
-			new customGrid(dataGridOptions);
+			//new customGrid(dataGridOptions);
+			$("#dataGrid").extendJqgrid(dataGridOptions);
 		}
 		//实例化XMLHttpRequest对象
 		function createXMLHttpRequest(){
