@@ -9,19 +9,26 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.jco.model.JcoReturnModel;
+import com.sapGarden.application.fi.company.model.Company;
+import com.sapGarden.application.fi.company.model.CompanyLog;
 import com.sapGarden.application.fi.company.model.bapi_companyCode_getDetail.Export_companyCode_detail;
+import com.sapGarden.application.fi.company.service.CompanyService;
 import com.sapGarden.application.fi.company.service.GetSapDataService;
 import com.sapGarden.application.fi.company.service.ManualSynService;
 import com.sapGarden.global.jqgrid.model.Jqgrid_DataJson;
+import com.sapGarden.global.json.JsonUtils;
 @Service("company_ManualSynService")
 public class ManualSynServiceImpl implements ManualSynService{
 
 	@Autowired
 	@Qualifier("company_GetSapDataService")
 	private GetSapDataService getSapDataService;
+	@Autowired
+	private CompanyService companyService;
 	@Override
 	public JSONObject testCall(SapDataCollection sapDataCollection) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 		// TODO Auto-generated method stub
@@ -39,4 +46,23 @@ public class ManualSynServiceImpl implements ManualSynService{
 		return null;
 	}
 
+	@Override
+	@Transactional
+	public void saveManuSynDataOfJqgridToLocal(SapDataCollection sapDataCollection, String list, String user,String opttype,boolean ifLog){
+		if(list!=null&&!"".equals(list.trim())){
+			JSONObject json = JsonUtils.objectToJSONObject(list,null);
+			if(json.containsKey("data")){
+				List dataList = (List)json.get("data");
+				if(dataList!=null&&dataList.size()>0){
+					for(int i=0;i<dataList.size();i++){
+						JSONObject jj = JSONObject.fromObject(dataList.get(i));
+						Company newComp = (Company)JSONObject.toBean(jj, Company.class);
+						Company oldComp = companyService.findByComp_code(sapDataCollection, newComp.getComp_code());
+						companyService.addWithLog(opttype, sapDataCollection.getId(), user, Company.class, CompanyLog.class, newComp);
+						companyService.deleteWithLog(opttype, sapDataCollection.getId(), user, Company.class, CompanyLog.class, oldComp);
+					}
+				}
+			}
+		}
+	}
 }

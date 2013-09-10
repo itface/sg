@@ -26,7 +26,7 @@
 				    pager : options.pager,
 				    editurl:options.editurl,
 					pginput:options.pginput,
-				    rowNum:options.rowNum,
+				    rowNum:(options.pager==""?10000:options.rowNum),
 				    rowList:options.rowList,
 				    caption:options.caption,
 					ondblClickRow:options.ondblClickRow

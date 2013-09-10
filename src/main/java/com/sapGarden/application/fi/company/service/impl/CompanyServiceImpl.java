@@ -11,11 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.baseDao.BaseDao;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
-import com.sapGarden.application.commons.jco.model.CommonCompareDataModel;
 import com.sapGarden.application.commons.log.model.CommonLogModel;
-import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
 import com.sapGarden.application.fi.company.model.Company;
-import com.sapGarden.application.fi.company.model.CompanyCompareDataModel;
 import com.sapGarden.application.fi.company.model.CompanyLog;
 import com.sapGarden.application.fi.company.service.CompanyService;
 import com.sapGarden.global.jqgrid.model.Jqgrid_DataJson;
@@ -55,6 +52,10 @@ public class CompanyServiceImpl implements CompanyService{
 		}
 		sql.append(" order by t.comp_code asc");
 		return dao.findByPage(sql.toString(), list.toArray(),page,rows);
+	}
+	@Override
+	public Company findByComp_code(SapDataCollection sapDataCollection,String comp_code){
+		return dao.findSingleResult("from Company t where t.sapclient=?1 and t.comp_code=?2", new Object[]{sapDataCollection.getId(),comp_code});
 	}
 	@Override
 	public List<Company> findByCompanyCode(SapDataCollection sapDataCollection,String companyCode) {
@@ -130,14 +131,4 @@ public class CompanyServiceImpl implements CompanyService{
 		// TODO Auto-generated method stub
 		dao.deleteById(Company.class, t.getId());
 	}
-	
-	
-
-	
-
-	
-
-	
-
-	
 }

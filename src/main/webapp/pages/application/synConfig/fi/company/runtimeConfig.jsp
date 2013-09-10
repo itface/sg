@@ -26,6 +26,9 @@
 	padding:0px 5px;
 	font-weight:bold;
 }
+.fm-button-icon-left{
+	display:none;
+}
 </style>
 </head>
 <body>

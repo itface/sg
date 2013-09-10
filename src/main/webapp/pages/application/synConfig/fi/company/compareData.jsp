@@ -28,7 +28,7 @@
   <div class="prompt_message">本功能用来检查SAP和Garden数据的一致性，有差异的数据可以从SAP同步到Garden。如果数据量大，运行时间可能较长</div>
   <div class="toolbar_left"> 
     <a href="javascript:void(0);" class="btn" onMouseDown="this.className='btn_mousedown'" id='compareData' onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">开始校对</a> 
-    <a href="javascript:void(0);" class="btn" onMouseDown="this.className='btn_mousedown'" id='sapToLocal' onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">从SAP同步到Garden</a>  
+    <a href="javascript:void(0);" class="btn" onMouseDown="this.className='btn_mousedown'" id='sapToLocal' onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">从SAP同步到Garden</a>  
      </div>
    <div class="check_text" style="padding:0px"></div>
 </div>
@@ -81,7 +81,13 @@ $(function(){
 		$("#compareDataGrid").extendJqgrid(compareDataGridOptions);
 	}
 	function showCompareResult(totalSapNum,totalGardenNum,onlySapNum,onlyGardenNum,differenceNum,sameNum){
-		var s = "数据校对完成。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。SAP有Garden无的数据有"+onlySapNum+"条，Garden有SAP无的数据有"+onlyGardenNum+"条。完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";
+		var s = "";
+		if(parseInt(differenceNum)>0){
+			 s = "数据校对完成。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。SAP有Garden无的数据有"+onlySapNum+"条，Garden有SAP无的数据有"+onlyGardenNum+"条。完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";
+		}else{
+			 s = "数据校对完成。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";
+			
+		}
 		$(".check_text").empty();
 		$(".check_text").append(s);
 	}
@@ -101,6 +107,7 @@ $(function(){
 								showCompareResult(json.totalSapNum,json.totalGardenNum,json.onlySapNum,json.onlyGardenNum,json.differenceNum,json.sameNum);
 							}
 							alert("对比成功");
+							$('#sapToLocal').show();
 							$(window).blockUI('remove');
 						}catch(e){
 							alert('装载数据异常');
@@ -128,6 +135,10 @@ $(function(){
 		        }
 		        s=s.substring(0,s.lastIndexOf(','));
 		        s="{data:["+s+"]}"
+		    }else{
+		    	alert("请选择要同步的记录");
+		    	$(window).blockUI('remove');
+		    	return false;
 		    }
 			$.ajax({
 				type:"POST",

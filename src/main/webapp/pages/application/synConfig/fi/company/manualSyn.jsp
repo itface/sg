@@ -34,7 +34,7 @@
   <div class="prompt_message">本功能根据数据的关键字,从SAP中读取相应的数据，可以测试系统的连通性，也可以同步指定的SAP数据到Garden</div>
   <div class="toolbar_left"> 
   	<a href="javascript:void(0);" class="btn" id='testCall' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">测试执行</a>  
-    <a href="javascript:void(0);" class="btn" id='manualSyn' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">从SAP同步到Garden</a>  
+    <a href="javascript:void(0);" class="btn" id='manualSyn' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">从SAP同步到Garden</a>  
    </div>
 </div>
 <div style="padding:5px 10px; clear:both;">
@@ -55,6 +55,7 @@ $(function(){
 				contextPath:"${ctx}",
 				autoWidth:true,
 				id:"resultGrid",
+				multiselect:true,
 				height:$(window).height()-200,
 			}
 		);
@@ -86,6 +87,7 @@ $(function(){
 								jQuery("#resultGrid")[0].addJSONData(json);
 							}
 							alert('测试执行成功');
+							$('#manualSyn').show();
 							$(window).blockUI('remove');
 						}catch(e){
 							$(window).blockUI('remove');
@@ -100,14 +102,44 @@ $(function(){
 		});
 		$('#manualSyn').bind('click',function(e){
 			$(window).blockUI();
+			var rowData = jQuery('#resultGrid').jqGrid('getGridParam','selarrrow');
+			var s = '';
+		    if(rowData.length) {
+		        for(var i=0;i<rowData.length;i++){
+		           var ret = jQuery("#resultGrid").jqGrid('getRowData',rowData[i]);
+		           s+="{";
+		           for(var name in ret){
+		           		s+=name+":'"+ret[name]+"',";
+		           }
+		           s=s.substring(0,s.lastIndexOf(','))+"},";
+		        }
+		        s=s.substring(0,s.lastIndexOf(','));
+		        s="{data:["+s+"]}"
+		    }else{
+		    	alert("请选择要同步的记录");
+		    	$(window).blockUI('remove');
+		    	return false;
+		    }
 			$.ajax({
 				url:'${ctx}/application/fi/company/manualSyn/syn',
-				success:function(json){
+				data:{list:s},
+				success:function(){
 					try{
+						/*
 						if(json!=null){
 							jQuery("#resultGrid").clearGridData(true);
 							jQuery("#resultGrid")[0].addJSONData(json);
-						}
+						}*/
+						rowData = jQuery('#resultGrid').jqGrid('getGridParam','selarrrow');
+						var rowids = [];
+						if(rowData.length) {
+			        		for(var i=0;i<rowData.length;i++){
+			        			rowids.push(rowData[i]);
+			           		}
+				           	for(var i in rowids){
+			           			var ret = jQuery("#resultGrid").jqGrid('delRowData',rowids[i]);
+			           		}
+			           	}
 						alert('手工同步成功');
 						$(window).blockUI('remove');
 					}catch(e){

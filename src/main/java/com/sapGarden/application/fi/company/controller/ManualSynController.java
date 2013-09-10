@@ -15,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
-import com.sapGarden.application.fi.company.service.CompanyService;
 import com.sapGarden.application.fi.company.service.ManualSynService;
 import com.sapGarden.application.fi.company.service.SynService;
 import com.sapGarden.system.org.model.User;
@@ -29,11 +28,7 @@ public class ManualSynController {
 	@Autowired
 	@Qualifier("company_ManualSynService")
 	private ManualSynService manualSynService;
-	@Autowired
-	@Qualifier("company_SynService")
-	private SynService synService;
-	@Autowired
-	private CompanyService companyService;
+
 	//*************************************初始化调用函数页面*****************************************************************
 	@RequestMapping
 	public ModelAndView index(){
@@ -47,12 +42,17 @@ public class ManualSynController {
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return manualSynService.testCall(user.getCurrentSapDataCollection());
 	}
+	/*
 	@RequestMapping("/syn")
 	public @ResponseBody Object syn(String kunnr) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		synService.syn(user.getCurrentSapDataCollection(), CommonServiceWithLog.OPTTYPE_MANUALSYN, user.getUsername(), true);
 		return companyService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),null,10000,1);
+	}*/
+	@RequestMapping("/syn")
+	public @ResponseBody void syn(String list) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		manualSynService.saveManuSynDataOfJqgridToLocal(user.getCurrentSapDataCollection(), list, user.getUsername(), CommonServiceWithLog.OPTTYPE_MANUALSYN, CommonServiceWithLog.IFLOG_YES);
 	}
-	
 	
 }
