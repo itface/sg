@@ -116,7 +116,7 @@ a{ font-size:12px; text-decoration:none}
       <tr class='runStatusRow'>
         <td align="left" class="alert_right_bold">间隔时间：</td>
         <td >
-        	<form:input path='job.intervalminute' class="input2"/><div style="float:left;line-height:30px;color:#747373">分钟</div>    
+        	<form:input path='job.intervalminute' class="input2"/><div style="float:left;line-height:30px;color:#747373" class="intervalminuteUnit">分钟</div>    
         </td>
       </tr>
     </table>
@@ -159,6 +159,7 @@ $(document).ready(function(){
 			$('#runstatus').attr("checked",false);
 		}
 		setFomrDisabled();
+		setIntervalminuteUnit();
 	}
 	function setFomrDisabled(){
 		if($('#runstatus').attr("checked")=="checked"){
@@ -179,12 +180,30 @@ $(document).ready(function(){
 			*/
 		}
 	}
+	function setIntervalminuteUnit(){
+			var v = $('#intervalminute').val();
+			var hour = parseInt(v)/60;
+			hour = Math.round(hour*100)/100;
+			if(v==''){
+				$('.intervalminuteUnit').html("分钟");
+			}else{
+				$('.intervalminuteUnit').html("分钟："+hour+"小时");
+			}
+	}
 	function initEvent(){
 		$('.cancelBtn').bind('click',function(e){
 			closeWin();
 		});
 		$('#runstatus').bind('click',function(e){
 			setFomrDisabled();
+		});
+		$('#intervalminute').keydown(function(e){
+			if(e.keyCode<48||e.keyCode>57){
+				return false;
+			}
+		});
+		$('#intervalminute').keyup(function(){
+			setIntervalminuteUnit();
 		});
 		$('.saveBtn').bind('click',function(e){
 			var   r   =   /^[0-9]*[1-9][0-9]*$/;　
