@@ -2,6 +2,7 @@ package com.sapGarden.application.fi.company.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,16 +32,27 @@ public class Company implements Serializable{
 	                allocationSize = 1)           //每次主键值增加的大小
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "company_gen")
 	private long id;
+	@Column(length = 50)
 	private String comp_code;
+	@Column(length = 100)
 	private String comp_name;
+	@Column(length = 50)
 	private String city;
+	@Column(length = 100)
 	private String country;
+	@Column(length = 50)
 	private String currency;
+	@Column(length = 50)
 	private String langu;
+	@Column(length = 100)
 	private String chrt_accts;
+	@Column(length = 100)
 	private String fy_variant;
+	@Column(length = 100)
 	private String vat_reg_no;
+	@Column(length = 100)
 	private String company;
+	@Column(length = 100)
 	private String addr_no;
 	private long sapclient;
 	public Company(){

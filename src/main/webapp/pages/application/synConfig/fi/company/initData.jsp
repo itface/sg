@@ -56,73 +56,29 @@ $(function(){
 			//new customGrid(dataGridOptions);
 			$("#dataGrid").extendJqgrid(dataGridOptions);
 		}
-		//实例化XMLHttpRequest对象
-		function createXMLHttpRequest(){
-			var xmlHttp;
-			if(window.XMLHttpRequest){
-				xmlHttp = new XMLHttpRequest();	
-			}else if(window.ActiveXObject){
-				try{
-                    xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-                }catch (e){
-                    try{
-                        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-                    }
-                    catch (e){
-                        alert("您的浏览器不支持AJAX！");
-                        return false;
-                    }
-                }
-			}
-			return xmlHttp;
+		function queryData(){
+			var url = '${ctx}/application/fi/company/runtimeData/findJqgridData';
+			jQuery('#dataGrid').jqGrid('setGridParam',{url:url,page:1});
+			jQuery("#dataGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
 		}
 		function initEvent(){
 			$('#initData').bind('click',function(e){
-				var xhr = new createXMLHttpRequest();
-				xhr.open("GET","${ctx}/application/fi/company/initData/doInit");
-				var count=0;
-				xhr.onreadystatechange = function(){
-                	if(xhr.readyState >2){ 
-                		//ie                
-		                 //var tmpText = xhr.responseText.substring(oldSize); 
-		                alert(count);
-	                  	count++;
-	                 	
-	                }
-	                if(xhr.readyState == 4){ 
-	                    if(xhr.status==200){
-	                    	alert("执行完毕");
-	                    }else{
-	                    	alert("初始化异常");
-	                    }
-	                }
-	            }
-	            xhr.send(null);  
-	            /*
-				$.ajax({
-					url:'${ctx}/application/fi/company/initData/doInit',
-					type:'GET',
-					xhr:function(){
-						var xhr = jQuery.ajaxSettings.xhr();
-						xhr.onreadystatechange=function(){
-							 if(xhr.readyState > 2){ 
-							 	var tmpText = xhr.responseText;
-							 	alert(tmpText);
-							 }
-							 if(xhr.readyState == 4){ 
-							 	alert('执行完毕');
-							 }
-						};
-						return xhr;
-					},
-					success:function(msg){
-						alert('success');
-					},
-					error:function(){
-						alert('error');
-					}
+				if(!confirm("初始化将会清空表里数据，是否确定执行")){
+					return false;
+				}
+				var dialog = $.dialog({
+			 		id:'dia',
+				    lock: true,
+				    min:false,
+				    max:false,
+				    cancel:false,
+				    background: '#FFF',
+				    opacity: 0.5,
+				    content: 'url:${ctx}/pages/application/synConfig/fi/company/progress.jsp',
+				    title:''
 				});
-				*/
+				$.dialog.data('dialog',dialog);//：跨框架数据共享写入接口
+				$.dialog.data('queryData',queryData);
 			});
 		}
 		

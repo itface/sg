@@ -73,7 +73,7 @@ $(function(){
 		var checked = false;
 		var config ={
 			id:'list',
-			caption:'同步字段定义-公司代码（BO_FIN_COMPANY）',
+			caption:'同步字段定义-公司代码（COMPANY）',
 			rownum:100,
 			height:300,
 			width:900,
@@ -105,8 +105,29 @@ $(function(){
 					$('#cb_list').hide();
 			    },
 			    beforeSelectRow:function(rowid,e){
+			    	if($(e.target).attr('type')=='checkbox'){
+			    		var c = $('#jqg_list_'+rowid).attr('checked');
+				    	if(confirm('是否要更改同步状态')){
+				    		checked = c;
+				    		checked = $('#jqg_list_'+rowid).attr('checked');
+				    		return true;
+				    	}else{
+				    		$('#jqg_list_'+rowid).attr('checked',c?false:true);
+				    		checked = $('#jqg_list_'+rowid).attr('checked');
+				    		return false;
+				    	}
+			    	}
 			    	checked = $('#jqg_list_'+rowid).attr('checked');
 			    	return true;
+			    	/*
+			    	var c = $('#jqg_list_'+rowid).attr('checked');
+			    	if(confirm('是否要更改同步状态')){
+			    		checked = c;
+			    		return true;
+			    	}else{
+			    		$('#jqg_list_'+rowid).attr('checked',c?false:true);
+			    		return false;
+			    	}*/
 			    },
 			    onSelectRow:function(rowid,status,e){
 			    	//alert($(e.target).attr('type')+":"+checked+":"+status);

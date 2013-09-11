@@ -1,11 +1,14 @@
 package com.sapGarden.application.fi.company.controller;
 
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,7 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.sapGarden.application.commons.constants.SjlxTypeName;
+import com.sapGarden.application.commons.progress.model.NewProgress;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
+import com.sapGarden.application.fi.company.service.InitDataService;
+import com.sapGarden.global.json.JsonUtils;
 import com.sapGarden.system.org.model.User;
 
 @Controller("company_InitDataController")
@@ -26,7 +32,8 @@ public class InitDataController {
 	@Autowired
 	@Qualifier("commonData")
 	private CommonConstructJqgridService commonConstructJqgridService;
-	
+	@Autowired
+	private InitDataService initDataService;
 	@RequestMapping
 	public ModelAndView index(){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -34,15 +41,37 @@ public class InitDataController {
 		map.put("dataGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY));
 		return new ModelAndView("/application/synConfig/fi/company/initData",map);
 	}
+	@RequestMapping(value=("/validateTable"))
+	public @ResponseBody boolean validateColumn(){
+		return initDataService.validateTable();
+	}
+	@RequestMapping(value=("/repairTable"))
+	public @ResponseBody void repairTable(){
+		initDataService.repairTable();
+	}
 	@RequestMapping(value=("/doInit"))
-	public @ResponseBody void doInit(HttpServletRequest request,HttpServletResponse response) throws IOException, InterruptedException{
+	public @ResponseBody void doInit(HttpServletRequest request,HttpServletResponse response) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		response.setHeader("Content-Type","application/x-javascript");
-		for(int i=1;i<5;i++){
-			response.getWriter().print(i+"");
-			response.getWriter().flush();
-			Thread.sleep(2000);
+		long currentThreadId = Thread.currentThread().getId();
+		NewProgress progress = new NewProgress();
+		progress.setRunstatus(true);
+		progress.setThreadid(currentThreadId);
+		(request.getSession()).setAttribute("COMPANY_INITDATA", progress);
+		initDataService.init(user.getCurrentSapDataCollection(), user.getUsername(), currentThreadId, progress);
+	}
+	@RequestMapping(value=("/getProgressModel"))
+	public @ResponseBody JSONObject getProgressModel(HttpServletRequest request){
+		NewProgress progress = (request.getSession()).getAttribute("COMPANY_INITDATA")==null?null:(NewProgress)((request.getSession()).getAttribute("COMPANY_INITDATA"));
+		return JsonUtils.objectToJSONObject(progress, null);
+	}
+	@RequestMapping(value=("/cancelInit"))
+	public @ResponseBody void cancelInit(HttpServletRequest request){
+		NewProgress progress = (request.getSession()).getAttribute("COMPANY_INITDATA")==null?null:(NewProgress)((request.getSession()).getAttribute("COMPANY_INITDATA"));
+		if(progress!=null){
+			progress.setEndtime((new Date()).getTime());
+			progress.setRunstatus(false);
 		}
+		//(request.getSession()).removeAttribute("COMPANY_INITDATA");
 	}
 	/*
 	@RequestMapping(value=("/removeAll"))

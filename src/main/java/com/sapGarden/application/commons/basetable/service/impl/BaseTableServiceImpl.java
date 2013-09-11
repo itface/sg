@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.basetable.model.BaseTableModel;
 import com.sapGarden.application.commons.basetable.service.BaseTableService;
@@ -16,10 +14,10 @@ public class BaseTableServiceImpl implements BaseTableService{
 
 	@Autowired
 	private ExtendDao<BaseTableModel> extendDao;
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+	
 	public List<BaseTableModel> getBaseTable(String tableName) {
 		// TODO Auto-generated method stub
-		String sql = "from BaseTableModel t where t.tablename=?";
+		String sql = "from BaseTableModel t where t.tablename=?1";
 		List<BaseTableModel> list = extendDao.findNotInContext(sql, new Object[]{tableName});
 		return list;
 	}
