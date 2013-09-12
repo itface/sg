@@ -53,6 +53,18 @@
 		<version>${jstl.version}</version>
 	</dependency>
      <!--******************************** jstl end *******************************************************-->
+    <!--******************************** poi begin *******************************************************-->
+    <dependency>
+		<groupId>org.apache.poi</groupId>
+		<artifactId>poi</artifactId>
+		<version>3.9</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.poi</groupId>
+		<artifactId>poi-ooxml</artifactId>
+		<version>3.9</version>
+	</dependency>
+     <!--******************************** poi begin *******************************************************-->       
      <!--******************************** quartz begin *******************************************************-->
     <dependency>
 		<groupId>org.quartz-scheduler</groupId>

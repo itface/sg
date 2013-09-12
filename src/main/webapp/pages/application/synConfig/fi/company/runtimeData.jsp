@@ -29,7 +29,7 @@
   <div class="toolbar_left"> 
     <input type="text" class="input1" id="companyCode" value="公司代码">
     <a href="#" class="btn" id="queryBtn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询</a> 
-    <a href="#" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">导出数据</a>  
+    <a href="#" class="btn" id="expertExcel" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">导出数据</a>  
   </div>
   
 </div>
@@ -74,6 +74,13 @@ $(function(){
                 $(this).val(this.defaultValue);
              }
 		});
+		$('#expertExcel').bind('click',function(e){
+			var gsdm = $("#companyCode").val();
+			if(gsdm=='公司代码'){
+				gsdm='';
+			}
+			open('${ctx}/application/fi/company/runtimeData/exportExcel?companyCode='+gsdm,'_self');
+		});
 		$('#queryBtn').bind('click',function(e){
 			var gsdm = $("#companyCode").val();
 			if(gsdm=='公司代码'){
@@ -84,6 +91,7 @@ $(function(){
 			var postdata=jQuery('#dataGrid').jqGrid('getGridParam','postData');
 			$.extend(postdata, {companyCode:gsdm});
 			jQuery("#dataGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
+			$('#expertExcel').show();
 			/*
 			$.ajax({
 				url:'${ctx}/application/fi/company/runtimeData/findJqgridData',

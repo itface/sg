@@ -25,7 +25,7 @@
   <div class="prompt_message">慎重操作！本功能用来将SAP中的数据初始化到Garden系统中，初始化将清空已有的数据。</div>
   <div class="toolbar_left"> 
       <a href="#" class="btn" id='initData' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">开始初始化</a> 
-     <a href="#" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">导出数据</a>  
+     <a href="#" class="btn" id="expertExcel" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">导出数据</a>  
      </div>
 </div>
 <div style="padding:5px 10px; clear:both">
@@ -60,6 +60,7 @@ $(function(){
 			var url = '${ctx}/application/fi/company/runtimeData/findJqgridData';
 			jQuery('#dataGrid').jqGrid('setGridParam',{url:url,page:1});
 			jQuery("#dataGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
+			$('#expertExcel').show();
 		}
 		function initEvent(){
 			$('#initData').bind('click',function(e){
@@ -79,6 +80,10 @@ $(function(){
 				});
 				$.dialog.data('dialog',dialog);//：跨框架数据共享写入接口
 				$.dialog.data('queryData',queryData);
+			});
+			
+			$('#expertExcel').bind('click',function(e){
+				open('${ctx}/application/fi/company/initData/exportExcel?companyCode=','_self');
 			});
 		}
 		
