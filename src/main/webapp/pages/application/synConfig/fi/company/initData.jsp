@@ -22,7 +22,7 @@
 <body>
 <form>
 <div class="toolbar">
-  <div class="prompt_message">慎重操作！本功能用来将SAP中的数据初始化到Garden系统中，初始化将清空已有的数据。</div>
+  <div class="prompt_message">慎重操作！本功能用来将SAP中的数据初始化到Garden系统中。初始化将校验数据结构，然后清空Garden中已有的数据，最后从SAP导入数据。数据清空后无法恢复。</div>
   <div class="toolbar_left"> 
       <a href="#" class="btn" id='initData' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">开始初始化</a> 
      <a href="#" class="btn" id="expertExcel" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">导出数据</a>  
@@ -70,6 +70,8 @@ $(function(){
 				var dialog = $.dialog({
 			 		id:'dia',
 				    lock: true,
+				    width: 400,
+			    	height: 150,
 				    min:false,
 				    max:false,
 				    cancel:false,
@@ -80,6 +82,7 @@ $(function(){
 				});
 				$.dialog.data('dialog',dialog);//：跨框架数据共享写入接口
 				$.dialog.data('queryData',queryData);
+				$.dialog.data('client',"${client}");
 			});
 			
 			$('#expertExcel').bind('click',function(e){

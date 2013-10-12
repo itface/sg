@@ -63,14 +63,13 @@ a{ font-size:12px; text-decoration:none}
 		</td>
       </tr>
       <tr class='runStatusRow'>
-        <td align="left" class="alert_right_bold" >定时同步，设定起始时间：</td>
+        <td align="left" class="alert_right_bold" >定时同步，起始时间：</td>
         <td>
         	<div class="schedule">
         		<input type='text' class="input2" onclick="WdatePicker()" value="${begindate}" id="begindate"/>
    			</div>
    			<div style="float:left">
 	   			<select class="select" id="beginhour">
-						<option>选择小时</option>
 						<option value='0'>0点</option>
 						<option value='01'>1点</option>
 						<option value='02'>2点</option>
@@ -102,7 +101,6 @@ a{ font-size:12px; text-decoration:none}
    			</div>
 			<div>
 				<select class="select" id="beginminute">
-	            	<option>选择分钟</option>
 	            	<option value='0'>0分</option>
 					<option value='10'>10分</option>
 					<option value='20'>20分</option>
@@ -187,7 +185,7 @@ $(document).ready(function(){
 			if(v==''){
 				$('.intervalminuteUnit').html("分钟");
 			}else{
-				$('.intervalminuteUnit').html("分钟："+hour+"小时");
+				$('.intervalminuteUnit').html("分钟，合"+hour+"小时");
 			}
 	}
 	function initEvent(){
@@ -198,7 +196,7 @@ $(document).ready(function(){
 			setFomrDisabled();
 		});
 		$('#intervalminute').keydown(function(e){
-			if(e.keyCode<48||e.keyCode>57){
+			if((e.keyCode<48&&e.keyCode!=8)||e.keyCode>57){
 				return false;
 			}
 		});

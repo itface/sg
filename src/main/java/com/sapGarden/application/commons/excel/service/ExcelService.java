@@ -15,5 +15,6 @@ public interface ExcelService {
 
 	public String generateExcel(List<RuntimeColumnInfo> cols,List list,SapDataCollection sapDataCollection,String type,String excelName)throws IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, URISyntaxException;
 	public void downloadZip(String filepath,String zipname,HttpServletResponse response)throws IOException;
+	public void downloadExcel(HttpServletResponse response,List<RuntimeColumnInfo> cols,List list,SapDataCollection sapDataCollection,String type,String excelName)throws IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, URISyntaxException;
 	public void deleteByFilePath(String filepath);
 }

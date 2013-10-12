@@ -13,7 +13,7 @@ public interface Runtime_ColumnInfo_Service {
 	public List<RuntimeColumnInfo> findAll(SapDataCollection sapDataCollection,String businesstype);
 	public List<RuntimeColumnInfo> findAllActiveData(SapDataCollection sapDataCollection,String businesstype);
 	public List<RuntimeColumnInfo> findByBusinesstype(int pageNumber,int rowsPerPage,SapDataCollection sapDataCollection,String businesstype);
-	public JSONObject findJsonByBusinesstype(int pageNumber,int rowsPerPage,SapDataCollection sapDataCollection,String businesstype);
+	public JSONObject findJsonByBusinesstype(int pageNumber,int rowsPerPage,String sidx,String sord,SapDataCollection sapDataCollection,String businesstype);
 	public void addList(List<RuntimeColumnInfo> list);
 	public void addOne(JqgirdNewRuntimeColumnInfo jqgirdNewDbReflectOfColumn);
 	public void updateOne(JqgirdNewRuntimeColumnInfo jqgirdNewDbReflectOfColumn);

@@ -13,6 +13,6 @@ public interface CompanyLogService{
 
 	public long findTotalNum(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate);
 	public List<CompanyLog> find(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate);
-	public List<CompanyLog> findByPage(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate,int rows,int page);
-	public JSONObject findJqgridData(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate,int rows,int page);
+	public List<CompanyLog> findByPage(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate,int rows,int page,String sidx,String sord);
+	public JSONObject findJqgridData(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate,int rows,int page,String sidx,String sord);
 }

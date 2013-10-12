@@ -33,7 +33,7 @@
 <div class="toolbar">
   <div class="prompt_message">本功能根据数据的关键字,从SAP中读取相应的数据，可以测试系统的连通性，也可以同步指定的SAP数据到Garden</div>
   <div class="toolbar_left"> 
-  	<a href="javascript:void(0);" class="btn" id='testCall' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">测试执行</a>  
+  	<a href="javascript:void(0);" class="btn" id='testCall' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询SAP数据</a>  
     <a href="javascript:void(0);" class="btn" id='manualSyn' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">从SAP同步到Garden</a>  
    </div>
 </div>
@@ -56,7 +56,20 @@ $(function(){
 				autoWidth:true,
 				id:"resultGrid",
 				multiselect:true,
+				loadui:'',
+				sortable:true,
+				loadonce:true,
 				height:$(window).height()-200,
+				eventModels:{
+					//禁止排序，排序造成数据丢失，因为数据是通过jQuery("#resultGrid")[0].addJSONData(json)。
+					/*
+					onSortCol:function(){
+						return 'stop';
+					},*/
+					loadComplete:function(json){
+						$(window).blockUI('remove');
+					}
+				}
 			}
 		);
 		//new customGrid(resultGridOptions);
@@ -76,6 +89,8 @@ $(function(){
 		});
 		$('#testCall').bind('click',function(e){
 			$(window).blockUI();
+			jQuery("#resultGrid").jqGrid('setGridParam',{datatype:'json',url:'${ctx}/application/fi/company/manualSyn/testCall',search:false}).trigger("reloadGrid");
+			/*
 			$.ajax({
 				url:'${ctx}/application/fi/company/manualSyn/testCall',
 				type: "GET",
@@ -86,7 +101,7 @@ $(function(){
 								jQuery("#resultGrid").clearGridData(true);
 								jQuery("#resultGrid")[0].addJSONData(json);
 							}
-							alert('测试执行成功');
+							alert('查询成功');
 							$('#manualSyn').show();
 							$(window).blockUI('remove');
 						}catch(e){
@@ -95,10 +110,11 @@ $(function(){
 						}
 				},
 				error:function(XMLHttpRequest,textStatus,errorThrown){
-					alert('调用失败');
+					alert('查询失败');
 					$(window).blockUI('remove');
 				}
 			});
+			*/
 		});
 		$('#manualSyn').bind('click',function(e){
 			$(window).blockUI();

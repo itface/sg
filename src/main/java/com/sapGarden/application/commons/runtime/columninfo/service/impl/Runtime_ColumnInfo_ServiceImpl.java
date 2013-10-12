@@ -40,10 +40,14 @@ public  class Runtime_ColumnInfo_ServiceImpl implements Runtime_ColumnInfo_Servi
 
 	@Override
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
-	public JSONObject findJsonByBusinesstype(int pageNumber,int rowsPerPage,SapDataCollection sapDataCollection,String businesstype){
+	public JSONObject findJsonByBusinesstype(int pageNumber,int rowsPerPage,String sidx,String sord,SapDataCollection sapDataCollection,String businesstype){
 		// TODO Auto-generated method stub
 		//Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "id"));
-		List<RuntimeColumnInfo> list = extendDao.findByPage("from RuntimeColumnInfo t where t.businesstype=? and t.sapclient=?", new Object[]{businesstype,sapDataCollection.getId()}, pageNumber, rowsPerPage);
+		String orderby = "";
+		if(sidx!=null&&!"".equals(sidx)){
+			orderby=" order by "+sidx+" "+sord;
+		}
+		List<RuntimeColumnInfo> list = extendDao.findByPage("from RuntimeColumnInfo t where t.businesstype=? and t.sapclient=? "+orderby, new Object[]{businesstype,sapDataCollection.getId()}, pageNumber, rowsPerPage);
 		long totalRows = extendDao.findTotalCount("select count(t.id) from RuntimeColumnInfo t where t.businesstype=? and t.sapclient=?", new Object[]{businesstype,sapDataCollection.getId()});
 		Jqgrid_DataJson jsonData = new Jqgrid_DataJson(pageNumber,rowsPerPage,totalRows,list);
 		JSONObject jsonObject = JSONObject.fromObject(jsonData);

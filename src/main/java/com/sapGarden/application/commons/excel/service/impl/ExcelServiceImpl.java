@@ -74,6 +74,36 @@ public class ExcelServiceImpl implements ExcelService{
 		return filepath;
 	}
 	@Override
+	public void downloadExcel(HttpServletResponse response,
+			List<RuntimeColumnInfo> cols, List list,
+			SapDataCollection sapDataCollection, String type, String excelName)
+			throws IOException, SecurityException, NoSuchMethodException,
+			IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, URISyntaxException {
+		// TODO Auto-generated method stub
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + excelName  + ".xls");  
+	    response.setContentType("application/octet-stream; charset=UTF-8");
+		ExcelWriter excelWriter = new ExcelWriter(response.getOutputStream());
+		int rowNum = 0;
+		excelWriter.createRow(rowNum++);
+		for(int j=0;j<cols.size();j++){
+			RuntimeColumnInfo col = cols.get(j);
+			excelWriter.setCell(j, col.getTargetColumnName()+"("+col.getTargetColumn()+")");
+		}
+		for(Object obj : list){
+			excelWriter.createRow(rowNum++);
+			for(int j=0;j<cols.size();j++){
+				RuntimeColumnInfo col = cols.get(j);
+				String field = col.getTargetColumn();
+				String setFieldMethod = "get"+field.substring(0, 1).toUpperCase()+field.substring(1).toLowerCase();
+				Method method = Company.class.getMethod(setFieldMethod, new Class[]{});
+				Object value = method.invoke(obj, new Object[]{});
+				excelWriter.setCell(j, value);
+			}
+		}
+		excelWriter.export();
+	}
+	@Override
 	public void downloadZip(String filepath,String zipname,HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + zipname  + ".zip");  
@@ -124,5 +154,6 @@ public class ExcelServiceImpl implements ExcelService{
 		}
 		file.delete();
 	}
+	
 
 }

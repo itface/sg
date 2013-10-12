@@ -36,24 +36,25 @@
 a{ font-size:12px; text-decoration:none}
 </style>
 </head>
-<body>
+<body onload="$('#p').progressbar('setValue',0);setTimeout('init()',1000);">
 <div>
 <div>
-	<div id='pText' style='height:30px;padding-top:10px;padding-left:10px'></div>
-	<div id="p" style="width:400px;"></div>
+	<div id='pText' style='height:40px;padding-top:10px;padding-left:10px'>正在校验表结构...</div>
+	<div id="p" style="width:400px;"  class="easyui-progressbar"></div>
 </div>
 <!-- div style='right:0px;bottom:5px;height:20px;position:absolute'>
 <input type='button' value='取消' id='cancel' onclick="cancelInit()"/>
 <input type='button' value='确定' id='ok' style='display:none' onclick='closeWin()'/>
 </div-->
 <div class="biangeng_botton_main">
-  <a href="javascript:void(0);" class="btn4 cancelBtn" id='cancel' onclick="cancelInit()" onMouseOver="this.className='btn_hover2'" onMouseOut="this.className='btn4'" style="float:right">取消</a> 
+  <a href="javascript:void(0);" class="btn4 cancelBtn" id='cancel' onclick="cancelInit()" onMouseOver="this.className='btn_hover2'" onMouseOut="this.className='btn4'" style="float:right;display:none">取消</a> 
   <a href="javascript:void(0);" class="btn4 saveBtn" id='ok' onclick='okBtnEvent()' onMouseOver="this.className='btn_hover2'" onMouseOut="this.className='btn4'" style="float:right;display:none">确定</a> 
 </div>
 </div>
 </body>
 <script type="text/javascript">
 var cancelFlag = false;
+var client = frameElement.api.opener.$.dialog.data('client');
 function closeWin(){
 	var api = frameElement.api;
 	var  W = api.opener; 
@@ -70,7 +71,7 @@ function cancelInit(){
 		async:false
 	});
 	//掩饰一秒执行，因为如果不延时，直接关闭窗口，执行初始化的ajax还未执行完，会跳进error方法
-	setTimeout(function(){alert('取消成功');closeWin();},1000); 
+	setTimeout(function(){alert('取消成功');closeWin();},3500); 
 }
 
 function okBtnEvent(){
@@ -80,9 +81,90 @@ function okBtnEvent(){
 	queryData();
 	closeWin();
 }
+function init(){
+		$.ajax({
+			url:'${ctx}/application/fi/company/initData/validateTable',
+			async:false,
+			success:function(status){
+				$('#cancel').show();
+				$('#p').progressbar('setValue',10);
+				if(status==false||status=='false'){
+					if(!confirm("表结构已经变化，如要继续执行初始化，系统将会修复表结构，是否继续")){
+						closeWin();		
+					}else{
+						$('#pText').text('正在修复表结构...');
+						$.ajax({
+							url:'${ctx}/application/fi/company/initData/repairTable',
+							async:false,
+							success:function(){
+								$('#p').progressbar('setValue',10);
+							},
+							error:function(XMLHttpRequest,textStatus,errorThrown){
+								alert('修复表结构异常异常');
+								closeWin();
+							}
+						});
+					}
+				}
+			},
+			error:function(XMLHttpRequest,textStatus,errorThrown){
+				$('#p').progressbar('setValue',10);
+				alert('校验表结构异常');
+				closeWin();
+			}
+		});
+		$.ajax({
+			url:'${ctx}/application/fi/company/initData/doInit',
+			type: "GET",
+			cache:false,
+			success:function(){
+				if(interval){
+					clearInterval(interval);
+				}
+				if(!cancelFlag){
+					getPercentage();
+				}
+			},
+			error:function(XMLHttpRequest,textStatus,errorThrown){
+				alert('执行初始化异常');
+				closeWin();
+			}
+		});
+		interval=setInterval(getPercentage, 100);
+		function getPercentage(){
+			$.ajax({
+				url:'${ctx}/application/fi/company/initData/getProgressModel',
+				async:false,
+				cache:false,
+				datatype:'json',
+				success:function(json){
+					if(json!=null){
+						var percent=json.percentage;
+						if(json.over==false||json.over=='false'){
+							$('#p').progressbar('setValue',percent); 
+							if(percent>10&&percent<25){
+								$('#pText').text('正在清空Garden中的原有公司代码数据....');
+							}else if(percent==25){
+								$('#pText').text('Garden中的原有公司代码数据清空完毕。');
+							}else if(percent>25){
+								$('#pText').text('正在从SAP（210）读取数据，初始化Garden中公司代码数据....');
+							}
+						}else{
+							$('#p').progressbar('setValue',100);  
+							setTimeout(function(){$('#p').remove();},200);
+							$('#pText').text("Garden的公司代码数据初始化完成，"+"本次初始化共"+json.totalNum+"条记录，"+"耗时"+((json.endtime-json.starttime)/1000)+"秒。");
+							$('#cancel').remove();
+							$('#ok').show();
+							clearInterval(interval);
+						}
+					}
+				}
+			});
+		}
+	}
+/*
 $(document).ready(
 	function(){
-		$('#p').progressbar(); 
 		$.ajax({
 			url:'${ctx}/application/fi/company/initData/validateTable',
 			async:false,
@@ -92,11 +174,12 @@ $(document).ready(
 					if(!confirm("表结构已经变化，如要继续执行初始化，系统将会修复表结构，是否继续")){
 						closeWin();		
 					}else{
+						$('#pText').text('正在修复表结构...');
 						$.ajax({
 							url:'${ctx}/application/fi/company/initData/repairTable',
 							async:false,
 							success:function(){
-								$('#p').progressbar('setValue',20);
+								$('#p').progressbar('setValue',10);
 							},
 							error:function(XMLHttpRequest,textStatus,errorThrown){
 								alert('修复表结构异常异常');
@@ -141,10 +224,17 @@ $(document).ready(
 						var percent=json.percentage;
 						if(json.over==false||json.over=='false'){
 							$('#p').progressbar('setValue',percent);  
+							if(percent>10&&percent<25){
+								$('#pText').text('正在清空Garden中的原有公司代码数据....');
+							}else if(percent==25){
+								$('#pText').text('Garden中的原有公司代码数据清空完毕。');
+							}else if(percent>25){
+								$('#pText').text('正在从SAP（210）读取数据，初始化Garden中公司代码数据....');
+							}
 						}else{
 							$('#p').progressbar('setValue',100);  
 							setTimeout(function(){$('#p').remove();},200);
-							$('#pText').text("初始化完毕，耗时"+((json.endtime-json.starttime)/1000)+"秒,"+"本次初始化共"+json.totalNum+"条记录");
+							$('#pText').text("Garden的公司代码数据初始化完成，"+"本次初始化共"+json.totalNum+"条记录，"+"耗时"+((json.endtime-json.starttime)/1000)+"秒。");
 							$('#cancel').remove();
 							$('#ok').show();
 							clearInterval(interval);
@@ -154,6 +244,6 @@ $(document).ready(
 			});
 		}
 	}
-);
+);*/
 </script>
 </html>

@@ -173,10 +173,13 @@ $(function(){
 		   		{name:'searchable',index:'searchable',hidden:true,editable:true,edittype:'select',editrules:{edithidden:true},width:100,editoptions:{value:"0:否;1:是"}},
 		   		{name:'searchtype',index:'searchtype',hidden:true,editable:true,edittype:'select',editrules:{edithidden:true},width:100,editoptions:{value:"text:文本;date:日期"}}
 		   	],
+		   	//loadonce:true,
+		   	sortable:true,
 			baseUrl:basePath
 		};
 		//new commonGrid(config);
 		$("#list").extendJqgrid(config);
+		$("#list_toppager").hide();
 		$("#jqgh_list_cb").append("<div><span>同步状态</span></div>");
 	}
 });

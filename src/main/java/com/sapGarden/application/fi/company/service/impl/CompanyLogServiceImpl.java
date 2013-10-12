@@ -29,8 +29,8 @@ public class CompanyLogServiceImpl implements CompanyLogService{
 		list.add(sapDataCollection.getId());
 		int index =2;
 		if(companyCode!=null&&!"".equals(companyCode)){
-			sql.append(" and t.comp_code=?"+(index++));
-			list.add(companyCode);
+			sql.append(" and t.comp_code like ?"+(index++));
+			list.add("%"+companyCode+"%");
 		}
 		if(optflag!=null&&!"".equals(optflag)){
 			sql.append(" and t.optflag=?"+(index++));
@@ -74,8 +74,8 @@ public class CompanyLogServiceImpl implements CompanyLogService{
 		list.add(sapDataCollection.getId());
 		int index =2;
 		if(companyCode!=null&&!"".equals(companyCode)){
-			sql.append(" and t.comp_code=?"+(index++));
-			list.add(companyCode);
+			sql.append(" and t.comp_code like ?"+(index++));
+			list.add("%"+companyCode+"%");
 		}
 		if(optflag!=null&&!"".equals(optflag)){
 			sql.append(" and t.optflag=?"+(index++));
@@ -113,9 +113,9 @@ public class CompanyLogServiceImpl implements CompanyLogService{
 		return dao.find(sql.toString(), list.toArray());
 	}
 	@Override
-	public JSONObject findJqgridData(SapDataCollection sapDataCollection,String companyCode, String optflag, String bdate, String edate,int rows,int page) {
+	public JSONObject findJqgridData(SapDataCollection sapDataCollection,String companyCode, String optflag, String bdate, String edate,int rows,int page,String sidx,String sord) {
 		// TODO Auto-generated method stub
-		List<CompanyLog> list = this.findByPage(sapDataCollection, companyCode, optflag, bdate, edate,rows,page);
+		List<CompanyLog> list = this.findByPage(sapDataCollection, companyCode, optflag, bdate, edate,rows,page,sidx,sord);
 		if(list!=null){
 			long total = this.findTotalNum(sapDataCollection, companyCode, optflag, bdate, edate);
 			Jqgrid_DataJson jsonData = new Jqgrid_DataJson(page,rows,total,list);
@@ -125,15 +125,15 @@ public class CompanyLogServiceImpl implements CompanyLogService{
 		return null;
 	}
 	@Override
-	public List<CompanyLog> findByPage(SapDataCollection sapDataCollection,String companyCode, String optflag, String bdate, String edate,int rows, int page) {
+	public List<CompanyLog> findByPage(SapDataCollection sapDataCollection,String companyCode, String optflag, String bdate, String edate,int rows, int page,String sidx,String sord) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer("from CompanyLog t where t.sapclient=?1");
 		List list = new ArrayList();
 		list.add(sapDataCollection.getId());
 		int index =2;
 		if(companyCode!=null&&!"".equals(companyCode)){
-			sql.append(" and t.comp_code=?"+(index++));
-			list.add(companyCode);
+			sql.append(" and t.comp_code like ?"+(index++));
+			list.add("%"+companyCode+"%");
 		}
 		if(optflag!=null&&!"".equals(optflag)){
 			sql.append(" and t.optflag=?"+(index++));
@@ -167,7 +167,11 @@ public class CompanyLogServiceImpl implements CompanyLogService{
 			c.set(Calendar.SECOND, 59);
 			list.add(c.getTime());
 		}
-		sql.append(" order by t.opttime desc");
+		if(sidx!=null&&!"".equals(sidx)){
+			sql.append(" order by t."+sidx+" "+sord);
+		}else{
+			sql.append(" order by t.opttime desc");
+		}
 		return dao.findByPage(sql.toString(), list.toArray(),page,rows);
 	}
 	

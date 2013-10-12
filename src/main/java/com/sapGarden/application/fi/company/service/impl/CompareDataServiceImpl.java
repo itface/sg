@@ -51,9 +51,14 @@ public class CompareDataServiceImpl implements CompareDataService{
 		sameNum=0;
 		Jqgrid_DataJson jsonData = new Jqgrid_DataJson(0,0,0,this.getCompareData(sapDataCollection));
 		//JSONObject jsonObject = JsonUtils.objectToJSONObject(jsonData,null);
-		String s = "{totalSapNum:"+totalSapNum+",totalGardenNum:"+totalGardenNum+",onlySapNum:"+onlySapNum+",onlyGardenNum:"+onlyGardenNum+",differenceNum:"+differenceNum+",sameNum:"+sameNum+"}";
-		JSONObject json = JsonUtils.objectToJSONObject(s,null);
-		json.put("dataList", jsonData);
+		//String s = "{totalSapNum:"+totalSapNum+",totalGardenNum:"+totalGardenNum+",onlySapNum:"+onlySapNum+",onlyGardenNum:"+onlyGardenNum+",differenceNum:"+differenceNum+",sameNum:"+sameNum+"}";
+		JSONObject json = JsonUtils.objectToJSONObject(jsonData,null);
+		json.put("totalSapNum", totalSapNum);
+		json.put("totalGardenNum", totalGardenNum);
+		json.put("onlySapNum", onlySapNum);
+		json.put("onlyGardenNum", onlyGardenNum);
+		json.put("differenceNum", differenceNum);
+		json.put("sameNum", sameNum);
 		return json;
 	}
 	@Override

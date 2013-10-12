@@ -44,9 +44,9 @@ public class RuntimeDataController {
 		return new ModelAndView("/application/synConfig/fi/company/runtimeData",map);
 	}
 	@RequestMapping(value="/findJqgridData")
-	public @ResponseBody Object findJqgridData(String companyCode,int rows,int page){
+	public @ResponseBody Object findJqgridData(String companyCode,int rows,int page,String sidx,String sord){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = companyService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), companyCode,rows,page);
+		JSONObject json = companyService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), companyCode,rows,page,sidx,sord);
 		return json;
 	}
 	@RequestMapping(value=("/exportExcel"),method=RequestMethod.GET)

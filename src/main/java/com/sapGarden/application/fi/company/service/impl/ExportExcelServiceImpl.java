@@ -1,9 +1,9 @@
 package com.sapGarden.application.fi.company.service.impl;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,15 +36,23 @@ public class ExportExcelServiceImpl implements ExportExcelService{
 		List<RuntimeColumnInfo> cols = runtime_ColumnInfo_Service.findAllActiveData(sapDataCollection, SjlxTypeName.TYPE_COMPANY);
 		long totalNum = companyService.findTotalNumByPage(sapDataCollection, companyCode);
 		if(totalNum>0){
+			Calendar c = Calendar.getInstance();
 			long pages = totalNum%PERSIZE==0?totalNum/PERSIZE:totalNum/PERSIZE+1;
-			String path = "";
-			for(int i=1;i<=pages;i++){
-				List<Company> datas = companyService.findByPage(sapDataCollection, companyCode, PERSIZE, i);
-				String filename = ((i-1)*PERSIZE+1)+"-"+((i-1)*PERSIZE+(PERSIZE>datas.size()?datas.size():PERSIZE));
-				path = excelService.generateExcel(cols, datas, sapDataCollection, SjlxTypeName.TYPE_COMPANY, filename);
+			if(pages>1){
+				String path = "";
+				for(int i=1;i<=pages;i++){
+					List<Company> datas = companyService.findByPage(sapDataCollection, companyCode, PERSIZE, i,null,null);
+					String filename = "companycode_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_"+i;
+					path = excelService.generateExcel(cols, datas, sapDataCollection, SjlxTypeName.TYPE_COMPANY, filename);
+				}
+				String zipname = "companycode_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
+				excelService.downloadZip(path, zipname, response);
+				excelService.deleteByFilePath(path);
+			}else{
+				String filename = "companycode_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
+				List<Company> datas = companyService.findByPage(sapDataCollection, companyCode, PERSIZE, 1,null,null);
+				excelService.downloadExcel(response, cols, datas, sapDataCollection, SjlxTypeName.TYPE_COMPANY, filename);
 			}
-			excelService.downloadZip(path, SjlxTypeName.TYPE_COMPANY, response);
-			excelService.deleteByFilePath(path);
 		}
 	}
 

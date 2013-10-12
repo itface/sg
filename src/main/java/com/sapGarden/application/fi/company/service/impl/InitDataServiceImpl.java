@@ -64,6 +64,7 @@ public class InitDataServiceImpl implements InitDataService{
 		progress.setStarttime((new Date()).getTime());
 		companyService.removeAll(sapDataCollection);
 		progress.setPercentage(25);
+		progress.setPercentage(26);
 		if(!ifRun(threadid,progress)){
 			progress=null;
 			return;

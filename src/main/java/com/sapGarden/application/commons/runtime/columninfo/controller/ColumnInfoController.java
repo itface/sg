@@ -26,9 +26,9 @@ public class ColumnInfoController {
 		this.runtime_ColumnInfo_Service = runtime_ColumnInfo_Service;
 	}
 	@RequestMapping(value=("/{tablename}"),method=RequestMethod.GET)
-	public @ResponseBody Object getDbReflectOfColumnData(@PathVariable String tablename,@RequestParam int page,@RequestParam int rows) throws JpaException{
+	public @ResponseBody Object getDbReflectOfColumnData(@PathVariable String tablename,@RequestParam int page,@RequestParam int rows,String sidx,String sord) throws JpaException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = runtime_ColumnInfo_Service.findJsonByBusinesstype(page,rows,user.getCurrentSapDataCollection(),tablename.toUpperCase());
+		JSONObject json = runtime_ColumnInfo_Service.findJsonByBusinesstype(page,rows,sidx,sord,user.getCurrentSapDataCollection(),tablename.toUpperCase());
 		return json==null?"{}":json;
 	}
 	@RequestMapping(value=("/{tablename}"),method=RequestMethod.POST)

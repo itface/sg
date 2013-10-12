@@ -29,8 +29,8 @@ public class CompanyServiceImpl implements CompanyService{
 		list.add(sapDataCollection.getId());
 		int index =2;
 		if(companyCode!=null&&!"".equals(companyCode)){
-			sql.append(" and t.comp_code=?"+(index++));
-			list.add(companyCode);
+			sql.append(" and t.comp_code like ?"+(index++));
+			list.add("%"+companyCode+"%");
 		}
 		return dao.findTotalCount(sql.toString(), list.toArray());
 	}
@@ -40,17 +40,21 @@ public class CompanyServiceImpl implements CompanyService{
 		return dao.find("from Company t where t.sapclient=?1",new Object[]{sapDataCollection.getId()});
 	}
 	@Override
-	public List<Company> findByPage(SapDataCollection sapDataCollection,String companyCode, int rows, int page) {
+	public List<Company> findByPage(SapDataCollection sapDataCollection,String companyCode, int rows, int page,String sidx,String sord) {
 		// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer("from Company t where t.sapclient=?1");
 		List list = new ArrayList();
 		list.add(sapDataCollection.getId());
 		int index =2;
 		if(companyCode!=null&&!"".equals(companyCode)){
-			sql.append(" and t.comp_code=?"+(index++));
-			list.add(companyCode);
+			sql.append(" and t.comp_code like ?"+(index++));
+			list.add("%"+companyCode+"%");
 		}
-		sql.append(" order by t.comp_code asc");
+		if(sidx!=null&&!"".equals(sidx)){
+			sql.append(" order by t."+sidx+" "+sord);
+		}else{
+			sql.append(" order by t.comp_code asc");
+		}
 		return dao.findByPage(sql.toString(), list.toArray(),page,rows);
 	}
 	@Override
@@ -63,9 +67,9 @@ public class CompanyServiceImpl implements CompanyService{
 		return dao.find("from Company t where t.sapclient=?1 and t.comp_code like ?2",new Object[]{sapDataCollection.getId(),"%"+companyCode==null?"":companyCode+"%"});
 	}
 	@Override
-	public JSONObject findDataOfJqgridByPage(SapDataCollection sapDataCollection,String companyCode,int rows,int page){
+	public JSONObject findDataOfJqgridByPage(SapDataCollection sapDataCollection,String companyCode,int rows,int page,String sidx,String sord){
 		// TODO Auto-generated method stub
-		List<Company> list = this.findByPage(sapDataCollection, companyCode,rows,page);
+		List<Company> list = this.findByPage(sapDataCollection, companyCode,rows,page,sidx,sord);
 		if(list!=null){
 			long total = this.findTotalNumByPage(sapDataCollection, companyCode);
 			Jqgrid_DataJson jsonData = new Jqgrid_DataJson(page,rows,total,list);

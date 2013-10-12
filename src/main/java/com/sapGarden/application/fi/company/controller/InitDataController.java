@@ -45,11 +45,19 @@ public class InitDataController {
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("dataGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY));
+		map.put("client", user.getCurrentSapDataCollection().getSapserverclient());
 		return new ModelAndView("/application/synConfig/fi/company/initData",map);
 	}
 	@RequestMapping(value=("/validateTable"))
 	public @ResponseBody boolean validateColumn(){
-		return initDataService.validateTable();
+		boolean flag = initDataService.validateTable();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return flag;
 	}
 	@RequestMapping(value=("/repairTable"))
 	public @ResponseBody void repairTable(){

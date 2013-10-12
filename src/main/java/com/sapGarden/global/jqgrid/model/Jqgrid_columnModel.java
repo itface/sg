@@ -30,7 +30,7 @@ public class Jqgrid_columnModel implements Serializable{
 		this.stype=stype;
 		this.search=search;
 		this.searchoptions=searchoptions;
-		this.sortable=false;
+		this.sortable=true;
 	}
 	public String getName() {
 		return name;

@@ -53,10 +53,13 @@ $(function(){
 		var compareDataGridOptions=${compareDataGridOptions};
 		if(compareDataGridOptions!=null){
 			$.extend(compareDataGridOptions,{
+				datatype:'local',
+				loadonce:true,
 				contextPath:"${ctx}",
 				height:$(window).height()-230,
 				autoWidth:true,
 				caption:'对比结果',
+				loadui:'',
 				id:"compareDataGrid", 
 				eventModels:{
 					afterInsertRow: function(rowid,rowdata,rowelem){
@@ -73,6 +76,18 @@ $(function(){
 								}
 							}
 						}
+					},
+					loadComplete:function(json){
+						if(json.differenceNum!=undefined&&json.differenceNum!=null){
+							$(window).blockUI('remove');
+							if(json.differenceNum>0){
+								$('#sapToLocal').show();
+							}else{
+								$('#sapToLocal').hide();
+							}
+							showCompareResult(json.totalSapNum,json.totalGardenNum,json.onlySapNum,json.onlyGardenNum,json.differenceNum,json.sameNum);
+							alert("对比成功");
+						}
 					}
 				}
 			});
@@ -83,16 +98,18 @@ $(function(){
 	function showCompareResult(totalSapNum,totalGardenNum,onlySapNum,onlyGardenNum,differenceNum,sameNum){
 		var s = "";
 		if(parseInt(differenceNum)>0){
-			 s = "数据校对完成。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。SAP有Garden无的数据有"+onlySapNum+"条，Garden有SAP无的数据有"+onlyGardenNum+"条。完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";
+			 s = "数据校对有差异。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。SAP有Garden无的数据有"+onlySapNum+"条，Garden有SAP无的数据有"+onlyGardenNum+"条。完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";
 		}else{
-			 s = "数据校对完成。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";
-			
+			 s = "数据校对无差异。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。完全相同的有"+sameNum+"条。";
 		}
 		$(".check_text").empty();
 		$(".check_text").append(s);
 	}
 	function initElEvent(){
 		$('#compareData').bind('click',function(e){
+			$(window).blockUI();
+			jQuery("#compareDataGrid").jqGrid('setGridParam',{datatype:'json',url:'${ctx}/application/fi/company/compareData/compare',search:false}).trigger("reloadGrid");
+			/*
 			$(window).blockUI();
 			$.ajax({
 				url:'${ctx}/application/fi/company/compareData/compare',
@@ -102,12 +119,17 @@ $(function(){
 						try{
 							if(json!=null){
 								var data = json.dataList;
+								//jQuery("#compareDataGrid").jqGrid('setGridParam',{datatype:'json',data:data,search:false}).trigger("reloadGrid");
 								jQuery("#compareDataGrid").clearGridData(true);
 								jQuery("#compareDataGrid")[0].addJSONData(data);
+								if(json.differenceNum>0){
+									$('#sapToLocal').show();
+								}else{
+									$('#sapToLocal').hide();
+								}
 								showCompareResult(json.totalSapNum,json.totalGardenNum,json.onlySapNum,json.onlyGardenNum,json.differenceNum,json.sameNum);
 							}
 							alert("对比成功");
-							$('#sapToLocal').show();
 							$(window).blockUI('remove');
 						}catch(e){
 							alert('装载数据异常');
@@ -118,7 +140,7 @@ $(function(){
 					alert('校对失败');
 					$(window).blockUI('remove');
 				}
-			});
+			});*/
 		});
 		$('#sapToLocal').bind('click',function(e){
 			$(window).blockUI();

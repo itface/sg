@@ -29,6 +29,8 @@
 				    rowNum:(options.pager==""?10000:options.rowNum),
 				    rowList:options.rowList,
 				    caption:options.caption,
+				    sortable:options.sortable,
+					loadonce:options.loadonce,
 					ondblClickRow:options.ondblClickRow
 			},options.eventModels));
 	}
@@ -116,6 +118,8 @@
 		baseUrl: "",
 		autoWidth:false,
 		rownumWidth:30,
+		sortable:true,
+		loadonce:false,
 		width:900,
 		height: 400,
 		page: 1,

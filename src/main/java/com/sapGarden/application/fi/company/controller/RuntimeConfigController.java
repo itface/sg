@@ -37,8 +37,8 @@ public class RuntimeConfigController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("sapclient", sapclient);
 		if(job!=null&&job.getJobstatus()==1){
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			map.put("jobMemo", "<span style='font-weight:normal;'>定时同步运行中;起始时间："+sf.format(job.getJobbegindate())+"，间隔时间："+job.getIntervalminute()+"分钟</span>");
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			map.put("jobMemo", "<span style='font-weight:normal;color:red;'>定时同步;起始时间："+sf.format(job.getJobbegindate())+"，间隔时间："+job.getIntervalminute()+"分钟</span>");
 		}else{
 			map.put("jobMemo", "<span style='color:red;font-weight:normal;'>停止运行</span>");
 		}

@@ -56,8 +56,8 @@ public class CommonSchedulingController {
 		}
 		map.put("job", job);
 		map.put("type", type2);
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		map.put("currentStatus", job.getJobstatus()==0?"<span style='color:red;'>停止运行</span>":"<span>定时同步运行中;起始时间："+sf.format(job.getJobbegindate())+"，间隔时间："+job.getIntervalminute()+"分钟</span>");
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		map.put("currentStatus", job.getJobstatus()==0?"<span style='color:red;'>停止运行</span>":"<span style='color:red;'>定时同步;起始时间："+sf.format(job.getJobbegindate())+"，间隔时间："+job.getIntervalminute()+"分钟</span>");
 		if("realtime".equals(type1)){
 			return new ModelAndView("/application/synConfig/common/scheduling_realtime",map);
 		}
