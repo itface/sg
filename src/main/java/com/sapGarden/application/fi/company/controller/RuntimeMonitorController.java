@@ -1,10 +1,14 @@
 package com.sapGarden.application.fi.company.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
@@ -20,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
 import com.sapGarden.application.fi.company.service.CompanyLogService;
+import com.sapGarden.application.fi.company.service.ExportExcelService;
 import com.sapGarden.system.org.model.User;
 
 @Controller("company_runtimeMonitor")
@@ -30,6 +35,8 @@ public class RuntimeMonitorController {
 	@Autowired
 	@Qualifier("commonMonitor")
 	private CommonConstructJqgridService commonConstructJqgridService;
+	@Autowired
+	private ExportExcelService exportExcelService;
 	@Autowired
 	private CompanyLogService companyLogService;
 	
@@ -61,5 +68,10 @@ public class RuntimeMonitorController {
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		JSONObject json = companyLogService.findJqgridData(user.getCurrentSapDataCollection(), companyCode, optflag, bdate, edate,rows,page,sidx,sord);
 		return json;
+	}
+	@RequestMapping(value="/exportLog")
+	public @ResponseBody void exportLog(HttpServletResponse response,String companyCode,String optflag,String bdate,String edate) throws SecurityException, IllegalArgumentException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException{
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		exportExcelService.exportLogExcel(user.getCurrentSapDataCollection(), companyCode, optflag, bdate, edate, response);
 	}
 }

@@ -11,4 +11,5 @@ import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 public interface ExportExcelService {
 
 	public void exportExcel(SapDataCollection sapDataCollection,String companyCode,HttpServletResponse response)throws IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, URISyntaxException;
+	public void exportLogExcel(SapDataCollection sapDataCollection,String companyCode,String optflag,String bdate,String edate,HttpServletResponse response)throws IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, URISyntaxException;
 }

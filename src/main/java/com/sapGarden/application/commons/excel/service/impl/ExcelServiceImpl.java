@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -20,8 +22,6 @@ import org.springframework.stereotype.Service;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.excel.service.ExcelService;
 import com.sapGarden.application.commons.excel.util.ExcelWriter;
-import com.sapGarden.application.commons.runtime.columninfo.model.RuntimeColumnInfo;
-import com.sapGarden.application.fi.company.model.Company;
 @Service
 public class ExcelServiceImpl implements ExcelService{
 
@@ -37,7 +37,7 @@ public class ExcelServiceImpl implements ExcelService{
 		return path;
 	}
 	@Override
-	public String generateExcel(List<RuntimeColumnInfo> cols,List list,SapDataCollection sapDataCollection,String type,String excelName) throws IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, URISyntaxException {
+	public String generateExcel(String[] cols,String[] fields,List list,Class dataClass,SapDataCollection sapDataCollection,String type,String excelName) throws IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, URISyntaxException {
 		// TODO Auto-generated method stub
 		String basePath = getBasePath();
 		String filepath = basePath+File.separator+type+sapDataCollection.getId();
@@ -55,19 +55,24 @@ public class ExcelServiceImpl implements ExcelService{
 		ExcelWriter excelWriter = new ExcelWriter(os);
 		int rowNum = 0;
 		excelWriter.createRow(rowNum++);
-		for(int j=0;j<cols.size();j++){
-			RuntimeColumnInfo col = cols.get(j);
-			excelWriter.setCell(j, col.getTargetColumnName()+"("+col.getTargetColumn()+")");
+		for(int j=0;j<cols.length;j++){
+			excelWriter.setCell(j, cols[j]);
 		}
-		for(Object obj : list){
-			excelWriter.createRow(rowNum++);
-			for(int j=0;j<cols.size();j++){
-				RuntimeColumnInfo col = cols.get(j);
-				String field = col.getTargetColumn();
-				String setFieldMethod = "get"+field.substring(0, 1).toUpperCase()+field.substring(1).toLowerCase();
-				Method method = Company.class.getMethod(setFieldMethod, new Class[]{});
-				Object value = method.invoke(obj, new Object[]{});
-				excelWriter.setCell(j, value);
+		if(list!=null&&list.size()>0){
+			for(Object obj : list){
+				excelWriter.createRow(rowNum++);
+				for(int j=0;j<fields.length;j++){
+					String field = fields[j];
+					String setFieldMethod = "get"+field.substring(0, 1).toUpperCase()+field.substring(1).toLowerCase();
+					Method method = dataClass.getMethod(setFieldMethod, new Class[]{});
+					Object value = method.invoke(obj, new Object[]{});
+					if(value instanceof Date){
+						SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						excelWriter.setCell(j, sf.format(value));
+					}else{
+						excelWriter.setCell(j, value);
+					}
+				}
 			}
 		}
 		excelWriter.export();
@@ -75,7 +80,7 @@ public class ExcelServiceImpl implements ExcelService{
 	}
 	@Override
 	public void downloadExcel(HttpServletResponse response,
-			List<RuntimeColumnInfo> cols, List list,
+			String[] cols,String[] fields, List list,Class dataClass,
 			SapDataCollection sapDataCollection, String type, String excelName)
 			throws IOException, SecurityException, NoSuchMethodException,
 			IllegalArgumentException, IllegalAccessException,
@@ -86,19 +91,32 @@ public class ExcelServiceImpl implements ExcelService{
 		ExcelWriter excelWriter = new ExcelWriter(response.getOutputStream());
 		int rowNum = 0;
 		excelWriter.createRow(rowNum++);
-		for(int j=0;j<cols.size();j++){
-			RuntimeColumnInfo col = cols.get(j);
-			excelWriter.setCell(j, col.getTargetColumnName()+"("+col.getTargetColumn()+")");
+		for(int j=0;j<cols.length;j++){
+			excelWriter.setCell(j,cols[j]);
+			//RuntimeColumnInfo col = cols.get(j);
+			//excelWriter.setCell(j, col.getTargetColumnName()+"("+col.getTargetColumn()+")");
 		}
-		for(Object obj : list){
-			excelWriter.createRow(rowNum++);
-			for(int j=0;j<cols.size();j++){
-				RuntimeColumnInfo col = cols.get(j);
-				String field = col.getTargetColumn();
-				String setFieldMethod = "get"+field.substring(0, 1).toUpperCase()+field.substring(1).toLowerCase();
-				Method method = Company.class.getMethod(setFieldMethod, new Class[]{});
-				Object value = method.invoke(obj, new Object[]{});
-				excelWriter.setCell(j, value);
+		if(list!=null&&list.size()>0){
+			for(Object obj : list){
+				excelWriter.createRow(rowNum++);
+				for(int j=0;j<fields.length;j++){
+					String field = fields[j];
+					String setFieldMethod = "get"+field.substring(0, 1).toUpperCase()+field.substring(1).toLowerCase();
+					Method method = dataClass.getMethod(setFieldMethod, new Class[]{});
+					Object value = method.invoke(obj, new Object[]{});
+					if(value instanceof Date){
+						SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						excelWriter.setCell(j, sf.format(value));
+					}else if("optflag".equals(field)){
+						if("E".equals(value)){
+							excelWriter.setCell(j, "操作失败");
+						}else if("S".equals(value)){
+							excelWriter.setCell(j, "操作成功");
+						}
+					}else{
+						excelWriter.setCell(j, value);
+					}
+				}
 			}
 		}
 		excelWriter.export();

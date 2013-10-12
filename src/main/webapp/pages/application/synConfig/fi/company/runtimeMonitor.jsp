@@ -35,7 +35,7 @@
 	    <input type="text"  class="input1" id="companyCode" value="公司代码">
 	    <span style="float:left;padding:5px"><input type="checkbox" id="errorLog">&nbsp;仅异常日志</span>
 	    <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfCommon" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">检索日志</a> 
-	    <a href="javascript:void(0);" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">导出日志</a> 
+	    <a href="javascript:void(0);" class="btn" id="expertExcel" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">导出日志</a> 
 	    <a href="javascript:void(0);" style="display:none" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">运行统计</a> </div>
 	</div>
 	<div style="padding:10px;">
@@ -50,6 +50,7 @@
 <script>
 $(function(){
 	var type='${type}';
+	var queryCondition;
 	init();
 	function init(){
 		dynamicGrid();
@@ -92,6 +93,13 @@ $(function(){
                 $(this).val(this.defaultValue);
              }
 		});
+		$('#expertExcel').bind('click',function(e){
+			if(queryCondition){
+				open('${ctx}/application/fi/company/runtimeMonitor/exportLog?bdate='+queryCondition.bdate+'&edate='+queryCondition.edate+'&optflag='+queryCondition.optflag+'&companyCode='+queryCondition.companyCode,'_self');
+			}else{
+				alert('请先检索日志，只能导出已检索的日志。');
+			}
+		});
 		$(".queryLogBtn").bind('click',function(e){
 			//$(window).blockUI();
 			var bdate = '';
@@ -120,6 +128,7 @@ $(function(){
 				companyCode = '';
 				jQuery("#monitorGrid").jqGrid('setCaption',"一周内日志");
 			}
+			queryCondition={bdate:bdate,edate:edate,companyCode:companyCode,optflag:errorLog};
 			$.extend(postdata, {bdate:bdate,edate:edate,companyCode:companyCode,optflag:errorLog});
 			jQuery("#monitorGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
 			//$(window).blockUI('remove');
