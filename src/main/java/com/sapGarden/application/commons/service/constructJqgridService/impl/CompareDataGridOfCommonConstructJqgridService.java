@@ -40,6 +40,7 @@ public class CompareDataGridOfCommonConstructJqgridService implements CommonCons
 			columnNames[0]="dataid";
 			int count=1;
 			for(RuntimeColumnInfo runtimeColumnInfo : list){
+				System.out.println(runtimeColumnInfo.getSourceColumnName());
 				columnNames[count++]="S_"+runtimeColumnInfo.getSourceColumnName();
 				columnNames[count++]="G_"+runtimeColumnInfo.getSourceColumnName();
 			}

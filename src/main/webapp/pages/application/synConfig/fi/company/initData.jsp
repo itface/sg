@@ -46,7 +46,7 @@ $(function(){
 			if(dataGridOptions!=null){
 				$.extend(dataGridOptions,{
 					contextPath:"${ctx}",
-					height:$(window).height()-220,
+					height:$(window).height()-180,
 					autoWidth:true,
 					id:"dataGrid",
 					caption:'公司代码',
@@ -64,14 +64,14 @@ $(function(){
 		}
 		function initEvent(){
 			$('#initData').bind('click',function(e){
-				if(!confirm("初始化将会清空表里数据，是否确定执行")){
+				if(!confirm("初始化将会清空Garden中现有的【公司代码】数据，确定要执行吗？")){
 					return false;
 				}
 				var dialog = $.dialog({
 			 		id:'dia',
 				    lock: true,
-				    width: 400,
-			    	height: 150,
+				    width: 500,
+			    	height: 220,
 				    min:false,
 				    max:false,
 				    cancel:false,

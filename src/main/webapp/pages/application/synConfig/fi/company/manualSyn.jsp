@@ -59,7 +59,7 @@ $(function(){
 				loadui:'',
 				sortable:true,
 				loadonce:true,
-				height:$(window).height()-200,
+				height:$(window).height()-150,
 				eventModels:{
 					//禁止排序，排序造成数据丢失，因为数据是通过jQuery("#resultGrid")[0].addJSONData(json)。
 					/*
@@ -68,6 +68,11 @@ $(function(){
 					},*/
 					loadComplete:function(json){
 						$(window).blockUI('remove');
+						if(json!=null&&json!=''&&json.rows.length>0){
+							$('#manualSyn').show();
+						}else{
+							$('#manualSyn').hide();
+						}
 					}
 				}
 			}
@@ -90,6 +95,7 @@ $(function(){
 		$('#testCall').bind('click',function(e){
 			$(window).blockUI();
 			jQuery("#resultGrid").jqGrid('setGridParam',{datatype:'json',url:'${ctx}/application/fi/company/manualSyn/testCall',search:false}).trigger("reloadGrid");
+			//$('#manualSyn').show();
 			/*
 			$.ajax({
 				url:'${ctx}/application/fi/company/manualSyn/testCall',
@@ -156,7 +162,7 @@ $(function(){
 			           			var ret = jQuery("#resultGrid").jqGrid('delRowData',rowids[i]);
 			           		}
 			           	}
-						alert('手工同步成功');
+						alert('选择的数据从SAP同步到Garden同步成功。');
 						$(window).blockUI('remove');
 					}catch(e){
 						alert('手工同步异常');

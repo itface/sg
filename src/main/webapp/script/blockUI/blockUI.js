@@ -64,6 +64,7 @@
 	}
 	function removeBlockUI(container){
 		if(!checkELType(container)){
+			$('.blockUI_class').css('cursor','default');
 			$('.blockUI_class').remove();
 			$('.blockUI_progress').remove();
 		}else{

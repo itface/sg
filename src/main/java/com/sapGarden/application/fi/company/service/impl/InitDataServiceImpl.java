@@ -62,15 +62,20 @@ public class InitDataServiceImpl implements InitDataService{
 			return;
 		}
 		progress.setStarttime((new Date()).getTime());
+		progress.setPercentage(20);
+		progress.setText("正在清空Garden中的原有公司代码数据....");
 		companyService.removeAll(sapDataCollection);
 		progress.setPercentage(25);
-		progress.setPercentage(26);
+		progress.setText("Garden中的原有公司代码数据清空完毕。");
 		if(!ifRun(threadid,progress)){
 			progress=null;
 			return;
 		}
+		progress.setPercentage(26);
+		progress.setText("正在从SAP（"+sapDataCollection.getSapserverclient()+"）读取数据....");
 		List<CommonSynModel> list = getSapDataService.getData(sapDataCollection);
 		progress.setPercentage(40);
+		progress.setText("正在把从SAP（"+sapDataCollection.getSapserverclient()+"）读取的数据初始化到Garden中....");
 		if(list!=null&&list.size()>0){
 			progress.setTotalNum(list.size());
 			progress.setTotalEntity(list.size());

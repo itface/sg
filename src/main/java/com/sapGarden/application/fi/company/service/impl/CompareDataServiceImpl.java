@@ -113,14 +113,15 @@ public class CompareDataServiceImpl implements CompareDataService{
 						CompanyCompareDataModel compareDataModel = new CompanyCompareDataModel(null,detail);
 						compareDataModelList.add(compareDataModel);
 						onlySapNum++;
+						differenceNum++;
 					}
-					
 				}
 				//把sap中没有，garden中有的公司添加进来
 				if(companyList!=null){
 					for(Company company : companyList){
 						compareDataModelList.add(new CompanyCompareDataModel(company,null));
 						onlyGardenNum++;
+						differenceNum++;
 					}
 				}
 			}

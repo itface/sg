@@ -102,7 +102,7 @@ Ext.onReady(function(){
                    tree.loader.dataUrl='ajax?cmd=API_Login_GetDep&nodeId='+node.id;    //定义子节点的Loader    
     }); 
     */
-    myTree.on("click",function(node,e){         	        
+    myTree.on("click",function(node,e){      	        
          	        if(!node.isLeaf()){
 		                e.stopEvent();//非叶子节点则不触发
                   }else{
@@ -129,7 +129,7 @@ Ext.onReady(function(){
             }
 		}
     });
-    //myTree.expandAll();
+    myTree.expandAll();
     var tbar = myTree.getTopToolbar();
     tbar.add(filterFiled);
     tbar.doLayout();

@@ -107,7 +107,7 @@ $(function(){
 			    beforeSelectRow:function(rowid,e){
 			    	if($(e.target).attr('type')=='checkbox'){
 			    		var c = $('#jqg_list_'+rowid).attr('checked');
-				    	if(confirm('是否要更改同步状态')){
+				    	if(confirm('更改当前字段的同步状态？')){
 				    		checked = c;
 				    		checked = $('#jqg_list_'+rowid).attr('checked');
 				    		return true;

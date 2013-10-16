@@ -39,15 +39,24 @@ a{ font-size:12px; text-decoration:none}
 <body onload="$('#p').progressbar('setValue',0);setTimeout('init()',1000);">
 <div>
 <div>
-	<div id='pText' style='height:40px;padding-top:10px;padding-left:10px'>正在校验表结构...</div>
-	<div id="p" style="width:400px;"  class="easyui-progressbar"></div>
+	<div id='pText' style='height:130px;padding-top:10px;padding-left:35px'>
+		<div style='height:20px' id='ptext1'>校验表结构......<span id='ptext1ok' style='display:none'>OK</span><span id='ptext1cancel' style='display:none'>用户终止</span></div>
+		<div style='height:20px' id='ptext2'>检查系统运行环境......<span id='ptext2ok' style='display:none'>OK</span><span id='ptext2cancel' style='display:none'>用户终止</span></div>
+		<div style='height:20px' id='ptext3'>清空Garden中的原有公司代码数据......<span id='ptext3ok' style='display:none'>OK</span><span id='ptext3cancel' style='display:none'>用户终止</span></div>
+		<div style='height:20px' id='ptext4'>从SAP（<script>document.write(frameElement.api.opener.$.dialog.data('client'));</script>）读取数据......<span id='ptext4ok' style='display:none'>OK</span><span id='ptext4cancel' style='display:none'>用户终止</span></div>
+		<div style='height:20px' id='ptext5'>数据初始化到Garden中......<span id='ptext5ok' style='display:none'>OK</span><span id='ptext5cancel' style='display:none'>用户终止</span></div>
+	</div>
+	<div style="margin:0 35px;">
+		<div style='' id='ptextResult'></div>
+		<div id="p" style="width:400px;"  class="easyui-progressbar"></div>
+	</div>
 </div>
 <!-- div style='right:0px;bottom:5px;height:20px;position:absolute'>
 <input type='button' value='取消' id='cancel' onclick="cancelInit()"/>
 <input type='button' value='确定' id='ok' style='display:none' onclick='closeWin()'/>
 </div-->
 <div class="biangeng_botton_main">
-  <a href="javascript:void(0);" class="btn4 cancelBtn" id='cancel' onclick="cancelInit()" onMouseOver="this.className='btn_hover2'" onMouseOut="this.className='btn4'" style="float:right;display:none">取消</a> 
+  <a href="javascript:void(0);" class="btn4 cancelBtn" id='cancel' onclick="cancelInit()" onMouseOver="this.className='btn_hover2'" onMouseOut="this.className='btn4'" style="float:right;">取消</a> 
   <a href="javascript:void(0);" class="btn4 saveBtn" id='ok' onclick='okBtnEvent()' onMouseOver="this.className='btn_hover2'" onMouseOut="this.className='btn4'" style="float:right;display:none">确定</a> 
 </div>
 </div>
@@ -55,6 +64,7 @@ a{ font-size:12px; text-decoration:none}
 <script type="text/javascript">
 var cancelFlag = false;
 var client = frameElement.api.opener.$.dialog.data('client');
+var progressId = Math.round(Math.random()*1000000);//随机数，用于记录进度条id
 function closeWin(){
 	var api = frameElement.api;
 	var  W = api.opener; 
@@ -68,10 +78,11 @@ function cancelInit(){
 	cancelFlag=true;
 	$.ajax({
 		url:'${ctx}/application/fi/company/initData/cancelInit',
+		data:{progressId:progressId},
 		async:false
 	});
 	//掩饰一秒执行，因为如果不延时，直接关闭窗口，执行初始化的ajax还未执行完，会跳进error方法
-	setTimeout(function(){alert('取消成功');closeWin();},3500); 
+	setTimeout(function(){alert('取消成功');closeWin();},2500); 
 }
 
 function okBtnEvent(){
@@ -82,86 +93,190 @@ function okBtnEvent(){
 	closeWin();
 }
 function init(){
+		interval=setInterval(getPercentage, 100);
 		$.ajax({
 			url:'${ctx}/application/fi/company/initData/validateTable',
 			async:false,
+			cache:false,
+			data:{progressId:progressId},
 			success:function(status){
-				$('#cancel').show();
-				$('#p').progressbar('setValue',10);
 				if(status==false||status=='false'){
 					if(!confirm("表结构已经变化，如要继续执行初始化，系统将会修复表结构，是否继续")){
-						closeWin();		
+						closeWin();	
 					}else{
-						$('#pText').text('正在修复表结构...');
 						$.ajax({
 							url:'${ctx}/application/fi/company/initData/repairTable',
 							async:false,
+							cache:false,
+							data:{progressId:progressId},
 							success:function(){
-								$('#p').progressbar('setValue',10);
+								setTimeout("donInit()",2000);
 							},
 							error:function(XMLHttpRequest,textStatus,errorThrown){
-								alert('修复表结构异常异常');
-								closeWin();
+								$('#ptextResult').text('修复表结构异常异常');
+								if(interval){
+									clearInterval(interval);
+								}
+								//setTimeout(function(){closeWin();},3000); 
 							}
 						});
 					}
+				}else{
+					setTimeout("donInit()",2000);
 				}
 			},
 			error:function(XMLHttpRequest,textStatus,errorThrown){
-				$('#p').progressbar('setValue',10);
-				alert('校验表结构异常');
-				closeWin();
-			}
-		});
-		$.ajax({
-			url:'${ctx}/application/fi/company/initData/doInit',
-			type: "GET",
-			cache:false,
-			success:function(){
+				$('#ptextResult').text('校验表结构异常');
 				if(interval){
 					clearInterval(interval);
 				}
-				if(!cancelFlag){
-					getPercentage();
-				}
-			},
-			error:function(XMLHttpRequest,textStatus,errorThrown){
-				alert('执行初始化异常');
-				closeWin();
+				//setTimeout(function(){closeWin();},3000); 
 			}
 		});
-		interval=setInterval(getPercentage, 100);
-		function getPercentage(){
-			$.ajax({
-				url:'${ctx}/application/fi/company/initData/getProgressModel',
-				async:false,
-				cache:false,
-				datatype:'json',
-				success:function(json){
-					if(json!=null){
-						var percent=json.percentage;
-						if(json.over==false||json.over=='false'){
-							$('#p').progressbar('setValue',percent); 
-							if(percent>10&&percent<25){
-								$('#pText').text('正在清空Garden中的原有公司代码数据....');
-							}else if(percent==25){
-								$('#pText').text('Garden中的原有公司代码数据清空完毕。');
-							}else if(percent>25){
-								$('#pText').text('正在从SAP（210）读取数据，初始化Garden中公司代码数据....');
-							}
-						}else{
-							$('#p').progressbar('setValue',100);  
-							setTimeout(function(){$('#p').remove();},200);
-							$('#pText').text("Garden的公司代码数据初始化完成，"+"本次初始化共"+json.totalNum+"条记录，"+"耗时"+((json.endtime-json.starttime)/1000)+"秒。");
-							$('#cancel').remove();
-							$('#ok').show();
-							clearInterval(interval);
-						}
+}
+function donInit(){
+	$.ajax({
+		url:'${ctx}/application/fi/company/initData/doInit',
+		type: "GET",
+		cache:false,
+		data:{progressId:progressId},
+		success:function(){
+			if(interval){
+				clearInterval(interval);
+			}
+			if(!cancelFlag){
+				getPercentage();
+			}
+		},
+		error:function(XMLHttpRequest,textStatus,errorThrown){
+			$('#ptextResult').text('执行初始化异常');
+			if(interval){
+				clearInterval(interval);
+			}
+			//setTimeout(function(){closeWin();},3000); 
+		}
+	});
+}
+function getPercentage(){
+	$.ajax({
+		url:'${ctx}/application/fi/company/initData/getProgressModel',
+		async:false,
+		cache:false,
+		datatype:'json',
+		data:{progressId:progressId},
+		success:function(json){
+			if(json!=null&&json!=''){
+				var percent=json.percentage;
+				var cancel = json.cancel;
+				if(percent<10&&cancel==true){
+					$('#ptext1ok').hide();
+					$('#ptext1cancel').show();
+				}else if(percent>=10&&percent<17){
+					if(cancel==true||cancel=='true'){
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').hide();
+						$('#ptext2cancel').show();
+					}else{
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').hide();
+						$('#ptext2cancel').hide();
 					}
 				}
-			});
+				if(percent>=17&&percent<25){
+					if(cancel==true||cancel=='true'){
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').show();
+						$('#ptext2cancel').hide();
+						$('#ptext3ok').hide();
+						$('#ptext3cancel').show();
+					}else{
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').show();
+						$('#ptext2cancel').hide();
+						$('#ptext3ok').hide();
+						$('#ptext3cancel').hide();
+					}
+				}else if(percent>=25&&percent<40){
+					if(cancel==true||cancel=='true'){
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').show();
+						$('#ptext2cancel').hide();
+						$('#ptext3ok').show();
+						$('#ptext3cancel').hide();
+						$('#ptext4ok').hide();
+						$('#ptext4cancel').show();
+					}else{
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').show();
+						$('#ptext2cancel').hide();
+						$('#ptext3ok').show();
+						$('#ptext3cancel').hide();
+						$('#ptext4ok').hide();
+						$('#ptext4cancel').hide();
+					}
+				}else if(percent>=40&&percent<99){
+					if(cancel==true||cancel=='true'){
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').show();
+						$('#ptext2cancel').hide();
+						$('#ptext3ok').show();
+						$('#ptext3cancel').hide();
+						$('#ptext4ok').show();
+						$('#ptext4cancel').hide();
+						$('#ptext5ok').hide();
+						$('#ptext5cancel').show();
+					}else{
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').show();
+						$('#ptext2cancel').hide();
+						$('#ptext3ok').show();
+						$('#ptext3cancel').hide();
+						$('#ptext4ok').show();
+						$('#ptext4cancel').hide();
+						$('#ptext5ok').hide();
+						$('#ptext5cancel').hide();
+					}
+				}else if(percent>=99){
+						$('#ptext1ok').show();
+						$('#ptext1cancel').hide();
+						$('#ptext2ok').show();
+						$('#ptext2cancel').hide();
+						$('#ptext3ok').show();
+						$('#ptext3cancel').hide();
+						$('#ptext4ok').show();
+						$('#ptext4cancel').hide();
+						$('#ptext5cancel').hide();
+						$('#ptext5ok').show();
+				}
+				if(json.over==false||json.over=='false'){
+					$('#p').progressbar('setValue',percent); 
+					//$('#pText').text(json.text);
+				}else if(cancel!=true&&cancel!='true'){
+					$('#p').progressbar('setValue',100);  
+					setTimeout(function(){$('#p').remove();},200);
+					$('#ptextResult').text("Garden的公司代码数据初始化完成，"+"本次初始化共"+json.totalNum+"条记录，"+"耗时"+((json.endtime-json.starttime)/1000)+"秒。");
+					$('#cancel').remove();
+					$('#ok').show();
+					clearInterval(interval);
+				}
+			}
+		},
+		error:function(){
+			$('#ptextResult').text("读取进读异常");
+			if(interval){
+				clearInterval(interval);
+			}
 		}
-	}
+	});
+}
 /*
 $(document).ready(
 	function(){

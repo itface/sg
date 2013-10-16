@@ -33,6 +33,7 @@ import com.sapGarden.system.org.model.User;
 @RequestMapping("/application/fi/company/initData")
 public class InitDataController {
 
+	private final String PROGRESS_SESSIONATTRIBUTE_NAME = "COMPANY_INITDATA";
 	@Autowired
 	@Qualifier("commonData")
 	private CommonConstructJqgridService commonConstructJqgridService;
@@ -49,41 +50,57 @@ public class InitDataController {
 		return new ModelAndView("/application/synConfig/fi/company/initData",map);
 	}
 	@RequestMapping(value=("/validateTable"))
-	public @ResponseBody boolean validateColumn(){
+	public @ResponseBody boolean validateColumn(HttpServletRequest request,HttpServletResponse response,long progressId){
+		NewProgress progress = new NewProgress();
+		progress.setPercentage(1);
+		progress.setRunstatus(true);
+		progress.setThreadid(progressId);
+		//progress.setText("正在校验表结构...");
+		(request.getSession()).setAttribute(PROGRESS_SESSIONATTRIBUTE_NAME, progress);
 		boolean flag = initDataService.validateTable();
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		progress.setPercentage(10);
 		return flag;
 	}
 	@RequestMapping(value=("/repairTable"))
-	public @ResponseBody void repairTable(){
-		initDataService.repairTable();
+	public @ResponseBody void repairTable(HttpServletRequest request,HttpServletResponse response,long progressId){
+		NewProgress progress = (request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME)==null?null:(NewProgress)((request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME));
+		if(progress!=null&&progressId==progress.getThreadid()){
+			progress.setPercentage(15);
+			//progress.setText("正在修复表结构...");
+			initDataService.repairTable();
+			progress.setPercentage(17);
+		}
+		
 	}
 	@RequestMapping(value=("/doInit"))
-	public @ResponseBody void doInit(HttpServletRequest request,HttpServletResponse response) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
+	public @ResponseBody void doInit(HttpServletRequest request,HttpServletResponse response,long progressId) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		NewProgress progress = (request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME)==null?null:(NewProgress)((request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME));
+		if(progress!=null&&progressId==progress.getThreadid()){
+			initDataService.init(user.getCurrentSapDataCollection(), user.getUsername(), progressId, progress);
+		}
+		/*
 		long currentThreadId = Thread.currentThread().getId();
 		NewProgress progress = new NewProgress();
+		progress.setPercentage(15);
 		progress.setRunstatus(true);
 		progress.setThreadid(currentThreadId);
 		(request.getSession()).setAttribute("COMPANY_INITDATA", progress);
-		initDataService.init(user.getCurrentSapDataCollection(), user.getUsername(), currentThreadId, progress);
+		*/
 	}
 	@RequestMapping(value=("/getProgressModel"))
-	public @ResponseBody JSONObject getProgressModel(HttpServletRequest request){
-		NewProgress progress = (request.getSession()).getAttribute("COMPANY_INITDATA")==null?null:(NewProgress)((request.getSession()).getAttribute("COMPANY_INITDATA"));
+	public @ResponseBody JSONObject getProgressModel(HttpServletRequest request,HttpServletResponse response,long progressId){
+		NewProgress progress = (request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME)==null?null:(NewProgress)((request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME));
 		return JsonUtils.objectToJSONObject(progress, null);
 	}
 	@RequestMapping(value=("/cancelInit"))
-	public @ResponseBody void cancelInit(HttpServletRequest request){
-		NewProgress progress = (request.getSession()).getAttribute("COMPANY_INITDATA")==null?null:(NewProgress)((request.getSession()).getAttribute("COMPANY_INITDATA"));
-		if(progress!=null){
+	public @ResponseBody void cancelInit(HttpServletRequest request,HttpServletResponse response,long progressId){
+		NewProgress progress = (request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME)==null?null:(NewProgress)((request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME));
+		if(progress!=null&&progressId==progress.getThreadid()){
+			progress.setCancel(true);
 			progress.setEndtime((new Date()).getTime());
 			progress.setRunstatus(false);
+			//(request.getSession()).removeAttribute("COMPANY_INITDATA");
 		}
 		//(request.getSession()).removeAttribute("COMPANY_INITDATA");
 	}

@@ -25,7 +25,7 @@
 <form>
 	<div class="toolbar">
 	  <div class="toolbar_left"> 
-	  	  <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfMonthRange" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">一月内的异常日志</a> 
+	  	  <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfMonthRange" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">一月内异常日志</a> 
 	  	  <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfWeekRange" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">一周内日志</a> 
 	  </div>
 	  <div class="toolbar_right">
@@ -63,7 +63,7 @@ $(function(){
 				contextPath:"${ctx}",
 				autoWidth:true,
 				id:"monitorGrid",
-				height:$(window).height()-220,
+				height:$(window).height()-140,//
 				multiselect:false,
 				caption:'运行监控',
 				pager:"#monitorGridTbar",
@@ -94,10 +94,11 @@ $(function(){
              }
 		});
 		$('#expertExcel').bind('click',function(e){
-			if(queryCondition){
+			var dataLength =$('#monitorGrid').jqGrid('getRowData').length;
+			if(queryCondition&&dataLength>0){
 				open('${ctx}/application/fi/company/runtimeMonitor/exportLog?bdate='+queryCondition.bdate+'&edate='+queryCondition.edate+'&optflag='+queryCondition.optflag+'&companyCode='+queryCondition.companyCode,'_self');
 			}else{
-				alert('请先检索日志，只能导出已检索的日志。');
+				alert('没有可导出的数据，请重新检索。');
 			}
 		});
 		$(".queryLogBtn").bind('click',function(e){
@@ -121,7 +122,7 @@ $(function(){
 				edate = $("#edateOfMonthRange").val();
 				companyCode = '';
 				errorLog = 'E';
-				jQuery("#monitorGrid").jqGrid('setCaption',"一个月内的异常日志");
+				jQuery("#monitorGrid").jqGrid('setCaption',"一个月内异常日志");
 			}else if(id=='queryLogOfWeekRange'){
 				bdate = $("#bdateOfWeekRange").val();
 				edate = $("#edateOfWeekRange").val();

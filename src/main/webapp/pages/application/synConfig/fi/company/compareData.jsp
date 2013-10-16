@@ -56,7 +56,7 @@ $(function(){
 				datatype:'local',
 				loadonce:true,
 				contextPath:"${ctx}",
-				height:$(window).height()-230,
+				height:$(window).height()-180,
 				autoWidth:true,
 				caption:'对比结果',
 				loadui:'',
@@ -86,7 +86,7 @@ $(function(){
 								$('#sapToLocal').hide();
 							}
 							showCompareResult(json.totalSapNum,json.totalGardenNum,json.onlySapNum,json.onlyGardenNum,json.differenceNum,json.sameNum);
-							alert("对比成功");
+							alert("数据校对完成");
 						}
 					}
 				}
@@ -98,7 +98,7 @@ $(function(){
 	function showCompareResult(totalSapNum,totalGardenNum,onlySapNum,onlyGardenNum,differenceNum,sameNum){
 		var s = "";
 		if(parseInt(differenceNum)>0){
-			 s = "数据校对有差异。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。SAP有Garden无的数据有"+onlySapNum+"条，Garden有SAP无的数据有"+onlyGardenNum+"条。完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";
+			 s = "数据校对有差异。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。SAP有Garden无的数据有"+onlySapNum+"条，Garden有SAP无的数据有"+onlyGardenNum+"条。<br>完全相同的有"+sameNum+"条，有数据项差异的有"+differenceNum+"条。";
 		}else{
 			 s = "数据校对无差异。SAP有主数据"+totalSapNum+"条，Garden有数据"+totalGardenNum+"条。完全相同的有"+sameNum+"条。";
 		}

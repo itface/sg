@@ -38,15 +38,10 @@ public class RuntimeConfigController {
 		map.put("sapclient", sapclient);
 		if(job!=null&&job.getJobstatus()==1){
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			map.put("jobMemo", "<span style='font-weight:normal;color:red;'>定时同步;起始时间："+sf.format(job.getJobbegindate())+"，间隔时间："+job.getIntervalminute()+"分钟</span>");
+			map.put("jobMemo", "<span style='font-weight:normal;color:red;'>定时同步，起始时间："+sf.format(job.getJobbegindate())+"，间隔时间："+job.getIntervalminute()+"分钟</span>");
 		}else{
 			map.put("jobMemo", "<span style='color:red;font-weight:normal;'>停止运行</span>");
 		}
 		return new ModelAndView("/application/synConfig/fi/company/runtimeConfig",map);
 	}
-
-	
-	
-	
-	
 }

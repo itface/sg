@@ -22,7 +22,8 @@ public class NewProgress {
 	private long starttime;
 	private long endtime;
 	private boolean over;
-	
+	private boolean cancel;
+	private String text;
 	public long getThreadid() {
 		return threadid;
 	}
@@ -70,6 +71,18 @@ public class NewProgress {
 	}
 	public void setOver(boolean over) {
 		this.over = over;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	public boolean isCancel() {
+		return cancel;
+	}
+	public void setCancel(boolean cancel) {
+		this.cancel = cancel;
 	}
 	
 }

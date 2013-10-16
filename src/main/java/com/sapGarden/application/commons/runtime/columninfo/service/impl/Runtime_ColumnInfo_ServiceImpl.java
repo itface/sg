@@ -97,7 +97,7 @@ public  class Runtime_ColumnInfo_ServiceImpl implements Runtime_ColumnInfo_Servi
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
 	public List<RuntimeColumnInfo> findAll(SapDataCollection sapDataCollection,String businesstype) {
 		// TODO Auto-generated method stub
-		List<RuntimeColumnInfo> list = extendDao.find("from RuntimeColumnInfo t where t.businesstype=? and t.sapclient=?  order by t.id asc ", new Object[]{businesstype,sapDataCollection.getId()});//runtimeColumnInfoDao.findAllActiveData(businesstype,client.getId());
+		List<RuntimeColumnInfo> list = extendDao.find("from RuntimeColumnInfo t where t.businesstype=? and t.sapclient=?", new Object[]{businesstype,sapDataCollection.getId()});//runtimeColumnInfoDao.findAllActiveData(businesstype,client.getId());
 		return list;
 	}
 

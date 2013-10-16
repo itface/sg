@@ -52,7 +52,7 @@ $(function(){
 		if(dataGridOptions!=null){
 			$.extend(dataGridOptions,{
 				contextPath:"${ctx}",
-				height:$(window).height()-220,
+				height:$(window).height()-180,
 				autoWidth:true,
 				id:"dataGrid",
 				caption:'公司代码',
