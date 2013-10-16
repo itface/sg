@@ -43,6 +43,7 @@
 </form>
 </body>
 <script>
+var queryflag = false;
 $(function(){
 	init();
 	function init(){
@@ -67,7 +68,11 @@ $(function(){
 						return 'stop';
 					},*/
 					loadComplete:function(json){
-						$(window).blockUI('remove');
+						if(queryflag){
+							$(window).blockUI('remove');
+							queryflag =false;
+							alert('查询成功');
+						}
 						if(json!=null&&json!=''&&json.rows.length>0){
 							$('#manualSyn').show();
 						}else{
@@ -95,6 +100,7 @@ $(function(){
 		$('#testCall').bind('click',function(e){
 			$(window).blockUI();
 			jQuery("#resultGrid").jqGrid('setGridParam',{datatype:'json',url:'${ctx}/application/fi/company/manualSyn/testCall',search:false}).trigger("reloadGrid");
+			queryflag =true;
 			//$('#manualSyn').show();
 			/*
 			$.ajax({
