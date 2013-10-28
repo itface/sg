@@ -25,7 +25,7 @@ import com.sapGarden.system.org.model.Role;
 import com.sapGarden.system.org.model.User;
 import com.sapGarden.system.org.service.RoleService;
 import com.sapGarden.system.startUp.service.StartUpInitialService;
-@Service
+@Service("sapDataCollectionService")
 public class SapDataCollectionServiceImpl implements SapDataCollectionService{
 
 	@Autowired

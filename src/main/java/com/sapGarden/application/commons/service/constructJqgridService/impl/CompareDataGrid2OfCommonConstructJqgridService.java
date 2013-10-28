@@ -13,8 +13,8 @@ import com.sapGarden.application.commons.service.constructJqgridService.CommonCo
 import com.sapGarden.global.jqgrid.model.Jqgrid_ConfigModel;
 import com.sapGarden.global.jqgrid.model.Jqgrid_columnModel;
 import com.sapGarden.global.jqgrid.model.Jqgrid_searchoptions;
-@Service("compareData2")
-public class CompareDataGridOfCommonConstructJqgridService implements CommonConstructJqgridService{
+@Service("compareData")
+public class CompareDataGrid2OfCommonConstructJqgridService implements CommonConstructJqgridService{
 
 	@Autowired
 	private Runtime_ColumnInfo_Service runtime_ColumnInfo_Service;
@@ -36,9 +36,11 @@ public class CompareDataGridOfCommonConstructJqgridService implements CommonCons
 		//return columnNames;
 		String[] columnNames = null;
 		if(list!=null&&list.size()>0){
-			columnNames = new String[list.size()*2+1];
-			columnNames[0]="dataid";
-			int count=1;
+			columnNames = new String[list.size()*2+3];
+			columnNames[0]="id";
+			columnNames[1]="optid";
+			columnNames[2]="datakey";
+			int count=3;
 			for(RuntimeColumnInfo runtimeColumnInfo : list){
 				columnNames[count++]="S_"+runtimeColumnInfo.getSourceColumnName();
 				columnNames[count++]="G_"+runtimeColumnInfo.getSourceColumnName();
@@ -50,11 +52,15 @@ public class CompareDataGridOfCommonConstructJqgridService implements CommonCons
 		List<Jqgrid_columnModel> columnModelList = null;
 		if(list!=null&&list.size()>0){
 			columnModelList=new LinkedList<Jqgrid_columnModel>();
-			Jqgrid_columnModel jqgrid_columnModel_1 = new Jqgrid_columnModel("dataid","dataid",100,true,true,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_1 = new Jqgrid_columnModel("id","id",100,true,true,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_2 = new Jqgrid_columnModel("optid","optid",100,true,true,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_3 = new Jqgrid_columnModel("datakey","datakey",100,true,true,false,"",false,"text",null,null,null);
 			columnModelList.add(jqgrid_columnModel_1);
+			columnModelList.add(jqgrid_columnModel_2);
+			columnModelList.add(jqgrid_columnModel_3);
 			gridWidth += 100;
 			for(RuntimeColumnInfo runtimeColumnInfo : list){
-				String name = runtimeColumnInfo.getSourceColumn().toLowerCase()+"_s";
+				String name = runtimeColumnInfo.getSourceColumn().toLowerCase();
 				String index = name;
 				int width = 150;
 				boolean editable = false;
@@ -69,7 +75,7 @@ public class CompareDataGridOfCommonConstructJqgridService implements CommonCons
 				}
 				Jqgrid_columnModel jqgrid_columnModel = new Jqgrid_columnModel(name,index,width,true,false,editable,edittype,search,searchtype,searchoptions,null,null);
 				columnModelList.add(jqgrid_columnModel);
-				String name2 = runtimeColumnInfo.getSourceColumn().toLowerCase()+"_g";
+				String name2 = runtimeColumnInfo.getSourceColumn().toLowerCase()+"_old";
 				String index2 = name2;
 				int width2 = 150;
 				boolean search2 = false;

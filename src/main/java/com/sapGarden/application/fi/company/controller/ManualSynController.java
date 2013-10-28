@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.sapGarden.application.commons.constants.SjlxTypeName;
-import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
 import com.sapGarden.application.fi.company.service.ManualSynService;
 import com.sapGarden.application.fi.company.service.SynService;
@@ -52,7 +52,7 @@ public class ManualSynController {
 	@RequestMapping("/syn")
 	public @ResponseBody void syn(String list) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		manualSynService.saveManuSynDataOfJqgridToLocal(user.getCurrentSapDataCollection(), list, user.getUsername(), CommonServiceWithLog.OPTTYPE_MANUALSYN, CommonServiceWithLog.IFLOG_YES);
+		manualSynService.saveManuSynDataOfJqgridToLocal(user.getCurrentSapDataCollection(), list, user.getUsername(), CommonService.OPTTYPE_MANUALSYN, CommonService.IFLOG_YES);
 	}
 	
 }

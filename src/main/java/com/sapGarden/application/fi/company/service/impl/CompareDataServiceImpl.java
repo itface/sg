@@ -1,6 +1,7 @@
 package com.sapGarden.application.fi.company.service.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,13 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.jco.model.CommonCompareDataModel;
 import com.sapGarden.application.commons.jco.model.JcoReturnModel;
-import com.sapGarden.application.commons.log.model.CommonLogModel;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.fi.company.model.Company;
 import com.sapGarden.application.fi.company.model.CompanyCompareDataModel;
 import com.sapGarden.application.fi.company.model.CompanyLog;
 import com.sapGarden.application.fi.company.model.bapi_companyCode_getDetail.Export_companyCode_detail;
 import com.sapGarden.application.fi.company.model.bapi_companyCode_getDetail.Export_return;
-import com.sapGarden.application.fi.company.service.CompanyService;
 import com.sapGarden.application.fi.company.service.CompareDataService;
 import com.sapGarden.application.fi.company.service.GetSapDataService;
 import com.sapGarden.global.jqgrid.model.Jqgrid_DataJson;
@@ -32,7 +32,8 @@ public class CompareDataServiceImpl implements CompareDataService{
 	@Qualifier("company_GetSapDataService")
 	private GetSapDataService getSapDataService;
 	@Autowired
-	private CompanyService companyService;
+	@Qualifier("commonService")
+	private CommonService<Company> companyService;
 	private int totalSapNum;
 	private int totalGardenNum;
 	private int onlySapNum;
@@ -68,7 +69,7 @@ public class CompareDataServiceImpl implements CompareDataService{
 			List<JcoReturnModel> jcoReturnModelList = getSapDataService.callRfc(sapDataCollection);
 			if(jcoReturnModelList!=null&&jcoReturnModelList.size()>0){
 				totalSapNum=jcoReturnModelList.size();
-				List<Company> companyList = companyService.find(sapDataCollection);
+				List<Company> companyList = companyService.findAllByCondition(sapDataCollection,"Company",null);
 				totalGardenNum=(companyList==null?0:companyList.size());
 				//把sap和garden中都有的公司信息加进来
 				for(JcoReturnModel jcoReturnModel : jcoReturnModelList){
@@ -128,10 +129,13 @@ public class CompareDataServiceImpl implements CompareDataService{
 		return compareDataModelList;
 	}
 	@Override
-	@Transactional
-	public void saveCompareDataList(boolean ifLog,long sapclient,String opttype,String user,List<CommonCompareDataModel> list) {
+	//@Transactional
+	public void saveCompareDataList(boolean ifLog,long sapclient,String opttype,String user,List<CommonCompareDataModel> list){
 		// TODO Auto-generated method stub
 		if(list!=null&&list.size()>0){
+			List<Company> addList = new ArrayList<Company>();
+			List<Company> delList = new ArrayList<Company>();
+			List<Company> updateList = new ArrayList<Company>();
 			for(CommonCompareDataModel commonCompareDataModel : list){
 				CompanyCompareDataModel compareDataModel = (CompanyCompareDataModel)commonCompareDataModel;
 				String comp_code_s = compareDataModel.getComp_code_s();
@@ -143,7 +147,9 @@ public class CompareDataServiceImpl implements CompareDataService{
 						company.setId(compareDataModel.getDataid());
 						companyService.deleteWithLog(opttype, sapclient, user,Company.class, CompanyLog.class,company);
 					}else{
-						companyService.removeById(compareDataModel.getDataid());
+						Company company = new Company();
+						company.setId(compareDataModel.getDataid());
+						companyService.removeById(compareDataModel.getDataid(),Company.class);
 					}
 				}else if(comp_code_g==null||"".equals(comp_code_g.trim())){
 					//如果sap公司代码不为空，本系统的sap代码为空，则把sap的公司代码同步到本地
@@ -154,7 +160,7 @@ public class CompareDataServiceImpl implements CompareDataService{
 						companyService.add(company);
 					}
 				}else{
-					//如果sap公司代码不为空，本系统的sap代码也不为空，则把本系统中的该公司记录删除，同时把sap的公司代码同步到本地						
+					//如果sap公司代码不为空，本系统的sap代码也不为空，则把本系统中的该公司记录删除，同时把sap的公司代码同步到本地		
 					Company scompany = new Company(comp_code_s,compareDataModel.getComp_name_s(),compareDataModel.getCity_s(),compareDataModel.getCountry_s(),compareDataModel.getCurrency_s(),compareDataModel.getLangu_s(),compareDataModel.getChrt_accts_s(),compareDataModel.getFy_variant_s(),compareDataModel.getVat_reg_no_s(),compareDataModel.getCompany_s(),compareDataModel.getAddr_no_s(),sapclient);
 					scompany.setId(compareDataModel.getDataid());
 					if(ifLog){
@@ -166,11 +172,15 @@ public class CompareDataServiceImpl implements CompareDataService{
 					}
 				}
 			}
+			/*
+			if(addList.size()>0){
+				companyService.addListWithLog(opttype, sapclient, user, Company.class, CompanyLog.class, addList);
+			}*/
 		}
 	}
 	@Override
-	@Transactional
-	public void saveComparedDataOfJqgridToLocal(SapDataCollection sapDataCollection, String list, String user,String opttype,boolean ifLog) {
+	//@Transactional
+	public void saveComparedDataOfJqgridToLocal(SapDataCollection sapDataCollection, String list, String user,String opttype,boolean ifLog){
 		// TODO Auto-generated method stub
 		if(list!=null&&!"".equals(list.trim())){
 			JSONObject json = JsonUtils.objectToJSONObject(list,null);

@@ -18,7 +18,7 @@ import com.sapGarden.application.commons.runtime.scheduling.util.SchedulingUtils
 import com.sapGarden.global.exception.JpaException;
 import com.sapGarden.system.org.model.User;
 
-@Controller
+@Controller("company_RuntimeConfigController")
 @RequestMapping("/application/fi/company/runtimeConfig")
 public class RuntimeConfigController {
 

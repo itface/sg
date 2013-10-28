@@ -1,36 +1,53 @@
-package com.sapGarden.application.fi.company.service.impl;
+package com.sapGarden.application.commons.log.service.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.baseDao.BaseDao;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
-import com.sapGarden.application.fi.company.model.CompanyLog;
-import com.sapGarden.application.fi.company.service.CompanyLogService;
+import com.sapGarden.application.commons.log.service.CommonLogService;
+import com.sapGarden.application.fi.customer.model.KnvvLog;
 import com.sapGarden.global.jqgrid.model.Jqgrid_DataJson;
 import com.sapGarden.global.json.JsonUtils;
-@Service
-public class CompanyLogServiceImpl implements CompanyLogService{
+@Service("commonLogService")
+public class CommonLogServiceImpl implements CommonLogService<Object>{
 
 	@Autowired
-	private BaseDao<CompanyLog> dao;
+	private BaseDao<Object> dao;
+
 	@Override
-	public long findTotalNum(SapDataCollection sapDataCollection,String companyCode, String optflag, String bdate, String edate) {
+	@Transactional
+	public void save(Object t) {
 		// TODO Auto-generated method stub
-		StringBuffer sql = new StringBuffer("select count(*) as nums from CompanyLog t where t.sapclient=?1");
+		dao.persist(t);
+	}
+
+	@Override
+	public long findTotalNum(SapDataCollection sapDataCollection,String className,JSONObject json, String optflag, String bdate, String edate) {
+		// TODO Auto-generated method stub
+		StringBuffer sql = new StringBuffer("select count(*) as nums from "+className+" t where t.sapclient=?1");
 		List list = new ArrayList();
 		list.add(sapDataCollection.getId());
 		int index =2;
-		if(companyCode!=null&&!"".equals(companyCode)){
-			sql.append(" and t.comp_code like ?"+(index++));
-			list.add("%"+companyCode+"%");
+		if(json!=null){
+			Set keys = json.keySet();
+			Iterator it = keys.iterator();
+			while(it.hasNext()){
+				Object key = it.next();
+				if(key!=null&&!"".equals(key.toString())){
+					sql.append(" and t."+key+" like ?"+(index++));
+					list.add("%"+json.getString(key.toString())+"%");
+				}
+			}
 		}
 		if(optflag!=null&&!"".equals(optflag)){
 			sql.append(" and t.optflag=?"+(index++));
@@ -66,16 +83,25 @@ public class CompanyLogServiceImpl implements CompanyLogService{
 		}
 		return dao.findTotalCount(sql.toString(), list.toArray());
 	}
+
 	@Override
-	public List<CompanyLog> find(SapDataCollection sapDataCollection,String companyCode, String optflag, String bdate, String edate) {
+	public List<Object> find(SapDataCollection sapDataCollection,String className,
+			JSONObject json, String optflag, String bdate, String edate) {
 		// TODO Auto-generated method stub
-		StringBuffer sql = new StringBuffer("from CompanyLog t where t.sapclient=?1");
+		StringBuffer sql = new StringBuffer("from "+className+" t where t.sapclient=?1");
 		List list = new ArrayList();
 		list.add(sapDataCollection.getId());
 		int index =2;
-		if(companyCode!=null&&!"".equals(companyCode)){
-			sql.append(" and t.comp_code like ?"+(index++));
-			list.add("%"+companyCode+"%");
+		if(json!=null){
+			Set keys = json.keySet();
+			Iterator it = keys.iterator();
+			while(it.hasNext()){
+				Object key = it.next();
+				if(key!=null&&!"".equals(key.toString())){
+					sql.append(" and t."+key+" like ?"+(index++));
+					list.add("%"+json.getString(key.toString())+"%");
+				}
+			}
 		}
 		if(optflag!=null&&!"".equals(optflag)){
 			sql.append(" and t.optflag=?"+(index++));
@@ -112,28 +138,26 @@ public class CompanyLogServiceImpl implements CompanyLogService{
 		sql.append(" order by t.opttime desc");
 		return dao.find(sql.toString(), list.toArray());
 	}
+
 	@Override
-	public JSONObject findJqgridData(SapDataCollection sapDataCollection,String companyCode, String optflag, String bdate, String edate,int rows,int page,String sidx,String sord) {
+	public List<Object> findByPage(SapDataCollection sapDataCollection,String className,
+			JSONObject json, String optflag, String bdate, String edate,
+			int rows, int page, String sidx, String sord) {
 		// TODO Auto-generated method stub
-		List<CompanyLog> list = this.findByPage(sapDataCollection, companyCode, optflag, bdate, edate,rows,page,sidx,sord);
-		if(list!=null){
-			long total = this.findTotalNum(sapDataCollection, companyCode, optflag, bdate, edate);
-			Jqgrid_DataJson jsonData = new Jqgrid_DataJson(page,rows,total,list);
-			JSONObject jsonObject = JsonUtils.objectToJSONObject(jsonData, null);
-			return jsonObject;
-		}
-		return null;
-	}
-	@Override
-	public List<CompanyLog> findByPage(SapDataCollection sapDataCollection,String companyCode, String optflag, String bdate, String edate,int rows, int page,String sidx,String sord) {
-		// TODO Auto-generated method stub
-		StringBuffer sql = new StringBuffer("from CompanyLog t where t.sapclient=?1");
+		StringBuffer sql = new StringBuffer("from "+className+" t where t.sapclient=?1");
 		List list = new ArrayList();
 		list.add(sapDataCollection.getId());
 		int index =2;
-		if(companyCode!=null&&!"".equals(companyCode)){
-			sql.append(" and t.comp_code like ?"+(index++));
-			list.add("%"+companyCode+"%");
+		if(json!=null){
+			Set keys = json.keySet();
+			Iterator it = keys.iterator();
+			while(it.hasNext()){
+				Object key = it.next();
+				if(key!=null&&!"".equals(key.toString())){
+					sql.append(" and t."+key+" like ?"+(index++));
+					list.add("%"+json.getString(key.toString())+"%");
+				}
+			}
 		}
 		if(optflag!=null&&!"".equals(optflag)){
 			sql.append(" and t.optflag=?"+(index++));
@@ -174,6 +198,21 @@ public class CompanyLogServiceImpl implements CompanyLogService{
 		}
 		return dao.findByPage(sql.toString(), list.toArray(),page,rows);
 	}
-	
 
+	@Override
+	public JSONObject findJqgridData(SapDataCollection sapDataCollection,String className,
+			JSONObject json, String optflag, String bdate, String edate,
+			int rows, int page, String sidx, String sord) {
+		// TODO Auto-generated method stub
+		List<Object> list = this.findByPage(sapDataCollection,className, json, optflag, bdate, edate,rows,page,sidx,sord);
+		if(list!=null){
+			long total = this.findTotalNum(sapDataCollection,className, json, optflag, bdate, edate);
+			Jqgrid_DataJson jsonData = new Jqgrid_DataJson(page,rows,total,list);
+			JSONObject jsonObject = JsonUtils.objectToJSONObject(jsonData, null);
+			return jsonObject;
+		}
+		return null;
+	}
+
+	
 }

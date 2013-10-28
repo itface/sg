@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.sapGarden.application.commons.constants.SjlxTypeName;
+import com.sapGarden.application.commons.excel.service.CommonExpertExcelService;
 import com.sapGarden.application.commons.progress.model.NewProgress;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
 import com.sapGarden.application.fi.company.service.ExportExcelService;
@@ -40,7 +41,8 @@ public class InitDataController {
 	@Autowired
 	private InitDataService initDataService;
 	@Autowired
-	private ExportExcelService excelService;
+	@Qualifier("exportCompanyExcel")
+	private CommonExpertExcelService commonExpertExcelService;
 	@RequestMapping
 	public ModelAndView index(){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -107,7 +109,7 @@ public class InitDataController {
 	@RequestMapping(value=("/exportExcel"),method=RequestMethod.GET)
 	public @ResponseBody void exportExcel(HttpServletResponse response) throws SecurityException, IllegalArgumentException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		excelService.exportExcel(user.getCurrentSapDataCollection(),null, response);
+		commonExpertExcelService.exportExcel(user.getCurrentSapDataCollection(),null, response);
 	}
 	/*
 	@RequestMapping(value=("/removeAll"))

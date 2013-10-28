@@ -1,29 +1,21 @@
 package com.sapGarden.application.commons.log.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.baseDao.BaseDao;
-import com.sapGarden.application.commons.log.service.LogDaoService;
+import com.sapGarden.application.commons.log.service.ExceptionLogDaoService;
 @Service
-public class LogDaoServiceImpl implements LogDaoService{
+public class ExceptionLogDaoServiceImpl implements ExceptionLogDaoService{
 
 	@Autowired
 	private BaseDao dao;
 	@Override
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void add(Object obj) {
 		// TODO Auto-generated method stub
 		dao.persist(obj);
-	}
-	@Override
-	@Transactional
-	public void addList(List<Object> list) {
-		// TODO Auto-generated method stub
-		dao.saveList(list);
 	}
 }

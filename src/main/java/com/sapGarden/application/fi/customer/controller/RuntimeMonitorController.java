@@ -1,4 +1,4 @@
-package com.sapGarden.application.fi.company.controller;
+package com.sapGarden.application.fi.customer.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -25,11 +25,10 @@ import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.excel.service.CommonExpertExcelService;
 import com.sapGarden.application.commons.log.service.CommonLogService;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
-import com.sapGarden.application.fi.company.model.CompanyLog;
 import com.sapGarden.system.org.model.User;
 
-@Controller("company_runtimeMonitor")
-@RequestMapping("/application/fi/company/runtimeMonitor")
+@Controller("customer_runtimeMonitor")
+@RequestMapping("/application/fi/customer/runtimeMonitor")
 public class RuntimeMonitorController {
 
 
@@ -37,12 +36,12 @@ public class RuntimeMonitorController {
 	@Qualifier("commonMonitor")
 	private CommonConstructJqgridService commonConstructJqgridService;
 	@Autowired
-	@Qualifier("exportCompanyExcel")
+	@Qualifier("exportCustomerExcel")
 	private CommonExpertExcelService commonExpertExcelService;
-
 	@Autowired
 	@Qualifier("commonLogService")
-	private CommonLogService<CompanyLog> commonLogService;
+	private CommonLogService companyLogService;
+	
 	//*************************************初始化调用函数页面*****************************************************************
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView index(){
@@ -63,22 +62,32 @@ public class RuntimeMonitorController {
 		map.put("edateOfMonthRange", edate);
 		map.put("bdateOfWeekRange", lastweekdate);
 		map.put("edateOfWeekRange", edate);
-		map.put("monitorGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY));
-		return new ModelAndView("/application/synConfig/fi/company/runtimeMonitor",map);
+		map.put("kna1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNA1));
+		map.put("knb1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNB1));
+		map.put("knvvGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNVV));
+		return new ModelAndView("/application/synConfig/fi/customer/runtimeMonitor",map);
 	}
-	@RequestMapping(value="/findLog")
-	public @ResponseBody Object findLog(String companyCode,String optflag,String bdate,String edate,int rows,int page,String sidx,String sord){
+	@RequestMapping(value="/findLog/kna1")
+	public @ResponseBody Object findKna1Log(String companyCode,String optflag,String bdate,String edate,int rows,int page,String sidx,String sord){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject param = new JSONObject();
-		param.put("comp_code", companyCode==null?"":companyCode);
-		JSONObject json = commonLogService.findJqgridData(user.getCurrentSapDataCollection(),"CompanyLog", param, optflag, bdate, edate,rows,page,sidx,sord);
+		JSONObject json = companyLogService.findJqgridData(user.getCurrentSapDataCollection(),"Kna1Log", null, optflag, bdate, edate,rows,page,sidx,sord);
+		return json;
+	}
+	@RequestMapping(value="/findLog/knb1")
+	public @ResponseBody Object findKnb1Log(String companyCode,String optflag,String bdate,String edate,int rows,int page,String sidx,String sord){
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		JSONObject json = companyLogService.findJqgridData(user.getCurrentSapDataCollection(),"Knb1Log", null, optflag, bdate, edate,rows,page,sidx,sord);
+		return json;
+	}
+	@RequestMapping(value="/findLog/knvv")
+	public @ResponseBody Object findKnvvLog(String companyCode,String optflag,String bdate,String edate,int rows,int page,String sidx,String sord){
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		JSONObject json = companyLogService.findJqgridData(user.getCurrentSapDataCollection(),"KnvvLog", null, optflag, bdate, edate,rows,page,sidx,sord);
 		return json;
 	}
 	@RequestMapping(value="/exportLog")
 	public @ResponseBody void exportLog(HttpServletResponse response,String companyCode,String optflag,String bdate,String edate) throws SecurityException, IllegalArgumentException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject param = new JSONObject();
-		param.put("comp_code", companyCode==null?"":companyCode);
-		commonExpertExcelService.exportLogExcel(user.getCurrentSapDataCollection(), param, optflag, bdate, edate, response);
+		commonExpertExcelService.exportLogExcel(user.getCurrentSapDataCollection(), null, optflag, bdate, edate, response);
 	}
 }

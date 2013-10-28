@@ -148,9 +148,15 @@ $(function(){
 		    	$(window).blockUI('remove');
 		    	return false;
 		    }
+		    if(rowData.length>50){
+		    	alert("每次同步的记录不能超过50条");
+		    	$(window).blockUI('remove');
+		    	return false;
+		    }
 			$.ajax({
 				url:'${ctx}/application/fi/company/manualSyn/syn',
 				data:{list:s},
+				type:"POST",
 				success:function(){
 					try{
 						/*

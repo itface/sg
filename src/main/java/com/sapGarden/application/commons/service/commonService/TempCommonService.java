@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-public interface CommonService {
+public interface TempCommonService {
 
 	//public List findBySapclientAndFilters(int pageNumber,int rowsPerPage,SapClientModel sapclient,String filters);
 	public JSONObject findJsonBySapclientAndFilters(Class modelClass,int pageNumber,int rowsPerPage,long sapclient,String filters);

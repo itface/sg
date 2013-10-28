@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +15,10 @@ import com.sapGarden.application.commons.basetable.service.BaseTableService;
 import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.jco.model.CommonSynModel;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.progress.model.NewProgress;
 import com.sapGarden.application.commons.sysdb.service.SysDbService;
 import com.sapGarden.application.fi.company.model.Company;
-import com.sapGarden.application.fi.company.service.CompanyService;
 import com.sapGarden.application.fi.company.service.GetSapDataService;
 import com.sapGarden.application.fi.company.service.InitDataService;
 @Service
@@ -28,7 +29,8 @@ public class InitDataServiceImpl implements InitDataService{
 	@Autowired
 	private BaseTableService baseTableService;
 	@Autowired
-	private CompanyService companyService;
+	@Qualifier("commonService")
+	private CommonService<Company> companyService;
 	@Autowired
 	private GetSapDataService getSapDataService;
 	@Override
@@ -64,7 +66,7 @@ public class InitDataServiceImpl implements InitDataService{
 		progress.setStarttime((new Date()).getTime());
 		progress.setPercentage(20);
 		progress.setText("正在清空Garden中的原有公司代码数据....");
-		companyService.removeAll(sapDataCollection);
+		companyService.removeAll(sapDataCollection,"Company");
 		progress.setPercentage(25);
 		progress.setText("Garden中的原有公司代码数据清空完毕。");
 		if(!ifRun(threadid,progress)){

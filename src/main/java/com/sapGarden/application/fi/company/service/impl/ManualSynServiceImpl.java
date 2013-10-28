@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.jco.model.JcoReturnModel;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.fi.company.model.Company;
 import com.sapGarden.application.fi.company.model.CompanyLog;
 import com.sapGarden.application.fi.company.model.bapi_companyCode_getDetail.Export_companyCode_detail;
-import com.sapGarden.application.fi.company.service.CompanyService;
 import com.sapGarden.application.fi.company.service.GetSapDataService;
 import com.sapGarden.application.fi.company.service.ManualSynService;
 import com.sapGarden.global.jqgrid.model.Jqgrid_DataJson;
@@ -28,7 +28,8 @@ public class ManualSynServiceImpl implements ManualSynService{
 	@Qualifier("company_GetSapDataService")
 	private GetSapDataService getSapDataService;
 	@Autowired
-	private CompanyService companyService;
+	@Qualifier("commonService")
+	private CommonService<Company> companyService;
 	@Override
 	public JSONObject testCall(SapDataCollection sapDataCollection) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 		// TODO Auto-generated method stub
@@ -47,8 +48,8 @@ public class ManualSynServiceImpl implements ManualSynService{
 	}
 
 	@Override
-	@Transactional
-	public void saveManuSynDataOfJqgridToLocal(SapDataCollection sapDataCollection, String list, String user,String opttype,boolean ifLog){
+	//@Transactional
+	public void saveManuSynDataOfJqgridToLocal(SapDataCollection sapDataCollection, String list, String user,String opttype,boolean ifLog)throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(list!=null&&!"".equals(list.trim())){
 			JSONObject json = JsonUtils.objectToJSONObject(list,null);
 			if(json.containsKey("data")){
@@ -57,7 +58,9 @@ public class ManualSynServiceImpl implements ManualSynService{
 					for(int i=0;i<dataList.size();i++){
 						JSONObject jj = JSONObject.fromObject(dataList.get(i));
 						Company newComp = (Company)JSONObject.toBean(jj, Company.class);
-						Company oldComp = companyService.findByComp_code(sapDataCollection, newComp.getComp_code());
+						JSONObject param = new JSONObject();
+						param.put("comp_code", newComp.getComp_code());
+						Company oldComp = companyService.findSingleByCondition(sapDataCollection,"Company", param);
 						companyService.addWithLog(opttype, sapDataCollection.getId(), user, Company.class, CompanyLog.class, newComp);
 						companyService.deleteWithLog(opttype, sapDataCollection.getId(), user, Company.class, CompanyLog.class, oldComp);
 					}

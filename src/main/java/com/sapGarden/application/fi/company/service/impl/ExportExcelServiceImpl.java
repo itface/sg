@@ -8,36 +8,40 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
+import com.sapGarden.application.commons.excel.service.CommonExpertExcelService;
 import com.sapGarden.application.commons.excel.service.ExcelService;
+import com.sapGarden.application.commons.log.service.CommonLogService;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.runtime.columninfo.model.RuntimeColumnInfo;
 import com.sapGarden.application.commons.runtime.columninfo.service.Runtime_ColumnInfo_Service;
 import com.sapGarden.application.fi.company.model.Company;
 import com.sapGarden.application.fi.company.model.CompanyLog;
-import com.sapGarden.application.fi.company.service.CompanyLogService;
-import com.sapGarden.application.fi.company.service.CompanyService;
-import com.sapGarden.application.fi.company.service.ExportExcelService;
-@Service
-public class ExportExcelServiceImpl implements ExportExcelService{
+@Service("exportCompanyExcel")
+public class ExportExcelServiceImpl implements CommonExpertExcelService{
 
 	@Autowired
-	private CompanyService companyService;
+	@Qualifier("commonService")
+	private CommonService<Company> companyService;
 	@Autowired
-	private CompanyLogService companyLogService;
+	@Qualifier("commonLogService")
+	private CommonLogService<CompanyLog> companyLogService;
 	@Autowired
 	private Runtime_ColumnInfo_Service runtime_ColumnInfo_Service;
 	@Autowired
 	private ExcelService excelService;
-	private  final int PERSIZE = 50000; 
 	@Override
-	public void exportExcel(SapDataCollection sapDataCollection,String companyCode,HttpServletResponse response) throws IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, URISyntaxException {
+	public void exportExcel(SapDataCollection sapDataCollection,JSONObject json,HttpServletResponse response) throws IOException, SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, URISyntaxException {
 		// TODO Auto-generated method stub	
 		List<RuntimeColumnInfo> cols = runtime_ColumnInfo_Service.findAllActiveData(sapDataCollection, SjlxTypeName.TYPE_COMPANY);
-		long totalNum = companyService.findTotalNumByPage(sapDataCollection, companyCode);
+		long totalNum = companyService.findTotalNum(sapDataCollection,"Company", json);
 		String[] titles = new String[cols.size()],fields=new String[cols.size()];
 		int k=0;
 		for(RuntimeColumnInfo col : cols){
@@ -51,7 +55,7 @@ public class ExportExcelServiceImpl implements ExportExcelService{
 			if(pages>1){
 				String path = "";
 				for(int i=1;i<=pages;i++){
-					List<Company> datas = companyService.findByPage(sapDataCollection, companyCode, PERSIZE, i,null,null);
+					List<Company> datas = companyService.findByPage(sapDataCollection,"Company", json, PERSIZE, i,null,null);
 					String filename = "companycode_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_"+i;
 					path = excelService.generateExcel(titles,fields, datas,Company.class, sapDataCollection, SjlxTypeName.TYPE_COMPANY, filename);
 				}
@@ -60,14 +64,14 @@ public class ExportExcelServiceImpl implements ExportExcelService{
 				excelService.deleteByFilePath(path);
 			}else{
 				String filename = "companycode_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
-				List<Company> datas = companyService.findByPage(sapDataCollection, companyCode, PERSIZE, 1,null,null);
+				List<Company> datas = companyService.findByPage(sapDataCollection,"Company", json, PERSIZE, 1,null,null);
 				excelService.downloadExcel(response, titles,fields, datas,Company.class, sapDataCollection, SjlxTypeName.TYPE_COMPANY, filename);
 			}
 		}
 	}
 	@Override
 	public void exportLogExcel(SapDataCollection sapDataCollection,
-			String companyCode,String optflag,String bdate,String edate, HttpServletResponse response)
+			JSONObject json,String optflag,String bdate,String edate, HttpServletResponse response)
 			throws IOException, SecurityException, NoSuchMethodException,
 			IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException, URISyntaxException {
@@ -97,13 +101,13 @@ public class ExportExcelServiceImpl implements ExportExcelService{
 				count++;
 			}
 		}
-		long totalNum = companyLogService.findTotalNum(sapDataCollection, companyCode, optflag, bdate, edate);
+		long totalNum = companyLogService.findTotalNum(sapDataCollection,"CompanyLog", json, optflag, bdate, edate);
 		Calendar c = Calendar.getInstance();
 		long pages = totalNum%PERSIZE==0?totalNum/PERSIZE:totalNum/PERSIZE+1;
 		if(pages>1){
 			String path = "";
 			for(int i=1;i<=pages;i++){
-				List<CompanyLog> datas = companyLogService.findByPage(sapDataCollection, companyCode, optflag, bdate, edate, PERSIZE, i, null, null);
+				List<CompanyLog> datas = companyLogService.findByPage(sapDataCollection,"CompanyLog", json, optflag, bdate, edate, PERSIZE, i, null, null);
 				String filename = "companyLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_"+i;
 				path = excelService.generateExcel(titles,fields, datas,CompanyLog.class, sapDataCollection, SjlxTypeName.TYPE_COMPANYLOG, filename);
 			}
@@ -112,7 +116,7 @@ public class ExportExcelServiceImpl implements ExportExcelService{
 			excelService.deleteByFilePath(path);
 		}else{
 			String filename = "companyLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
-			List<CompanyLog> datas = companyLogService.find(sapDataCollection, companyCode, optflag, bdate, edate);
+			List<CompanyLog> datas = companyLogService.find(sapDataCollection,"CompanyLog", json, optflag, bdate, edate);
 			excelService.downloadExcel(response,titles,fields, datas,CompanyLog.class, sapDataCollection, SjlxTypeName.TYPE_COMPANYLOG, filename);
 		}
 	}

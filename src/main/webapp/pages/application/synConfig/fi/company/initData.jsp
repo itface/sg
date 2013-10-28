@@ -50,7 +50,16 @@ $(function(){
 					autoWidth:true,
 					id:"dataGrid",
 					caption:'公司代码',
-					pager:"#tbar"
+					pager:"#tbar",
+					eventModels:{
+						loadComplete:function(json){
+							if(json!=null&&json!=''&&json.rows.length>0){
+								$('#expertExcel').show();
+							}else{
+								$('#expertExcel').hide();
+							}
+						}
+					}
 				});
 			}
 			//new customGrid(dataGridOptions);
@@ -60,7 +69,6 @@ $(function(){
 			var url = '${ctx}/application/fi/company/runtimeData/findJqgridData';
 			jQuery('#dataGrid').jqGrid('setGridParam',{url:url,page:1});
 			jQuery("#dataGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
-			$('#expertExcel').show();
 		}
 		function initEvent(){
 			$('#initData').bind('click',function(e){
@@ -71,7 +79,7 @@ $(function(){
 			 		id:'dia',
 				    lock: true,
 				    width: 500,
-			    	height: 220,
+			    	height: 250,
 				    min:false,
 				    max:false,
 				    cancel:false,

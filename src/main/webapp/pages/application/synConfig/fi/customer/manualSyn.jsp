@@ -2,6 +2,7 @@
 <%@ include file="../../../../inc/header.jsp"%>
 <html>
 <head>
+<base href="${ctx}"/> 
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <link href="${ctx}/css/sapgarden/base.css" rel="stylesheet" type="text/css" />
 <link href="${ctx}/css/sapgarden/garden.css" rel="stylesheet" type="text/css" />
@@ -9,39 +10,137 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jquery.easyui/themes/icon.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.jqgrid.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/css/jqgrid/jquery.ui.css'/>">
+<link rel="stylesheet" type="text/css" href="<c:url value='/script/blockUI/blockUI.css'/>">
 <script src="<c:url value='/script/jquery-1.7.2.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.json-2.4.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/grid.locale-cn.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/jquery.jqGrid.src.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid_extend.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/commons.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_common.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/extendJqgrid.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/easyui-lang-zh_CN.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/blockUI/blockUI.js'/>" type="text/javascript"></script>
+<style>
+.fm-button-icon-left{
+	display:none;
+}
+</style>
 </head>
 <body>
 <form>
 <div class="toolbar">
   <div class="prompt_message">本功能根据数据的关键字,从SAP中读取相应的数据，可以测试系统的连通性，也可以同步指定的SAP数据到Garden</div>
   <div class="toolbar_left"> 
-  	<input type="text" class="input1" id='kunnr' value="客户编号" onclick="javascript:if(this.value=='客户编号') this.value='';return false;">
-  	<a href="#" class="btn" id='testCallFun' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">测试执行</a>  
-    <a href="#" class="btn" id='manualSyn' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">从SAP同步到Garden</a>  
+  	<a href="javascript:void(0);" class="btn" id='testCall' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询SAP数据</a>  
+    <a href="javascript:void(0);" class="btn" id='manualSyn' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">从SAP同步到Garden</a>  
    </div>
 </div>
-	<!-- div>
-		客户编号:<input type='text' id='kunnr'/>
-	</div>
-	<input type='button' value='执行同步' id='manualSyn'/-->
+<div  class="easyui-tabs" style="padding:5px 10px; clear:both" id="mainPanel">
+	    <div title="客户一般数据(KNA1)">
+			<table id='kna1Grid'></table>
+		</div>
+		<div title="客户公司代码数据(KNB1)">
+			<table id='knb1Grid'></table>
+		</div>
+		<div title="客户销售数据(KNVV)">
+			<table id='knvvGrid'></table>
+		</div>
+</div>
 </form>
 </body>
 <script>
+var queryflag = false;
 $(function(){
 	init();
 	function init(){
 		initElEvent();
+		dynamicGrid();
+	}
+	function dynamicGrid(){
+		var kna1GridOptions=${kna1GridOptions};
+		var knb1GridOptions=${knb1GridOptions};
+		var knvvGridOptions=${knvvGridOptions};
+		$.extend(kna1GridOptions,{
+				contextPath:"${ctx}",
+				autoWidth:true,
+				id:"kna1Grid",
+				multiselect:true,
+				loadui:'',
+				sortable:true,
+				loadonce:true,
+				height:$(window).height()-180,
+				eventModels:{
+					loadComplete:function(json){
+						if(queryflag){
+							$(window).blockUI('remove');
+							queryflag =false;
+							alert('查询成功');
+						}
+						if(json!=null&&json!=''&&json.rows.length>0){
+							$('#manualSyn').show();
+						}else{
+							$('#manualSyn').hide();
+						}
+					}
+				}
+			}
+		);
+		$.extend(knb1GridOptions,{
+				contextPath:"${ctx}",
+				autoWidth:true,
+				id:"knb1Grid",
+				multiselect:true,
+				loadui:'',
+				sortable:true,
+				loadonce:true,
+				height:$(window).height()-180,
+				eventModels:{
+					loadComplete:function(json){
+						if(queryflag){
+							$(window).blockUI('remove');
+							queryflag =false;
+							alert('查询成功');
+						}
+						if(json!=null&&json!=''&&json.rows.length>0){
+							$('#manualSyn').show();
+						}else{
+							$('#manualSyn').hide();
+						}
+					}
+				}
+			}
+		);
+		$.extend(knvvGridOptions,{
+				contextPath:"${ctx}",
+				autoWidth:true,
+				id:"knvvGrid",
+				multiselect:true,
+				loadui:'',
+				sortable:true,
+				loadonce:true,
+				height:$(window).height()-180,
+				eventModels:{
+					loadComplete:function(json){
+						if(queryflag){
+							$(window).blockUI('remove');
+							queryflag =false;
+							alert('查询成功');
+						}
+						if(json!=null&&json!=''&&json.rows.length>0){
+							$('#manualSyn').show();
+						}else{
+							$('#manualSyn').hide();
+						}
+					}
+				}
+			}
+		);
+		//new customGrid(resultGridOptions);
+		$("#kna1Grid").extendJqgrid(kna1GridOptions);
+		$("#knb1Grid").extendJqgrid(knb1GridOptions);
+		$("#knvvGrid").extendJqgrid(knvvGridOptions);
 	}
 	function initElEvent(){
 		$(".input1").focus(function(){
@@ -55,20 +154,87 @@ $(function(){
                 $(this).val(this.defaultValue);
              }
 		});
-		$('#manualSyn').bind('click',function(e){
-			var kunnr = $('#kunnr').val();
-			if(kunnr==''||kunnr=='客户编号'){
-				alert('请输入要同步的客户编号');
-				return false;
-			}
+		$('#testCall').bind('click',function(e){
+			$(window).blockUI();
+			jQuery("#resultGrid").jqGrid('setGridParam',{datatype:'json',url:'${ctx}/application/fi/company/manualSyn/testCall',search:false}).trigger("reloadGrid");
+			queryflag =true;
+			//$('#manualSyn').show();
+			/*
 			$.ajax({
-				url:'${ctx}/application/fi/customer/manualSyn/syn',
-				data:{kunnr:kunnr},
-				success:function(response){
-					alert('同步成功');
+				url:'${ctx}/application/fi/company/manualSyn/testCall',
+				type: "GET",
+				dataType:"json",
+				success:function(json){
+						try{
+							if(json!=null){
+								jQuery("#resultGrid").clearGridData(true);
+								jQuery("#resultGrid")[0].addJSONData(json);
+							}
+							alert('查询成功');
+							$('#manualSyn').show();
+							$(window).blockUI('remove');
+						}catch(e){
+							$(window).blockUI('remove');
+							alert('装载数据异常');
+						}
 				},
 				error:function(XMLHttpRequest,textStatus,errorThrown){
-					
+					alert('查询失败');
+					$(window).blockUI('remove');
+				}
+			});
+			*/
+		});
+		$('#manualSyn').bind('click',function(e){
+			$(window).blockUI();
+			var rowData = jQuery('#resultGrid').jqGrid('getGridParam','selarrrow');
+			var s = '';
+		    if(rowData.length) {
+		        for(var i=0;i<rowData.length;i++){
+		           var ret = jQuery("#resultGrid").jqGrid('getRowData',rowData[i]);
+		           s+="{";
+		           for(var name in ret){
+		           		s+=name+":'"+ret[name]+"',";
+		           }
+		           s=s.substring(0,s.lastIndexOf(','))+"},";
+		        }
+		        s=s.substring(0,s.lastIndexOf(','));
+		        s="{data:["+s+"]}"
+		    }else{
+		    	alert("请选择要同步的记录");
+		    	$(window).blockUI('remove');
+		    	return false;
+		    }
+			$.ajax({
+				url:'${ctx}/application/fi/company/manualSyn/syn',
+				data:{list:s},
+				success:function(){
+					try{
+						/*
+						if(json!=null){
+							jQuery("#resultGrid").clearGridData(true);
+							jQuery("#resultGrid")[0].addJSONData(json);
+						}*/
+						rowData = jQuery('#resultGrid').jqGrid('getGridParam','selarrrow');
+						var rowids = [];
+						if(rowData.length) {
+			        		for(var i=0;i<rowData.length;i++){
+			        			rowids.push(rowData[i]);
+			           		}
+				           	for(var i in rowids){
+			           			var ret = jQuery("#resultGrid").jqGrid('delRowData',rowids[i]);
+			           		}
+			           	}
+						alert('选择的数据从SAP同步到Garden同步成功。');
+						$(window).blockUI('remove');
+					}catch(e){
+						alert('手工同步异常');
+						$(window).blockUI('remove');
+					}
+				},
+				error:function(XMLHttpRequest,textStatus,errorThrown){
+					alert('手工同步异常');
+					$(window).blockUI('remove');
 				}
 			});
 			

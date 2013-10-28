@@ -12,181 +12,62 @@
 <script src="<c:url value='/script/jquery-1.7.2.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/grid.locale-cn.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jqgrid/jquery.jqGrid.src.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_extend.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jqgrid_common.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/commons.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/script/extendJqgrid.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/easyui-lang-zh_CN.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
-<script src="<c:url value='/script/jquery.form/jquery.form.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/My97DatePicker4.8/WdatePicker.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/lhgdialog/lhgdialog.js?skin=default'/>" type="text/javascript"></script>
 <style>
+.toolbar_text {
+	font-family:微软雅黑;
+	font-size:12px;
+	line-height:30px;
+	float:left;
+	padding:0px 5px;
+	font-weight:bold;
+}
+.fm-button-icon-left{
+	display:none;
+}
 </style>
 </head>
 <body>
 <div class="toolbar">
   <div class="prompt_message">关键功能：本功能设置当前数据和SAP同步的方式，以及同步的内容。根据业务需要非关键字段可以不同步，但建议全部同步。</div>
-  <div class="toolbar_left">
-	   <a href="#" class="btn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" onclick="zwyd();">变更运行状态</a> 
-	   <div class="toolbar_text">当前运行状态：实时同步运行中; 起始时间：2013.03.20 8:00</div>
+  <div class="toolbar_left" style="float:none">
+  		<div style="font-family:微软雅黑;font-size:12px;line-height:30px;float:left;padding:0px 5px;font-weight:bold;">当前运行状态：${jobMemo}</div>
+	   <div style='float:right'><a href="#" style="margin-right:0px;" class="btn"  onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" onclick="zwyd();">变更运行状态</a></div> 
    </div>
 </div>
-<div style="padding:5px 10px; clear:both">
-	<div>
+<div id="mainTabPanel" class="easyui-tabs" style="padding:5px 10px; clear:both">
+	<div title="客户一般数据(KNA1)">
 		<table id="pna1Grid"></table>
 	</div>
-	<div>
-	<table id="pnb1Grid"></table>
+	<div title="客户公司代码数据(KNB1)">
+		<table id="pnb1Grid"></table>
 	</div>
-	<div>
-	<table id="pnvvGrid"></table>
-	
+	<div title="客户销售数据(KNVV)">
+		<table id="pnvvGrid"></table>
 	</div>
 </div>
-<!-- div class="outter">
-	<form:form id='basicInfoForm' action='${basePath}/basicInfo' method='post' modelAttribute='basicInfo'>
-		<div class="fold">激活状态</div>
-		<div class="contentBlock" style='height:100px'>
-			<div class="tbar">
-				<div class="tbar_button">
-					<input type='button' value="保存" class='saveForm'/>
-				</div>	
-			</div>
-			<div class='activateDiv'>
-				<form:radiobutton  path='status' value='ACTIVATE'/>激活
-				<form:radiobutton path='status' value='INACTIVE'/>停止
-			</div>
-		</div>
-		<div style="display:none">
-					<form:input id='businesstype' path='businesstype' value='${type}'/>
-					<form:input id='sapclient' path='sapclient' value='${sapclient}'/>
-					<form:input id='id' path='id'/>
-		</div>
-	</form:form>
-	<form:form id='schedulingForm' action='${ctx}/system/scheduling/${type}/data' modelAttribute='scheduling' style='display:none'>
-		<div class="fold">计划任务</div>
-		<div class="contentBlock" style='height:300px'>
-			<div class="tbar">
-				<div class="tbar_button">
-					<input type='button' value="保存" class='saveForm'/>
-				</div>	
-			</div>
-			<div class="schedulingTableDiv">
-				<table class="schedulingTable">
-					<tr>
-						<td align='right'>任务名称：</td>
-						<td align='left'><form:input path='jobName' id='jobName'/></td>
-						<td align='right'>任务描述：</td>
-						<td align='left'><form:input path='jobMemo' id='jobMemo'/></td>
-					</tr>
-					<tr>
-						<td width='15%' align='right'>开始日期：</td>
-						<td width='35%' align='left'><form:input id='jobBeginDate' path='jobBeginDate'/></td>
-						<td width='15%' align='right'>结束日期：</td>
-						<td width='35%' align='left'><form:input id='jobEndDate' path='jobEndDate'/></td>
-					</tr>
-					<tr>
-						<td align='right'>停止：</td>
-						<td align='left' colspan='3'><form:radiobutton path='executeFrequency' value='SHUTDOWN'/></td>
-					</tr>
-					<tr>
-						<td align='right'>执行频率：</td>
-						<td align='left' colspan='3'>
-							<form:radiobutton  path='executeFrequency' value='EVERYDAY'/>每天
-							<form:radiobutton path='executeFrequency' value='REPEAT'/>循环执行
-							<form:radiobutton path='executeFrequency' value='STARTUP'/>启动平台
-						</td>
-					</tr>
-					<tr id='tr_executeTime'>
-						<td align='right'>执行小时：</td>
-						<td align='left'>
-							<form:select id='executeTimeHour' path='executeTimeHour'>
-								<form:option value='0' label='0'/>
-								<form:option value='1' label='1'/>
-								<form:option value='2' label='2'/>
-								<form:option value='3' label='3'/>
-								<form:option value='4' label='4'/>
-								<form:option value='5' label='5'/>
-								<form:option value='6' label='6'/>
-								<form:option value='7' label='7'/>
-								<form:option value='8' label='8'/>
-								<form:option value='9' label='9'/>
-								<form:option value='10' label='10'/>
-								<form:option value='11' label='11'/>
-								<form:option value='12' label='12'/>
-								<form:option value='13' label='13'/>
-								<form:option value='14' label='14'/>
-								<form:option value='15' label='15'/>
-								<form:option value='16' label='16'/>
-								<form:option value='17' label='17'/>
-								<form:option value='18' label='18'/>
-								<form:option value='19' label='19'/>
-								<form:option value='20' label='20'/>
-								<form:option value='21' label='21'/>
-								<form:option value='22' label='22'/>
-								<form:option value='23' label='23'/>
-							</form:select>
-						</td>
-						<td align='right'>执行分钟：</td>
-						<td align='left'>
-							<form:select id='executeTimeMinute' path='executeTimeMinute'>
-								<form:option value='0' label='0'/>
-								<form:option value='5' label='5'/>
-								<form:option value='10' label='10'/>
-								<form:option value='15' label='15'/>
-								<form:option value='20' label='20'/>
-								<form:option value='25' label='25'/>
-								<form:option value='30' label='30'/>
-								<form:option value='35' label='35'/>
-								<form:option value='40' label='40'/>
-								<form:option value='45' label='45'/>
-								<form:option value='50' label='50'/>
-								<form:option value='55' label='55'/>
-							</form:select>
-						</td>
-					</tr>
-					<tr id='tr_repeatInterval'>
-						<td align='right'>重复频率：</td>
-						<td align='left' colspan='3'>
-							每<form:input id='repeatInterval' path='repeatInterval'/>分钟执行一次
-						</td>
-					</tr>
-				</table>
-				<div style="display:none">
-					<form:input id='jobGroup' path='jobGroup'/>
-					<form:input id='id' path='id'/>
-					<input type='text' id='jobClass' name='jobClass' value='${jobClassName}'/>
-					<input type='text' id='owner' name='owner' value='${owner}'/>
-					<input type='text' id='sapclient' name='sapClient' value='${sapclient}'/>
-				</div>
-			</div>
-		</div>
-	</form:form>
-	<form:form id='dbReflectForm' action='${basePath}/tableInfo' modelAttribute='dbReflect'>
-		<div class="fold">字段映射</div>
-		<table id="pna1Grid"></table>
-		<div id="pna1Pager"></div> 
-		</br>
-		<table id="pnb1Grid"></table>
-		<div id="pnb1Pager"></div> 
-		</br>
-		<table id="pnvvGrid"></table>
-		<div id="pnvvPager"></div> 
-	</form:form>
-	</div-->
 </body>
 <script>
 function zwyd() {
-	$.dialog({
-		title:'变更运行状态',
-		width: '540px',
-    	height: '240px',
-		resize:false,
-          max: false,
-          min: false,
-		content: 'url:${ctx}/application/commonScheduling/realtime/fi/customer'
-		
-	});
+	var dialog=$.dialog({
+					title:'变更运行状态',
+					width: 600,
+			    	height: '240px',
+			    	lock: true,
+					resize:false,
+			          max: false,
+			          min: false,
+					content: 'url:${ctx}/application/commonScheduling/realtime/customer'
+				});
+	$.dialog.data('dialog',dialog);
+	$.dialog.data('reloadPage',reloadPage);
+}
+function reloadPage(){
+	location.reload(true);
 }
 $(function(){
 	var type='${type}';
@@ -196,114 +77,35 @@ $(function(){
 		createKnb1Grid();
 		createKnvvGrid();
 		initElEvent();
-		setExecuteFrequencyStatus();
-		initAjaxForm();
 	}
-	/**
-	*把form初始化为ajaxform，用于ajax提交
-	*/
-	function initAjaxForm(){
-		$('#schedulingForm').ajaxForm();
-		$('#dbReflectForm').ajaxForm();
-		$('#basicInfoForm').ajaxForm();
-	}
+
 	/**
 	*给页面元素绑定事件
 	*/
 	function initElEvent(){
-		//设置折叠层的点击事件
-		$('.fold').bind('click',function(e){
-			var display = $(e.target).next().css('display');
-			var newDisplay = display=='none'?'block':'none';
-			$(e.target).next().css('display',newDisplay);
-		});
-		$('input[name="executeFrequency"]').bind('click',function(){
-			setExecuteFrequencyStatus();
-		});
-		$('#jobBeginDate').bind('click',function(){
-			WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true,maxDate:'#F{$dp.$D(\'jobEndDate\')}'});
-		});
-		$('#jobEndDate').bind('click',function(){
-			WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true,minDate:'#F{$dp.$D(\'jobBeginDate\')}'});
-		});
-		//保存按钮添加点击时提交的动作
-		$(':button.saveForm').bind('click',function(e){
-			var formId = $(e.target.form).attr('id');
-			var url = $(e.target.form).attr('action');
-			var id = $('#'+formId+' #id').val();
-			var methodObject = {};
-			//如果id=0则表示新增
-			if(id!=null&&id!=''&&id>0){
-				methodObject={_method:'PUT'};
-				url+='/'+id;
-			}
-			var options = {
-					data:methodObject,
-					target:'#'+formId+' #id',
-					type:'POST',
-					url:url,
-					success:function(responseText,statusText,xhr,$form){
-						if(responseText!=null&&responseText.trim()!=''){
-							alert('保存失败');
-						}else{
-							alert('保存成功');
-							//保存成功后刷新当前页面，更新id.
-							location=location;
-						}
-					},
-					error:function(){
-						alert('保存失败');
-					}
-			};
-			$("#"+formId).ajaxSubmit(options);
-		});
-	}
-	/**
-	*根据执行频率，设置执行小时、分钟和重复频率的执行频率
-	*/
-	function setExecuteFrequencyStatus(){
-		var executeFrequency = $('input[name=executeFrequency]:checked').val();
-		if(executeFrequency=='STARTUP'){
-			$('#executeTimeHour').val(0);
-			$('#executeTimeMinute').val(0);
-			$('#tr_executeTime').hide();
-			$('#repeatInterval').val(0);
-			$('#tr_repeatInterval').hide();
-		}else if(executeFrequency=='EVERYDAY'){
-			$('#tr_executeTime').show();
-			$('#repeatInterval').val(0);
-			$('#tr_repeatInterval').hide();
-		}else if(executeFrequency=='REPEAT'){
-			$('#executeTimeHour').val(0);
-			$('#executeTimeMinute').val(0);
-			$('#tr_executeTime').hide();
-			$('#tr_repeatInterval').show();
-		}else{
-			$('#executeTimeHour').val(0);
-			$('#executeTimeMinute').val(0);
-			$('#tr_executeTime').hide();
-			$('#repeatInterval').val(0);
-			$('#tr_repeatInterval').hide();
-		}
+		
 	}
 	function createKna1Grid(){
-		var basePath = '${ctx}/application/common/columnInfo/KNA1';
+		var basePath = '${ctx}/application/common/columnInfo/kna1';
 		var gridId = "pna1Grid";
 		var checked = '';
 		var config ={
 			id:gridId,
 			caption:'客户一般数据',
-			rownum:100,
-			height:300,
+			rownum:900,
+			height:$(window).height()-185,
 			width:900,
-			pager:'#pna1Pager',
+			autoWidth:true,
+			multiselectWidth:60,
+			pager:'',
 			editable:true,
 			datatype:'json',
 			multiselect:true,
 			add:false,
 			del:false,
-			refresh:true,
-			eventModel:{
+			refresh:false,
+			editable:false,
+			eventModels:{
 			    gridComplete:function(){
 			    	var rowData= jQuery("#"+gridId).jqGrid('getRowData');
 			    	//var numberOfRecords  = jQuery("#list").jqGrid('getGridParam',"records");
@@ -319,9 +121,20 @@ $(function(){
 							$('#jqg_'+gridId+'_'+rowId).attr('disabled','true');
 						}
 					}
-					$('#cb_'+gridId).hide();
 			    },
 			    beforeSelectRow:function(rowid,e){
+			    	if($(e.target).attr('type')=='checkbox'){
+			    		var c = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    	if(confirm('更改当前字段的同步状态？')){
+				    		checked = c;
+				    		checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    		return true;
+				    	}else{
+				    		$('#jqg_'+gridId+'_'+rowid).attr('checked',c?false:true);
+				    		checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    		return false;
+				    	}
+			    	}
 			    	checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
 			    	return true;
 			    },
@@ -355,41 +168,49 @@ $(function(){
 			    	}
 			    }
 			},
-			columnNames:['ID','源字段','源字段名称','目标字段','目标字段名称','状态','类型','ifKey','是否是查询字段','查询类型'],
+			//columnNames:['ID','源字段','源字段名称','目标字段','目标字段名称','状态','类型','ifKey','是否是查询字段','查询类型'],
+			columnNames:['ID','SAP字段','SAP字段名称','Garden字段','Garden字段名称','状态','类型','ifKey','是否是查询字段','查询类型'],
 			columnModel:[
 		   		{name:'id',index:'id',hidden:true, width:1,key:true},
-		   		{name:'sourceColumn',index:'sourceColumn',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'sourceColumnName',index:'sourceColumnName',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'targetColumn',index:'targetColumn', width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'targetColumnName',index:'targetColumnName',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'sourceColumn',index:'sourceColumn',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'sourceColumnName',index:'sourceColumnName',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'targetColumn',index:'targetColumn', width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'targetColumnName',index:'targetColumnName',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
 		   		{name:'status',index:'status',editable:true,edittype:'select',hidden:true,width:100,editoptions:{value:"ACTIVATE:激活;INACTIVE:非激活"}},
 		   		{name:'businesstype',index:'businesstype',hidden:true,editable:true},
 		   		{name:'ifkey',index:'ifkey',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"0:非必须同步;1:必须同步"}},
-		   		{name:'searchable',index:'searchable',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"0:否;1:是"}},
-		   		{name:'searchtype',index:'searchtype',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"text:文本;date:日期"}}
+		   		{name:'searchable',index:'searchable',hidden:true,editable:true,edittype:'select',editrules:{edithidden:true},width:100,editoptions:{value:"0:否;1:是"}},
+		   		{name:'searchtype',index:'searchtype',hidden:true,editable:true,edittype:'select',editrules:{edithidden:true},width:100,editoptions:{value:"text:文本;date:日期"}}
 		   	],
+		   	sortable:true,
 			baseUrl:basePath
 		};
-		new commonGrid(config);
+		//new commonGrid(config);
+		$("#"+gridId).extendJqgrid(config);
+		$("#"+gridId+"_toppager").hide();
+		$("#jqgh_"+gridId+"_cb").append("<div><span>同步状态</span></div>");
+		$('#cb_'+gridId).hide();
 	}
 	function createKnb1Grid(){
-		var basePath = '${ctx}/application/common/columnInfo/KNB1';
+		var basePath = '${ctx}/application/common/columnInfo/knb1';
 		var gridId = "pnb1Grid";
 		var checked = '';
 		var config ={
 			id:gridId,
 			caption:'客户公司代码数据',
-			rownum:100,
-			height:300,
+			rownum:10000,
+			height:$(window).height()-185,
 			width:900,
-			pager:'#pnb1Pager',
+			autoWidth:true,
+			multiselectWidth:60,
+			pager:'',
 			editable:true,
 			datatype:'json',
 			multiselect:true,
 			add:false,
 			del:false,
 			refresh:true,
-			eventModel:{
+			eventModels:{
 			    gridComplete:function(){
 			    	var rowData= jQuery("#"+gridId).jqGrid('getRowData');
 			    	//var numberOfRecords  = jQuery("#list").jqGrid('getGridParam',"records");
@@ -405,9 +226,20 @@ $(function(){
 							$('#jqg_'+gridId+'_'+rowId).attr('disabled','true');
 						}
 					}
-					$('#cb_'+gridId).hide();
 			    },
 			     beforeSelectRow:function(rowid,e){
+			    	if($(e.target).attr('type')=='checkbox'){
+			    		var c = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    	if(confirm('更改当前字段的同步状态？')){
+				    		checked = c;
+				    		checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    		return true;
+				    	}else{
+				    		$('#jqg_'+gridId+'_'+rowid).attr('checked',c?false:true);
+				    		checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    		return false;
+				    	}
+			    	}
 			    	checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
 			    	return true;
 			    },
@@ -426,7 +258,7 @@ $(function(){
 						}else{
 							$.ajax({
 								url:'${ctx}/application/common/columnInfo/updateStatus',
-								data:{id:rowid,status:status?'ACTIVATE':'INACTIVE'},
+								data:{id:rowid,status:(checked=='checked'?'ACTIVATE':'INACTIVE')},
 								success:function(){
 									alert('设置成功');
 								}
@@ -441,42 +273,50 @@ $(function(){
 			    	}
 			    }
 			},
-			columnNames:['ID','源字段','源字段名称','目标字段','目标字段名称','状态','类型','ifKey','是否是查询字段','查询类型'],
+			columnNames:['ID','SAP字段','SAP字段名称','Garden字段','Garden字段名称','状态','类型','ifKey','是否是查询字段','查询类型'],
 			columnModel:[
 		   		{name:'id',index:'id',hidden:true, width:1,key:true},
-		   		{name:'sourceColumn',index:'sourceColumn',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'sourceColumnName',index:'sourceColumnName',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'targetColumn',index:'targetColumn', width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'targetColumnName',index:'targetColumnName',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'sourceColumn',index:'sourceColumn',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'sourceColumnName',index:'sourceColumnName',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'targetColumn',index:'targetColumn', width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'targetColumnName',index:'targetColumnName',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
 		   		{name:'status',index:'status',editable:true,edittype:'select',hidden:true,width:100,editoptions:{value:"ACTIVATE:激活;INACTIVE:非激活"}},
 		   		{name:'businesstype',index:'businesstype',hidden:true,editable:true},
 		   		{name:'ifkey',index:'ifkey',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"0:非必须同步;1:必须同步"}},
-		   		{name:'searchable',index:'searchable',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"0:否;1:是"}},
-		   		{name:'searchtype',index:'searchtype',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"text:文本;date:日期"}}
+		   		{name:'searchable',index:'searchable',hidden:true,editable:true,edittype:'select',editrules:{edithidden:true},width:100,editoptions:{value:"0:否;1:是"}},
+		   		{name:'searchtype',index:'searchtype',hidden:true,editable:true,edittype:'select',editrules:{edithidden:true},width:100,editoptions:{value:"text:文本;date:日期"}}
 		   	],
+		   	sortable:true,
 			baseUrl:basePath
 		};
-		new commonGrid(config);
+		//new commonGrid(config);
+		$("#"+gridId).extendJqgrid(config);
+		$("#"+gridId+"_toppager").hide();
+		$("#jqgh_"+gridId+"_cb").append("<div><span>同步状态</span></div>");
+		$('#cb_'+gridId).hide();
 	}
 	function createKnvvGrid(){
-		var basePath = '${ctx}/application/common/columnInfo/KNVV';
+		var basePath = '${ctx}/application/common/columnInfo/knvv';
 		var gridId = "pnvvGrid";
 		var checked = '';
 		var config ={
 			id:gridId,
 			caption:'客户销售数据',
-			rownum:100,
-			height:300,
+			rownum:10000,
+			height:$(window).height()-185,
 			width:900,
-			pager:'#pnvvPager',
+			autoWidth:true,
+			multiselectWidth:60,
+			pager:'',
 			editable:true,
 			datatype:'json',
 			multiselect:true,
 			add:false,
 			del:false,
 			refresh:true,
-			eventModel:{
+			eventModels:{
 			    gridComplete:function(){
+			    	/*
 			    	var rowData= jQuery("#"+gridId).jqGrid('getRowData');
 			    	//var numberOfRecords  = jQuery("#list").jqGrid('getGridParam',"records");
 					for(var i=0;i<rowData.length;i++){
@@ -492,12 +332,68 @@ $(function(){
 						}
 					}
 					$('#cb_'+gridId).hide();
+					*/
+					var rowData= jQuery("#"+gridId).jqGrid('getRowData');
+			    	//var numberOfRecords  = jQuery("#list").jqGrid('getGridParam',"records");
+					for(var i=0;i<rowData.length;i++){
+						var rowId = rowData[i].id;
+						var status = rowData[i].status;
+						var ifkey = rowData[i].ifkey;
+						if(status=='ACTIVATE'){
+							//jQuery('#list').jqGrid('setSelection',rowId);
+							$('#jqg_'+gridId+'_'+rowId).attr('checked','true');
+						}
+						if(ifkey==1){
+							$('#jqg_'+gridId+'_'+rowId).attr('disabled','true');
+						}
+					}
 			    },
 			     beforeSelectRow:function(rowid,e){
+			    	if($(e.target).attr('type')=='checkbox'){
+			    		var c = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    	if(confirm('更改当前字段的同步状态？')){
+				    		checked = c;
+				    		checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    		return true;
+				    	}else{
+				    		$('#jqg_'+gridId+'_'+rowid).attr('checked',c?false:true);
+				    		checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
+				    		return false;
+				    	}
+			    	}
 			    	checked = $('#jqg_'+gridId+'_'+rowid).attr('checked');
 			    	return true;
 			    },
 			    onSelectRow:function(rowid,status,e){
+				    if($(e.target).attr('type')=='checkbox'){
+			    		if(checked==true||checked=='checked'){
+			    			$('#jqg_'+gridId+'_'+rowid).attr('checked',true);
+			    		}else{
+			    			$('#jqg_'+gridId+'_'+rowid).attr('checked',false);
+			    		}
+				    	var rowData= jQuery("#"+gridId).jqGrid('getRowData',rowid);
+				    	var ifkey = rowData.ifkey;
+				    	var rowId = rowData.id;
+				    	if(ifkey==1){
+							$('#jqg_'+gridId+'_'+rowId).attr('checked','checked');
+						}else{
+							$.ajax({
+								url:'${ctx}/application/common/columnInfo/updateStatus',
+								data:{id:rowid,status:(checked=='checked'?'ACTIVATE':'INACTIVE')},
+								success:function(){
+									alert('设置成功');
+								}
+							});
+						}
+			    	}else{
+			    		if(checked==true||checked=='checked'){
+			    			$('#jqg_'+gridId+'_'+rowid).attr('checked',true);
+			    		}else{
+			    			$('#jqg_'+gridId+'_'+rowid).attr('checked',false);
+			    		}
+			    	}
+			    	//,,,,,,,,,,
+			    	/*
 			    	if($(e.target).attr('type')=='checkbox'){
 			    		if(checked==true||checked=='checked'){
 			    			$('#jqg_'+gridId+'_'+rowid).attr('checked',true);
@@ -525,24 +421,29 @@ $(function(){
 			    			$('#jqg_'+gridId+'_'+rowid).attr('checked',false);
 			    		}
 			    	}
+			    	*/
 			    }
 			},
-			columnNames:['ID','源字段','源字段名称','目标字段','目标字段名称','状态','类型','ifKey','是否是查询字段','查询类型'],
 			columnModel:[
 		   		{name:'id',index:'id',hidden:true, width:1,key:true},
-		   		{name:'sourceColumn',index:'sourceColumn',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'sourceColumnName',index:'sourceColumnName',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'targetColumn',index:'targetColumn', width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
-		   		{name:'targetColumnName',index:'targetColumnName',width:150,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'sourceColumn',index:'sourceColumn',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'sourceColumnName',index:'sourceColumnName',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'targetColumn',index:'targetColumn', width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
+		   		{name:'targetColumnName',index:'targetColumnName',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},
 		   		{name:'status',index:'status',editable:true,edittype:'select',hidden:true,width:100,editoptions:{value:"ACTIVATE:激活;INACTIVE:非激活"}},
 		   		{name:'businesstype',index:'businesstype',hidden:true,editable:true},
 		   		{name:'ifkey',index:'ifkey',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"0:非必须同步;1:必须同步"}},
-		   		{name:'searchable',index:'searchable',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"0:否;1:是"}},
-		   		{name:'searchtype',index:'searchtype',hidden:true,editable:true,edittype:'select',width:100,editrules:{edithidden:true},editoptions:{value:"text:文本;date:日期"}}
+		   		{name:'searchable',index:'searchable',hidden:true,editable:true,edittype:'select',editrules:{edithidden:true},width:100,editoptions:{value:"0:否;1:是"}},
+		   		{name:'searchtype',index:'searchtype',hidden:true,editable:true,edittype:'select',editrules:{edithidden:true},width:100,editoptions:{value:"text:文本;date:日期"}}
 		   	],
+		    sortable:true,
 			baseUrl:basePath
 		};
-		new commonGrid(config);
+		//new commonGrid(config);
+		$("#"+gridId).extendJqgrid(config);
+		$("#"+gridId+"_toppager").hide();
+		$("#jqgh_"+gridId+"_cb").append("<div><span>同步状态</span></div>");
+		$('#cb_'+gridId).hide();
 	}
 });
 </script>

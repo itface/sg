@@ -31,7 +31,7 @@ public  class CommonLogModel {
 		if(obj!=null){
 			for(int j=0;j<fields.length;j++){
 				String name = fields[j].getName();
-				if(!name.equals("serialVersionUID")&&!name.equals("id")&&!name.equals("sapclient")&&!name.equals("garden_flag")){
+				if(!name.equals("serialVersionUID")&&!name.equals("id")&&!name.equals("sapclient")&&!name.equals("garden_flag")&&!name.equals("datakey")){
 					Class fieldType = fields[j].getType();
 					String getMethodName = "get"+name.substring(0, 1).toUpperCase()+name.substring(1);
 					Method getMethod = modelClass.getMethod(getMethodName, new Class[]{});

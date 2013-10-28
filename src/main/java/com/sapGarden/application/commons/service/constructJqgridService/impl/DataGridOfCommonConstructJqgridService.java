@@ -38,7 +38,6 @@ public class DataGridOfCommonConstructJqgridService implements CommonConstructJq
 			columnNames = new String[list.size()];
 			int count=0;
 			for(RuntimeColumnInfo runtimeColumnInfo : list){
-				System.out.println(runtimeColumnInfo.getSourceColumnName());
 				columnNames[count++]=runtimeColumnInfo.getSourceColumnName();
 			}
 		}

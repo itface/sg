@@ -55,8 +55,10 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	public List<T> find(String jpql, Object[] param) {
 		// TODO Auto-generated method stub
 		Query query = em.createQuery(jpql);
-		for (int i = 1; i <= param.length; i++) {
-			query.setParameter(i, param[i - 1]);
+		if(param!=null){
+			for (int i = 1; i <= param.length; i++) {
+				query.setParameter(i, param[i - 1]);
+			}
 		}
 		return query.getResultList();
 	}

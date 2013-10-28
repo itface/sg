@@ -9,12 +9,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
-import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.progress.model.Progress;
 import com.sapGarden.application.commons.progress.model.ProgressModel;
 import com.sapGarden.application.commons.runtime.columninfo.model.RuntimeColumnInfo;
 import com.sapGarden.application.commons.runtime.columninfo.service.Runtime_ColumnInfo_Service;
-import com.sapGarden.application.commons.service.commonService.CommonService;
+import com.sapGarden.application.commons.service.commonService.TempCommonService;
 import com.sapGarden.application.fi.customer.model.Kna1;
 import com.sapGarden.application.fi.customer.model.Kna1Log;
 import com.sapGarden.application.fi.customer.model.Knb1;
@@ -28,13 +28,13 @@ import com.sapGarden.application.fi.customer.service.Init_Service;
 public class Init_ServiceImpl implements Init_Service{
 
 
-	private CommonService commonService;
+	private TempCommonService tempCommonService;
 	private Runtime_ColumnInfo_Service runtime_ColumnInfo_Service;
 	private GetSapDataService getSapDataService;
 	
 	@Autowired
-	public void setCommonService(CommonService commonService) {
-		this.commonService = commonService;
+	public void setTempCommonService(TempCommonService tempCommonService) {
+		this.tempCommonService = tempCommonService;
 	}
 	@Autowired
 	public void setRuntime_ColumnInfo_Service(Runtime_ColumnInfo_Service runtime_ColumnInfo_Service) {
@@ -60,7 +60,6 @@ public class Init_ServiceImpl implements Init_Service{
 			return;
 		}else{
 			progress.setPercent(99);
-			//ִ��
 			long e = System.currentTimeMillis();
 			progress.setEndTime(e);
 		}
@@ -332,23 +331,23 @@ public class Init_ServiceImpl implements Init_Service{
 	private void save(List<Kna1> kna1List,List<Knb1> knb1List,List<Knvv> knvvList,String user,SapDataCollection sapDataCollection){
 		if(kna1List!=null&&kna1List.size()>0){
 			//kna1Dao.save(kna1List);
-			commonService.saveList(CommonServiceWithLog.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Kna1.class, Kna1Log.class, kna1List);
+			tempCommonService.saveList(CommonService.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Kna1.class, Kna1Log.class, kna1List);
 		}
 		if(knb1List!=null&&knb1List.size()>0){
 			//knb1Dao.save(knb1List);
-			commonService.saveList(CommonServiceWithLog.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Knb1.class, Knb1Log.class, knb1List);
+			tempCommonService.saveList(CommonService.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Knb1.class, Knb1Log.class, knb1List);
 		}
 		if(knvvList!=null&&knvvList.size()>0){
 			//knvvDao.save(knvvList);
-			commonService.saveList(CommonServiceWithLog.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Knvv.class, KnvvLog.class, knvvList);
+			tempCommonService.saveList(CommonService.OPTTYPE_INIT, false, sapDataCollection.getId(), user, Knvv.class, KnvvLog.class, knvvList);
 		}
 	}
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED)
 	public void removeAll(SapDataCollection sapDataCollection) {
 		// TODO Auto-generated method stub
-		commonService.deleteBySapclient(Kna1.class, sapDataCollection.getId());
-		commonService.deleteBySapclient(Knb1.class, sapDataCollection.getId());
-		commonService.deleteBySapclient(Knvv.class, sapDataCollection.getId());
+		tempCommonService.deleteBySapclient(Kna1.class, sapDataCollection.getId());
+		tempCommonService.deleteBySapclient(Knb1.class, sapDataCollection.getId());
+		tempCommonService.deleteBySapclient(Knvv.class, sapDataCollection.getId());
 	}
 }

@@ -1,5 +1,6 @@
 package com.sapGarden.application.fi.customer.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,20 +18,24 @@ import com.sapGarden.application.commons.basetable.service.BaseTableService;
 import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.runtime.baseinfo.model.RuntimeBasicInfo;
 import com.sapGarden.application.commons.runtime.baseinfo.service.Runtime_BasicInfo_Service;
+import com.sapGarden.application.commons.runtime.scheduling.model.CommonScheduling;
+import com.sapGarden.application.commons.runtime.scheduling.service.CommonSchedulingService;
+import com.sapGarden.application.commons.runtime.scheduling.util.SchedulingUtils;
 import com.sapGarden.application.commons.runtime.tableinfo.model.RuntimeTableInfo;
 import com.sapGarden.application.commons.runtime.tableinfo.service.Runtime_TableInfo_Service;
 import com.sapGarden.application.fi.customer.service.RuntimeConfig_BasicInfo_Service;
 import com.sapGarden.system.org.model.User;
 
-@Controller("customer_RuntimeController")
+@Controller("customer_RuntimeConfigController")
 @RequestMapping("/application/fi/customer")
-public class RuntimeController {
+public class RuntimeConfigController {
 
 	private final String basePagePath = "/application/synConfig/fi/customer";
 	private final String jobName = "com.sapGarden.application.fi.customer.jobs.CustomerJob";
 	
 	
-	
+	@Autowired
+	private CommonSchedulingService jobService;
 	//private SchedulingService schedulingService;
 	private Runtime_TableInfo_Service runtime_TableInfo_Service;
 	private Runtime_BasicInfo_Service runtime_BasicInfo_Service;
@@ -48,34 +53,24 @@ public class RuntimeController {
 	public void setRuntime_BasicInfo_Service(Runtime_BasicInfo_Service runtime_BasicInfo_Service) {
 		this.runtime_BasicInfo_Service = runtime_BasicInfo_Service;
 	}
-	/*
-	@RequestMapping
-	public ModelAndView index(HttpServletRequest request){
-		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("sapClient", user.getCurrentSapClientModel().getId());
-		map.put("basePath", request.getRequestURI());
-		return new ModelAndView(basePagePath+"/main",map);
-	}*/
 	//*************************************初始化运行设置页面*****************************************************************
 	@RequestMapping(value=("/runtimeConfig"),method = RequestMethod.GET)
 	public ModelAndView runtimeConfigIndex(HttpServletRequest request){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		//Scheduling scheduling = schedulingService.findOneByJobGroup(SjlxTypeName.TYPE_CUSTOMER,user.getCurrentSapDataCollection().getId());
-		RuntimeTableInfo dbReflect = runtime_TableInfo_Service.findOneByBusinesstype(user.getCurrentSapDataCollection().getId(),SjlxTypeName.TYPE_CUSTOMER);
-		RuntimeBasicInfo basicInfo = runtime_BasicInfo_Service.findOneByBusinesstype(SjlxTypeName.TYPE_CUSTOMER,user.getCurrentSapDataCollection().getId());
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("type", SjlxTypeName.TYPE_CUSTOMER);
-		//map.put("scheduling", scheduling==null?(new Scheduling()):scheduling);
-		map.put("jobClassName", jobName);
-		map.put("owner", user.getUsername());
-		map.put("dbReflect", dbReflect==null?(new RuntimeTableInfo()):dbReflect);
-		map.put("basicInfo", basicInfo==null?(new RuntimeBasicInfo()):basicInfo);
-		map.put("kna1TableName", "KNA1");
-		map.put("knb1TableName", "KNB1");
-		map.put("knVVTableName", "KNVV");
-		map.put("basePath", request.getRequestURI());
 		map.put("sapclient", user.getCurrentSapDataCollection().getId());
+		
+		long sapclient = user.getCurrentSapDataCollection().getId();
+		String jobname = SchedulingUtils.JOBNAME_PREFIX+SjlxTypeName.TYPE_CUSTOMER+sapclient;
+		String groupname = SchedulingUtils.GROUPNAME_PREFIX+SjlxTypeName.TYPE_CUSTOMER+sapclient;
+		CommonScheduling job = jobService.findOneByJobGroup(groupname, sapclient);
+		map.put("sapclient", sapclient);
+		if(job!=null&&job.getJobstatus()==1){
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			map.put("jobMemo", "<span style='font-weight:normal;color:red;'>实时同步，起始时间："+sf.format(job.getJobbegindate())+"。</span>");
+		}else{
+			map.put("jobMemo", "<span style='color:red;font-weight:normal;'>停止运行</span>");
+		}
 		return new ModelAndView(basePagePath+"/runtimeConfig",map);
 	}
 	//*************************************运行设置-〉基本信息***************************************************************

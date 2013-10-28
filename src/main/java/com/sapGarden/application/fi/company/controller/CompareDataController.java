@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.sapGarden.application.commons.constants.SjlxTypeName;
-import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
 import com.sapGarden.application.fi.company.service.CompareDataService;
 import com.sapGarden.system.org.model.User;
@@ -26,7 +26,7 @@ import com.sapGarden.system.org.model.User;
 public class CompareDataController {
 
 	@Autowired
-	@Qualifier("compareData")
+	@Qualifier("compareData2")
 	private CommonConstructJqgridService commonConstructJqgridService;
 	@Autowired
 	@Qualifier("company_CompareDataService")
@@ -45,9 +45,9 @@ public class CompareDataController {
 		return compareDataService.getJqgridCompareJsonData(user.getCurrentSapDataCollection());
 	}
 	@RequestMapping(value="/sapSynToLocal")
-	public @ResponseBody Object sapSynToLocal(String list) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException{
+	public @ResponseBody Object sapSynToLocal(String list){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		compareDataService.saveComparedDataOfJqgridToLocal(user.getCurrentSapDataCollection(), list, user.getUsername(), CommonServiceWithLog.OPTTYPE_COMPAREDATA, true);
+		compareDataService.saveComparedDataOfJqgridToLocal(user.getCurrentSapDataCollection(), list, user.getUsername(), CommonService.OPTTYPE_COMPAREDATA, true);
 		return "S";
 	}
 //	@RequestMapping("/loadCompareData/{type}")

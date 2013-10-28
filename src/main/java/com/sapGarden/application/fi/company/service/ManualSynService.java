@@ -8,6 +8,6 @@ import net.sf.json.JSONObject;
 
 public interface ManualSynService {
 
-	public void saveManuSynDataOfJqgridToLocal(SapDataCollection sapDataCollection, String list, String user,String opttype,boolean ifLog);
+	public void saveManuSynDataOfJqgridToLocal(SapDataCollection sapDataCollection, String list, String user,String opttype,boolean ifLog)throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 	public JSONObject testCall(SapDataCollection sapDataCollection)throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException;
 }

@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.dao.CommonLogDao;
-import com.sapGarden.application.commons.service.commonService.CommonLogService;
+import com.sapGarden.application.commons.service.commonService.TempCommonLogService;
 import com.sapGarden.global.jqgrid.model.Jqgrid_DataJson;
 import com.sapGarden.global.json.JsonUtils;
 @Service
-public class CommonLogServiceImpl implements CommonLogService{
+public class CommonLogServiceImpl implements TempCommonLogService{
 
 	private CommonLogDao commonLogDao;
 	

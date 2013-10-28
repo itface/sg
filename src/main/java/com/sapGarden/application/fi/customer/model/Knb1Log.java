@@ -15,9 +15,13 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.sapGarden.application.commons.log.model.CommonLogModel;
 @Entity
 @Table(name="knb1_log")
-public class Knb1Log implements Serializable{
+public class Knb1Log extends CommonLogModel implements Serializable{
 	
 	/**
 	 * 
@@ -33,7 +37,7 @@ public class Knb1Log implements Serializable{
 	                allocationSize = 1)           //每次主键值增加的大小
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "knb1_log_gen")
 	private long id;
-	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date opttime;
 	private String optuser;
 	private String opt;

@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.dao.CommonDao;
-import com.sapGarden.application.commons.service.commonService.CommonService;
+import com.sapGarden.application.commons.service.commonService.TempCommonService;
 import com.sapGarden.application.fi.customer.model.Kna1;
 import com.sapGarden.global.jqgrid.model.Jqgrid_DataJson;
 import com.sapGarden.global.json.JsonUtils;
-@Service("commonService")
+@Service
 @Order(2)
-public class CommonServiceImpl implements CommonService{
+public class CommonServiceImpl implements TempCommonService{
 
 
 	private CommonDao commonDao;

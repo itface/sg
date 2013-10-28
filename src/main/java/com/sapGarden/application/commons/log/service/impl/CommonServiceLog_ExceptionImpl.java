@@ -10,53 +10,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import com.sapGarden.application.commons.log.model.CommonLogModel;
-import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
-import com.sapGarden.application.commons.log.service.LogDaoService;
+import com.sapGarden.application.commons.log.service.CommonService;
+import com.sapGarden.application.commons.log.service.ExceptionLogDaoService;
 @Aspect
 //@Order(value=Ordered.LOWEST_PRECEDENCE)
-@Order(1)
+//@Order(1)
 @Component("commonServiceLog_Exception")
 public class CommonServiceLog_ExceptionImpl{
 
 	@Autowired
-	private LogDaoService logDaoService;
+	private ExceptionLogDaoService exceptionLogDaoService;
 	
 	
-	@AfterThrowing(value="execution(* com.sapGarden.application.commons.log.service.CommonServiceWithLog.addWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object)",argNames= "exception,opttype,sapclient,user,modelClass,logModelClass,object",throwing = "exception")
+	@AfterThrowing(value="execution(* com.sapGarden.application.commons.log.service.CommonService.addWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object)",argNames= "exception,opttype,sapclient,user,modelClass,logModelClass,object",throwing = "exception")
 	public void save_afterThrowingAdvice(Throwable exception,String opttype,long sapclient,String user,Class modelClass,Class logModelClass,Object object) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		String msg = exception.toString();
-		String opt = CommonServiceWithLog.OPT_ADD;
-		String optflag = CommonServiceWithLog.OPTFLAG_FAIL;
+		String opt = CommonService.OPT_ADD;
+		String optflag = CommonService.OPTFLAG_FAIL;
 		if(object!=null){
 			Object logObj = logModelClass.getConstructor().newInstance();
 			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
 			initCommonLogModelMethod.invoke(logObj, new Object[]{object,null,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
-			logDaoService.add(logObj);
+			exceptionLogDaoService.add(logObj);
 		}
 	}
-	@AfterThrowing(value="execution(* com.sapGarden.application.commons.log.service.CommonServiceWithLog.updateWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object,oldObject)",argNames= "exception,opttype,sapclient,user,modelClass,logModelClass,object,oldObject",throwing = "exception")
+	@AfterThrowing(value="execution(* com.sapGarden.application.commons.log.service.CommonService.updateWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object,oldObject)",argNames= "exception,opttype,sapclient,user,modelClass,logModelClass,object,oldObject",throwing = "exception")
 	public void update_afterThrowingAdvice(Throwable exception,String opttype,long sapclient,String user,Class modelClass,Class logModelClass,Object object,Object oldObject) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		String msg = exception.toString();
-		String opt = CommonServiceWithLog.OPT_UPDATE;
-		String optflag = CommonServiceWithLog.OPTFLAG_FAIL;
+		String opt = CommonService.OPT_UPDATE;
+		String optflag = CommonService.OPTFLAG_FAIL;
 		if(object!=null){
 			Object logObj = logModelClass.getConstructor().newInstance();
 			Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
 			initCommonLogModelMethod.invoke(logObj, new Object[]{object,oldObject,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
-			logDaoService.add(logObj);
+			exceptionLogDaoService.add(logObj);
 		}
 	}
-	@AfterThrowing(value="execution(* com.sapGarden.application.commons.log.service.CommonServiceWithLog.deleteWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object)",argNames= "exception,opttype,sapclient,user,modelClass,logModelClass,object",throwing = "exception")
+	@AfterThrowing(value="execution(* com.sapGarden.application.commons.log.service.CommonService.deleteWithLog(..)) && args(opttype,sapclient,user,modelClass,logModelClass,object)",argNames= "exception,opttype,sapclient,user,modelClass,logModelClass,object",throwing = "exception")
 	public void delete_afterThrowingAdvice(Throwable exception,String opttype,long sapclient,String user,Class modelClass,Class logModelClass,Object object) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		String msg = exception.toString();
-		String opt = CommonServiceWithLog.OPT_DELETE;
-		String optflag = CommonServiceWithLog.OPTFLAG_FAIL;
+		String opt = CommonService.OPT_DELETE;
+		String optflag = CommonService.OPTFLAG_FAIL;
 		Object logObj = logModelClass.getConstructor().newInstance();
 		Method initCommonLogModelMethod = logModelClass.getMethod("initCommonLogModel", new Class[]{Object.class,Object.class,Class.class,Class.class,long.class,String.class,String.class,String.class,String.class,String.class,Date.class});
 		initCommonLogModelMethod.invoke(logObj,new Object[]{null,object,modelClass,logModelClass,sapclient,msg,opt,optflag,opttype,user,new Date()});
-		logDaoService.add(logObj);
+		exceptionLogDaoService.add(logObj);
 	}
+
 	/*
 	@AfterThrowing(value="execution(* com.sapGarden.application.commons.service.commonService.impl.CommonServiceImpl.update(..)) && args(opttype,ifLog,sapclient,user,modelClass,logModelClass,object)",argNames= "exception,opttype,ifLog,sapclient,user,modelClass,logModelClass,object",throwing = "exception")
 	@Transactional(propagation=Propagation.REQUIRES_NEW)

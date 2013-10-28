@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.sapGarden.application.commons.constants.SjlxTypeName;
+import com.sapGarden.application.commons.excel.service.CommonExpertExcelService;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
-import com.sapGarden.application.fi.company.service.CompanyService;
-import com.sapGarden.application.fi.company.service.ExportExcelService;
+import com.sapGarden.application.fi.company.model.Company;
 import com.sapGarden.system.org.model.User;
 
 @Controller("company_RuntimeDataController")
@@ -32,9 +33,11 @@ public class RuntimeDataController {
 	@Qualifier("commonData")
 	private CommonConstructJqgridService commonConstructJqgridService;
 	@Autowired
-	private CompanyService companyService;
+	@Qualifier("commonService")
+	private CommonService<Company> companyService;
 	@Autowired
-	private ExportExcelService excelService;
+	@Qualifier("exportCompanyExcel")
+	private CommonExpertExcelService commonExpertExcelService;
 	//*************************************初始化调用函数页面*****************************************************************
 	@RequestMapping
 	public ModelAndView index(){
@@ -46,12 +49,16 @@ public class RuntimeDataController {
 	@RequestMapping(value="/findJqgridData")
 	public @ResponseBody Object findJqgridData(String companyCode,int rows,int page,String sidx,String sord){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = companyService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), companyCode,rows,page,sidx,sord);
+		JSONObject param = new JSONObject();
+		param.put("comp_code", companyCode==null?"":companyCode);
+		JSONObject json = companyService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),"Company", param,rows,page,sidx,sord);
 		return json;
 	}
 	@RequestMapping(value=("/exportExcel"),method=RequestMethod.GET)
 	public @ResponseBody void exportExcel(HttpServletResponse response,String companyCode) throws SecurityException, IllegalArgumentException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		excelService.exportExcel(user.getCurrentSapDataCollection(),companyCode, response);
+		JSONObject param = new JSONObject();
+		param.put("comp_code", companyCode==null?"":companyCode);
+		commonExpertExcelService.exportExcel(user.getCurrentSapDataCollection(),param, response);
 	}
 }

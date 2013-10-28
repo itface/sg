@@ -119,15 +119,6 @@ $(function(){
 			    	}
 			    	checked = $('#jqg_list_'+rowid).attr('checked');
 			    	return true;
-			    	/*
-			    	var c = $('#jqg_list_'+rowid).attr('checked');
-			    	if(confirm('是否要更改同步状态')){
-			    		checked = c;
-			    		return true;
-			    	}else{
-			    		$('#jqg_list_'+rowid).attr('checked',c?false:true);
-			    		return false;
-			    	}*/
 			    },
 			    onSelectRow:function(rowid,status,e){
 			    	//alert($(e.target).attr('type')+":"+checked+":"+status);

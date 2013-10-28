@@ -46,8 +46,8 @@ a{ font-size:12px; text-decoration:none}
 		<div style='height:20px' id='ptext4'>从SAP（<script>document.write(frameElement.api.opener.$.dialog.data('client'));</script>）读取数据......<span id='ptext4ok' style='display:none'>OK</span><span id='ptext4cancel' style='display:none'>用户终止</span></div>
 		<div style='height:20px' id='ptext5'>数据初始化到Garden中......<span id='ptext5ok' style='display:none'>OK</span><span id='ptext5cancel' style='display:none'>用户终止</span></div>
 	</div>
-	<div style="margin:0 35px;">
-		<div style='' id='ptextResult'></div>
+	<div style="margin:0 40px;">
+		<div style='height:20px' id='ptextResult'></div>
 		<div id="p" style="width:400px;"  class="easyui-progressbar"></div>
 	</div>
 </div>
@@ -75,6 +75,7 @@ function cancelInit(){
 	if(!confirm('确定取消?')){
 		return false;
 	}
+	$('#cancel').hide();
 	cancelFlag=true;
 	$.ajax({
 		url:'${ctx}/application/fi/company/initData/cancelInit',

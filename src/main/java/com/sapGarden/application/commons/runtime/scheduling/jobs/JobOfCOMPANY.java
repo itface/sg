@@ -13,7 +13,7 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
-import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.fi.company.service.SynService;
 import com.sapGarden.system.db.DbContextHolder;
 
@@ -44,7 +44,7 @@ public class JobOfCOMPANY extends QuartzJobBean{
 		//因为job是单独起的线程，所以需要设置datasource才能连上正确的库
 		DbContextHolder.setDbType("dataSource"+sapDataCollection.getId());
 		try {
-			synService.syn(sapDataCollection,CommonServiceWithLog.OPTTYPE_SCHEDULING,owner,CommonServiceWithLog.IFLOG_YES);
+			synService.syn(sapDataCollection,CommonService.OPTTYPE_SCHEDULING,owner,CommonService.IFLOG_YES);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			 SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

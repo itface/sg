@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.jco.model.CommonCompareDataModel;
-import com.sapGarden.application.fi.company.service.CompanyService;
 import com.sapGarden.application.fi.company.service.CompareDataService;
 import com.sapGarden.application.fi.company.service.SynService;
 @Service("company_SynService")
@@ -24,7 +23,7 @@ public class SynServiceImpl implements SynService{
 
 
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
+	//@Transactional
 	public boolean syn(SapDataCollection sapDataCollection,String opttype,String user,boolean ifLog) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
 		// TODO Auto-generated method stub
 		List<CommonCompareDataModel> commonCompareDataModelList=compareDataService.getCompareData(sapDataCollection);

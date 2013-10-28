@@ -2,6 +2,7 @@ package com.sapGarden.application.commons.runtime.scheduling.controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,10 +19,6 @@ import com.sapGarden.application.commons.runtime.scheduling.exception.Scheduling
 import com.sapGarden.application.commons.runtime.scheduling.model.CommonScheduling;
 import com.sapGarden.application.commons.runtime.scheduling.service.CommonSchedulingService;
 import com.sapGarden.application.commons.runtime.scheduling.util.SchedulingUtils;
-import com.sapGarden.application.fi.company.model.Company;
-import com.sapGarden.application.fi.company.model.CompanyLog;
-import com.sapGarden.application.fi.company.service.CompanyService;
-import com.sapGarden.application.fi.company.service.SynService;
 import com.sapGarden.system.org.model.User;
 
 @Controller
@@ -32,10 +29,7 @@ public class CommonSchedulingController {
 
 	@Autowired
 	private CommonSchedulingService commonSchedulingService;
-	@Autowired
-	private CompanyService companyService;
-	@Autowired
-	private SynService synService;
+
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView  page(@PathVariable String type1,@PathVariable String type2){
@@ -48,20 +42,23 @@ public class CommonSchedulingController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(job==null){
 			job = new CommonScheduling();
-			job.setJobclass(JOBCLASSPATH+type2);
-			job.setJobgroup(jobname);
-			job.setJobname(groupname);
+			job.setJobgroup(groupname);
+			job.setJobname(jobname);
 			job.setSapclient(sapclient);
 			job.setJobowner(user.getUsername());
+			job.setJobbegindate(new Date());
 		}
 		map.put("job", job);
 		map.put("type", type2);
 		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		map.put("currentStatus", job.getJobstatus()==0?"<span style='color:red;'>停止运行</span>":"<span style='color:red;'>定时同步，起始时间："+sf.format(job.getJobbegindate())+"，间隔时间："+job.getIntervalminute()+"分钟</span>");
 		if("realtime".equals(type1)){
+			map.put("currentStatus", job.getJobstatus()==0?"<span style='color:red;'>停止运行</span>":"<span style='color:red;'>实时同步，起始时间："+sf.format(job.getJobbegindate())+"。</span>");
 			return new ModelAndView("/application/synConfig/common/scheduling_realtime",map);
+		}else{
+			job.setJobclass(JOBCLASSPATH+type2);
+			map.put("currentStatus", job.getJobstatus()==0?"<span style='color:red;'>停止运行</span>":"<span style='color:red;'>定时同步，起始时间："+sf.format(job.getJobbegindate())+"，间隔时间："+job.getIntervalminute()+"分钟</span>");
+			return new ModelAndView("/application/synConfig/common/scheduling_time",map);
 		}
-		return new ModelAndView("/application/synConfig/common/scheduling_time",map);
 	}
 	@RequestMapping(method=RequestMethod.POST)
 	public @ResponseBody void _new(CommonScheduling job)throws SchedulingException{

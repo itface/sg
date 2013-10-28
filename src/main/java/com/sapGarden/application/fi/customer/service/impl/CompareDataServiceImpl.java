@@ -10,15 +10,16 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
-import com.sapGarden.application.commons.log.service.CommonServiceWithLog;
+import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.runtime.columninfo.model.RuntimeColumnInfo;
 import com.sapGarden.application.commons.runtime.columninfo.service.Runtime_ColumnInfo_Service;
-import com.sapGarden.application.commons.service.commonService.CommonService;
+import com.sapGarden.application.commons.service.commonService.TempCommonService;
 import com.sapGarden.application.fi.customer.model.Kna1;
 import com.sapGarden.application.fi.customer.model.Kna1Compared;
 import com.sapGarden.application.fi.customer.model.Kna1Log;
@@ -31,154 +32,135 @@ import com.sapGarden.application.fi.customer.model.KnvvLog;
 import com.sapGarden.application.fi.customer.model.SapDataModel;
 import com.sapGarden.application.fi.customer.service.CompareDataService;
 import com.sapGarden.application.fi.customer.service.GetSapDataService;
+import com.sapGarden.global.json.JsonUtils;
 @Service
 public class CompareDataServiceImpl implements CompareDataService{
 
+	//@Autowired
+	//private TempCommonService tempCommonService;
+	@Autowired
+	@Qualifier("commonService")
 	private CommonService commonService;
+	@Autowired
 	private GetSapDataService getSapDataService;
+	@Autowired
 	private Runtime_ColumnInfo_Service runtime_ColumnInfo_Service;
-	@Autowired
-	public void setCommonService(CommonService commonService) {
-		this.commonService = commonService;
-	}
-	@Autowired
-	public void setGetSapDataService(GetSapDataService getSapDataService) {
-		this.getSapDataService = getSapDataService;
-	}
-	@Autowired
-	public void setRuntime_ColumnInfo_Service(Runtime_ColumnInfo_Service runtime_ColumnInfo_Service) {
-		this.runtime_ColumnInfo_Service = runtime_ColumnInfo_Service;
-	}
-	private boolean checkInitial(long sapclient){
-		if(commonService.countBySapclient(Kna1.class, sapclient)>0){
+
+	private int totalSapNum;
+	private int totalSapKna1Num;
+	private int totalSapKnb1Num;
+	private int totalSapKnvvNum;
+	private long totalGardenNum;
+	private long totalGardenKna1Num;
+	private long totalGardenKnb1Num;
+	private long totalGardenKnvvNum;
+
+	private int onlySapKna1Num;
+	private int onlySapKnb1Num;
+	private int onlySapKnvvNum;
+	
+	private int onlyGardenKna1Num;
+	private int onlyGardenKnb1Num;
+	private int onlyGardenKnvvNum;
+	private int differenceNum;
+	private int differenceKna1Num;
+	private int differenceKnb1Num;
+	private int differenceKnvvNum;
+	private int sameNum;
+	private int sameKna1Num;
+	private int sameKnb1Num;
+	private int sameKnvvNum;
+	
+	private boolean checkInitial(SapDataCollection sapDataCollection){
+		if(commonService.findTotalNum(sapDataCollection, "Kna1", null)>0){
 			return true;
-		}else if(commonService.countBySapclient(Kna1.class, sapclient)>0){
+		}else if(commonService.findTotalNum(sapDataCollection, "Knb1", null)>0){
 			return true;
-		}else if(commonService.countBySapclient(Kna1.class, sapclient)>0){
+		}else if(commonService.findTotalNum(sapDataCollection, "Knvv", null)>0){
 			return true;
 		}else{
 			return false;
 		}
 	}
-	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
-	public void initComaredData(long sapclient){
-		commonService.deleteBySapclient(Kna1Compared.class, sapclient);
-		commonService.deleteBySapclient(Knb1Compared.class, sapclient);
-		commonService.deleteBySapclient(KnvvCompared.class, sapclient);
+
+	//@Transactional(propagation=Propagation.REQUIRED)
+	public void initComaredData(SapDataCollection sapDataCollection){
+		commonService.removeAll(sapDataCollection, "Kna1Compared");
+		commonService.removeAll(sapDataCollection, "Knb1Compared");
+		commonService.removeAll(sapDataCollection, "KnvvCompared");
 	}
-	@Transactional(propagation=Propagation.REQUIRED)
+	//@Transactional(propagation=Propagation.REQUIRED)
 	public void initGardenFlag(long sapclient){
-		commonService.updateGardenFlag(Kna1.class,0, sapclient);
-		commonService.updateGardenFlag(Knb1.class,0, sapclient);
-		commonService.updateGardenFlag(Knvv.class,0, sapclient);
+		commonService.executeUpdateSql("update Kna1 t set t.garden_flag=0 where t.sapclient=?", new Object[]{sapclient});
+		commonService.executeUpdateSql("update Knb1 t set t.garden_flag=0 where t.sapclient=?", new Object[]{sapclient});
+		commonService.executeUpdateSql("update Knvv t set t.garden_flag=0 where t.sapclient=?", new Object[]{sapclient});
+	}
+	public void findGardenTotalNum(SapDataCollection sapDataCollection){
+		totalGardenKna1Num = commonService.findTotalNum(sapDataCollection, "Kna1", null);
+		totalGardenKnb1Num = commonService.findTotalNum(sapDataCollection, "Knb1", null);
+		totalGardenKnvvNum = commonService.findTotalNum(sapDataCollection, "Knvv", null);
+		totalGardenNum=totalGardenKna1Num+totalGardenKnb1Num+totalGardenKnvvNum;
 	}
 	@Override
-	public void compare(SapDataCollection sapDataCollection, String user,String kunnr,String bukrs,String vkorg,String vtweg,String spart)
+	public JSONObject compareSapAndGarden(SapDataCollection sapDataCollection, String user,String kunnr,String bukrs,String vkorg,String vtweg,String spart)
 			throws InvocationTargetException, IllegalAccessException,
 			NoSuchMethodException, NoSuchFieldException {
 		// TODO Auto-generated method stub
-		if(!this.checkInitial(sapDataCollection.getId())){
-			return;
+		totalSapNum=0;
+		totalSapKna1Num=0;
+		totalSapKnb1Num=0;
+		totalSapKnvvNum=0;
+		totalGardenNum=0;
+		totalGardenKna1Num=0;
+		totalGardenKnb1Num=0;
+		totalGardenKnvvNum=0;
+		onlySapKna1Num=0;
+		onlySapKnb1Num=0;
+		onlySapKnvvNum=0;
+		onlyGardenKna1Num=0;
+		onlyGardenKnb1Num=0;
+		onlyGardenKnvvNum=0;
+		differenceNum=0;
+		differenceKna1Num=0;
+		differenceKnb1Num=0;
+		differenceKnvvNum=0;
+		sameNum=0;
+		sameKna1Num=0;
+		sameKnb1Num=0;
+		sameKnvvNum=0;
+		if(!this.checkInitial(sapDataCollection)){
+			//return;
 		}
 		this.initGardenFlag(sapDataCollection.getId());
-		this.initComaredData(sapDataCollection.getId());
+		this.initComaredData(sapDataCollection);
 		this.doCompare(sapDataCollection, user,kunnr,bukrs,vkorg,vtweg,spart);
+		this.findGardenTotalNum(sapDataCollection);
+		JSONObject json = new JSONObject();
+		json.put("totalSapNum", totalSapNum);
+		json.put("totalSapKna1Num", totalSapKna1Num);
+		json.put("totalSapKnb1Num", totalSapKnb1Num);
+		json.put("totalSapKnvvNum", totalSapKnvvNum);
+		json.put("totalGardenNum", totalGardenNum);
+		json.put("totalGardenKna1Num", totalGardenKna1Num);
+		json.put("totalGardenKnb1Num", totalGardenKnb1Num);
+		json.put("totalGardenKnvvNum", totalGardenKnvvNum);
+		json.put("onlySapKna1Num", onlySapKna1Num);
+		json.put("onlySapKnb1Num", onlySapKnb1Num);
+		json.put("onlySapKnvvNum", onlySapKnvvNum);
+		json.put("onlyGardenKna1Num", onlyGardenKna1Num);
+		json.put("onlyGardenKnb1Num", onlyGardenKnb1Num);
+		json.put("onlyGardenKnvvNum", onlyGardenKnvvNum);
+		json.put("differenceNum", differenceNum);
+		json.put("differenceKna1Num", differenceKna1Num);
+		json.put("differenceKnb1Num", differenceKnb1Num);
+		json.put("differenceKnvvNum", differenceKnvvNum);
+		json.put("sameNum", sameNum);
+		json.put("sameKna1Num", sameKna1Num);
+		json.put("sameKnb1Num", sameKnb1Num);
+		json.put("sameKnvvNum", sameKnvvNum);
+		return json;
 	}
-
-	@Override
-	public String getDataTableHtml(SapDataCollection sapDataCollection, String type)
-			throws InvocationTargetException, IllegalAccessException,
-			NoSuchMethodException, NoSuchFieldException {
-		// TODO Auto-generated method stub
-		StringBuffer sb = new StringBuffer();
-		List list = new LinkedList();
-		List<RuntimeColumnInfo> runtimeColumnInfoList = new LinkedList();
-		Class clazz = null;
-		if(type.equals("kna1")){
-			clazz=Kna1Compared.class;
-			list = commonService.findBySapclient(Kna1Compared.class, sapDataCollection.getId());
-			runtimeColumnInfoList = runtime_ColumnInfo_Service.findAllActiveData(sapDataCollection,"KNA1");
-		}else if(type.equals("knb1")){
-			clazz=Knb1Compared.class;
-			list = commonService.findBySapclient(Knb1Compared.class, sapDataCollection.getId());
-			runtimeColumnInfoList = runtime_ColumnInfo_Service.findAllActiveData(sapDataCollection,"KNB1");
-		}else if(type.equals("knvv")){
-			clazz=KnvvCompared.class;
-			list = commonService.findBySapclient(KnvvCompared.class, sapDataCollection.getId());
-			runtimeColumnInfoList = runtime_ColumnInfo_Service.findAllActiveData(sapDataCollection,"KNVV");
-		}
-		for(int i=0;i<list.size();i++){
-			Object obj = list.get(i);
-			Method getIdMethod = clazz.getMethod("getId", new Class[]{});
-			Method getOptidMethod = clazz.getMethod("getOptid", new Class[]{});
-			Method getSapkeyflagMethod = clazz.getMethod("getSapkeyflag", new Class[]{});
-			String datakey ="";
-			if(!"kna1".equals(type)){
-				Method getDatakeyflagMethod = clazz.getMethod("getDatakey", new Class[]{});
-				datakey = getDatakeyflagMethod.invoke(obj, new Object[]{})==null?"":(String)getDatakeyflagMethod.invoke(obj, new Object[]{});
-			}
-			long id = (Long)getIdMethod.invoke(obj, new Object[]{});
-			long optid = (Long)getOptidMethod.invoke(obj, new Object[]{});
-			int sapkeyflag = (Integer)getSapkeyflagMethod.invoke(obj, new Object[]{});
-			String zt = "&nbsp;";
-			String background = "#FFFFFF";
-			if(optid>0&&sapkeyflag<1){
-				zt="SAP无,GARDEN有";
-			}else if(optid<1&&sapkeyflag>0){
-				zt="SAP有,GARDEN无";
-			}
-			if(optid<1||sapkeyflag<1){
-				background="#FF0000";
-			}
-			sb.append("<tr height='40px' style='background:"+background+"' class='"+type+"Tr'>");
-			sb.append(	"<td width='10px' style='border:1px solid #ccc;border-collapse:collapse'>");
-			sb.append(	"<input type='checkbox' class='gridCheckbox' value='"+optid+"'/>");
-			sb.append("<input type='hidden' name='id' value='"+id+"'/>");
-			sb.append("<input type='hidden' name='optid' value='"+optid+"'/>");
-			sb.append("<input type='hidden' name='datakey' value='"+datakey+"'/>");
-			sb.append(	"</td>");
-			sb.append(	"<td  style='border:1px solid #ccc;border-collapse:collapse'>");
-			sb.append(	zt);
-			sb.append(	"</td>");
-			for(RuntimeColumnInfo runtimeColumnInfo : runtimeColumnInfoList){
-				String name = runtimeColumnInfo.getSourceColumn().toLowerCase();
-				String getMethodName = "get"+name.substring(0, 1).toUpperCase()+name.substring(1);
-				Method getMethod = clazz.getMethod(getMethodName, new Class[]{});
-				String oldGetMethodName = "get"+name.substring(0, 1).toUpperCase()+name.substring(1)+"_old";
-				Method oldGetMethod = clazz.getMethod(oldGetMethodName, new Class[]{});
-				Object value = getMethod.invoke(obj, new Object[]{});
-				Object oldValue = oldGetMethod.invoke(obj, new Object[]{});
-				String s1 = value==null?"":value.toString();
-				String s2 = oldValue==null?"":oldValue.toString();
-				String tdBg = "";
-				if(optid>0&&sapkeyflag>0){
-					if(!s1.equals(s2)){
-						tdBg = "background:#FF0000";
-					}
-				}
-				sb.append("<td style='border:1px solid #ccc;border-collapse:collapse;"+tdBg+"'>");
-				sb.append("&nbsp;");
-				sb.append(s1);
-				sb.append("<input type='hidden' name='"+name+"' value='"+s1+"'");
-				sb.append("</td>");
-				sb.append("<td style='border:1px solid #ccc;border-collapse:collapse;"+tdBg+"'>");
-				sb.append("&nbsp;");
-				sb.append(s2);
-				sb.append("<input type='hidden' name='"+name+"_old"+"' value='"+s2+"'");
-				sb.append("</td>");
-			}
-			sb.append(	"<td  style='border:1px solid #ccc;border-collapse:collapse'>");
-			sb.append(	"&nbsp;");
-			sb.append(	"</td>");
-			sb.append("</tr>");
-			sb.append("</tr>");
-		}
-		return sb.toString();
-	}
-	@Override
 	public void doCompare(SapDataCollection sapDataCollection,String user,String kunnr,String bukrs,String vkorg,String vtweg,String spart) throws SecurityException, IllegalArgumentException, NoSuchFieldException, NoSuchMethodException, IllegalAccessException, InvocationTargetException{
-		
 		Object O_CONTROL1 = null;
 		Object O_CONTROL2 = null;
 		Object O_CONTROL3 = null;
@@ -186,7 +168,7 @@ public class CompareDataServiceImpl implements CompareDataService{
 		Object O_CONTROL5 = null;
 		Object O_CONTROL6 = null;
 		SapDataModel sapDataModel = null;
-		int perNum=1000;
+		int perNum=500;
 		int totalNum=0;
 		List<RuntimeColumnInfo> kna1RuntimeColumnInfoList = runtime_ColumnInfo_Service.findAll(sapDataCollection,"KNA1");
 		List<RuntimeColumnInfo> knb1RuntimeColumnInfoList = runtime_ColumnInfo_Service.findAll(sapDataCollection,"KNB1");
@@ -198,6 +180,7 @@ public class CompareDataServiceImpl implements CompareDataService{
 		String knb1s = getSapDataService.getColumnNames(knb1RuntimeColumnInfoList);
 		String knvvs = getSapDataService.getColumnNames(knvvRuntimeColumnInfoList);
 		sapDataModel = getSapDataService.getSapData(sapDataCollection, perNum, kna1RuntimeColumnInfoList, knb1RuntimeColumnInfoList, knvvRuntimeColumnInfoList, kna1s, knb1s, knvvs, O_CONTROL1, O_CONTROL2, O_CONTROL3, O_CONTROL4, O_CONTROL5, O_CONTROL6,kunnr,bukrs,vkorg,vtweg,spart);
+		totalSapNum=sapDataModel.getTotalNum();
 		totalNum=sapDataModel.getTotalNum();
 		O_CONTROL1 =  sapDataModel.getO_CONTROL1();
 		O_CONTROL2 =  sapDataModel.getO_CONTROL2();
@@ -221,20 +204,23 @@ public class CompareDataServiceImpl implements CompareDataService{
 				List<Knb1> knb1ListG = null;
 				List<Knvv> knvvListG = null;
 				if(kna1List!=null&&kna1List.size()>0){
+					totalSapKna1Num+=kna1List.size();
 					String sql = "from "+Kna1.class.getName()+" t where t.kunnr in ("+sapDataModel.getKna1Key()+") and t.sapclient='"+sapDataCollection.getId()+"'";
-					kna1ListG = commonService.queryBySql(Kna1.class,sql);
-					commonService.updateBySql("update "+Kna1.class.getName()+" t set t.garden_flag=1 where t.kunnr in ("+sapDataModel.getKna1Key()+") and t.sapclient='"+sapDataCollection.getId()+"'");
+					kna1ListG = commonService.executeQuerySql(sql, null);
+					commonService.executeUpdateSql("update "+Kna1.class.getName()+" t set t.garden_flag=1 where t.kunnr in ("+sapDataModel.getKna1Key()+") and t.sapclient='"+sapDataCollection.getId()+"'",null);
 				}
 				if(knb1List!=null&&knb1List.size()>0){
+					totalSapKnb1Num+=knb1List.size();
 					String sql = "from "+Knb1.class.getName()+" t where t.datakey in ("+sapDataModel.getKnb1Key()+") and t.sapclient='"+sapDataCollection.getId()+"'";
-					knb1ListG = commonService.queryBySql(Knb1.class,sql);
-					commonService.updateBySql("update "+Knb1.class.getName()+" t set t.garden_flag=1 where t.datakey in ("+sapDataModel.getKnb1Key()+") and t.sapclient='"+sapDataCollection.getId()+"'");
+					knb1ListG = commonService.executeQuerySql(sql, null);
+					commonService.executeUpdateSql("update "+Knb1.class.getName()+" t set t.garden_flag=1 where t.datakey in ("+sapDataModel.getKnb1Key()+") and t.sapclient='"+sapDataCollection.getId()+"'",null);
 				}
 				if(knvvList!=null&&knvvList.size()>0){
+					totalSapKnvvNum+=knvvList.size();
 					String sql = "from "+Knvv.class.getName()+" t where t.datakey in ("+sapDataModel.getKnvvKey()+") and t.sapclient='"+sapDataCollection.getId()+"'";
-					knvvListG = commonService.queryBySql(Knvv.class,sql);
+					knvvListG = commonService.executeQuerySql(sql, null);
 					sql="update "+Knvv.class.getName()+" t set t.garden_flag=1 where t.datakey in ("+sapDataModel.getKnvvKey()+") and t.sapclient='"+sapDataCollection.getId()+"'";
-					commonService.updateBySql(sql);
+					commonService.executeUpdateSql(sql,null);
 				}
 				List<Kna1Compared> kna1CompareDataModelList = new LinkedList<Kna1Compared>();
 				if(kna1List!=null&&kna1List.size()>0){
@@ -257,17 +243,27 @@ public class CompareDataServiceImpl implements CompareDataService{
 												svalue=(svalue==null?"":svalue);
 												gvalue=(gvalue==null?"":gvalue);
 												if(!gvalue.equals(svalue)){
+													differenceNum+=1;
+													differenceKna1Num+=1;
 													Kna1Compared log = new Kna1Compared(sapDataCollection.getId(),sKna1,gKna1);
 													kna1CompareDataModelList.add(log);
 													break;
+												}else{
+													sameNum+=1;
+													sameKna1Num+=1;
 												}
 											}else{
 												svalue=svalue+"";
 												gvalue=gvalue+"";
 												if(!gvalue.equals(svalue)){
+													differenceNum+=1;
+													differenceKna1Num+=1;
 													Kna1Compared log = new Kna1Compared(sapDataCollection.getId(),sKna1,gKna1);
 													kna1CompareDataModelList.add(log);
 													break;
+												}else{
+													sameNum+=1;
+													sameKna1Num+=1;
 												}
 											}
 										}
@@ -277,16 +273,25 @@ public class CompareDataServiceImpl implements CompareDataService{
 								}
 							}
 							if(flag){
+								differenceNum+=1;
+								differenceKna1Num+=1;
+								onlySapKna1Num+=1;
 								Kna1Compared log = new Kna1Compared(sapDataCollection.getId(),sKna1,null);
 								kna1CompareDataModelList.add(log);
 							}
 						}
 						for(Kna1 gKna1 : kna1ListG){
+							differenceNum+=1;
+							differenceKna1Num+=1;
+							onlyGardenKna1Num+=1;
 							Kna1Compared log = new Kna1Compared(sapDataCollection.getId(),null,gKna1);
 							kna1CompareDataModelList.add(log);
 						}
 					}else{
 						for(Kna1 sKna1 : kna1List){
+							differenceNum+=1;
+							differenceKna1Num+=1;
+							onlySapKna1Num+=1;
 							Kna1Compared log = new Kna1Compared(sapDataCollection.getId(),sKna1,null);
 							kna1CompareDataModelList.add(log);
 						}
@@ -294,6 +299,9 @@ public class CompareDataServiceImpl implements CompareDataService{
 				}else{
 					if(kna1ListG!=null&&kna1ListG.size()>0){
 						for(Kna1 gKna1 : kna1ListG){
+							differenceNum+=1;
+							differenceKna1Num+=1;
+							onlyGardenKna1Num+=1;
 							Kna1Compared log = new Kna1Compared(sapDataCollection.getId(),null,gKna1);
 							kna1CompareDataModelList.add(log);
 						}
@@ -320,17 +328,27 @@ public class CompareDataServiceImpl implements CompareDataService{
 												svalue=(svalue==null?"":svalue);
 												gvalue=(gvalue==null?"":gvalue);
 												if(!gvalue.equals(svalue)){
+													differenceNum+=1;
+													differenceKnb1Num+=1;
 													Knb1Compared log = new Knb1Compared(sapDataCollection.getId(),sKnb1,gKnb1);
 													knb1CompareDataModelList.add(log);
 													break;
+												}else{
+													sameNum+=1;
+													sameKnb1Num+=1;
 												}
 											}else{
 												svalue=svalue+"";
 												gvalue=gvalue+"";
 												if(!gvalue.equals(svalue)){
+													differenceNum+=1;
+													differenceKnb1Num+=1;
 													Knb1Compared log = new Knb1Compared(sapDataCollection.getId(),sKnb1,gKnb1);
 													knb1CompareDataModelList.add(log);
 													break;
+												}else{
+													sameNum+=1;
+													sameKnb1Num+=1;
 												}
 											}
 										}
@@ -340,16 +358,25 @@ public class CompareDataServiceImpl implements CompareDataService{
 								}
 							}
 							if(flag){
+								differenceNum+=1;
+								differenceKnb1Num+=1;
+								onlySapKnb1Num+=1;
 								Knb1Compared log = new Knb1Compared(sapDataCollection.getId(),sKnb1,null);
 								knb1CompareDataModelList.add(log);
 							}
 						}
 						for(Knb1 gKnb1 : knb1ListG){
+							differenceNum+=1;
+							differenceKnb1Num+=1;
+							onlyGardenKnb1Num+=1;
 							Knb1Compared log = new Knb1Compared(sapDataCollection.getId(),null,gKnb1);
 							knb1CompareDataModelList.add(log);
 						}
 					}else{
 						for(Knb1 sKnb1 : knb1List){
+							differenceNum+=1;
+							differenceKnb1Num+=1;
+							onlySapKnb1Num+=1;
 							Knb1Compared log = new Knb1Compared(sapDataCollection.getId(),sKnb1,null);
 							knb1CompareDataModelList.add(log);
 						}
@@ -357,6 +384,9 @@ public class CompareDataServiceImpl implements CompareDataService{
 				}else{
 					if(knb1ListG!=null&&knb1ListG.size()>0){
 						for(Knb1 gKnb1 : knb1ListG){
+							differenceNum+=1;
+							differenceKnb1Num+=1;
+							onlyGardenKnb1Num+=1;
 							Knb1Compared log = new Knb1Compared(sapDataCollection.getId(),null,gKnb1);
 							knb1CompareDataModelList.add(log);
 						}
@@ -391,17 +421,27 @@ public class CompareDataServiceImpl implements CompareDataService{
 												svalue=(svalue==null?"":svalue);
 												gvalue=(gvalue==null?"":gvalue);
 												if(!gvalue.equals(svalue)){
+													differenceNum+=1;
+													differenceKnvvNum+=1;
 													KnvvCompared log = new KnvvCompared(sapDataCollection.getId(),sKnvv,gKnvv);
 													knvvCompareDataModelList.add(log);
 													break;
+												}else{
+													sameNum+=1;
+													sameKnvvNum+=1;
 												}
 											}else{
 												svalue=svalue+"";
 												gvalue=gvalue+"";
 												if(!gvalue.equals(svalue)){
+													differenceNum+=1;
+													differenceKnvvNum+=1;
 													KnvvCompared log = new KnvvCompared(sapDataCollection.getId(),sKnvv,gKnvv);
 													knvvCompareDataModelList.add(log);
 													break;
+												}else{
+													sameNum+=1;
+													sameKnvvNum+=1;
 												}
 											}
 										}
@@ -411,16 +451,25 @@ public class CompareDataServiceImpl implements CompareDataService{
 								}
 							}
 							if(flag){
+								differenceNum+=1;
+								differenceKnvvNum+=1;
+								onlySapKnvvNum=0;
 								KnvvCompared log = new KnvvCompared(sapDataCollection.getId(),sKnvv,null);
 								knvvCompareDataModelList.add(log);
 							}
 						}
 						for(Knvv gKnvv : knvvListG){
+							differenceNum+=1;
+							differenceKnvvNum+=1;
+							onlyGardenKnvvNum=0;
 							KnvvCompared log = new KnvvCompared(sapDataCollection.getId(),null,gKnvv);
 							knvvCompareDataModelList.add(log);
 						}
 					}else{
 						for(Knvv sKnvv : knvvList){
+							differenceNum+=1;
+							differenceKnvvNum+=1;
+							onlySapKnvvNum=0;
 							KnvvCompared log = new KnvvCompared(sapDataCollection.getId(),sKnvv,null);
 							knvvCompareDataModelList.add(log);
 						}
@@ -428,19 +477,22 @@ public class CompareDataServiceImpl implements CompareDataService{
 				}else{
 					if(knvvListG!=null&&knvvListG.size()>0){
 						for(Knvv gKnvv : knvvListG){
+							differenceNum+=1;
+							differenceKnvvNum+=1;
+							onlyGardenKnvvNum=0;
 							KnvvCompared log = new KnvvCompared(sapDataCollection.getId(),null,gKnvv);
 							knvvCompareDataModelList.add(log);
 						}
 					}
 				}
 				if(kna1CompareDataModelList!=null&&kna1CompareDataModelList.size()>0){
-					commonService.saveList(null, false, sapDataCollection.getId(), user, null, null, kna1CompareDataModelList);
+					commonService.addList(kna1CompareDataModelList);
 				}
 				if(knb1CompareDataModelList!=null&&knb1CompareDataModelList.size()>0){
-					commonService.saveList(null, false, sapDataCollection.getId(), user, null, null, knb1CompareDataModelList);
+					commonService.addList(knb1CompareDataModelList);
 				}
 				if(knvvCompareDataModelList!=null&&knvvCompareDataModelList.size()>0){
-					commonService.saveList(null, false, sapDataCollection.getId(), user, null, null, knvvCompareDataModelList);
+					commonService.addList(knvvCompareDataModelList);
 				}
 //				this.save(kna1List, knb1List, knvvList, user, client);
 //				percentCount+=80*(((kna1List.size()+knb1List.size()+knvvList.size())+0.0)/totalNum);
@@ -476,59 +528,68 @@ public class CompareDataServiceImpl implements CompareDataService{
 			String knb1Ids = "select id from "+Knb1.class.getName()+" knb1  where   (knb1.kunnr in(select kunnr from "+Knvv.class.getName()+" knvv where 1=1 "+knvvWhere+") or (select count(kunnr) from "+Knvv.class.getName()+" knvv where 1=1 "+knvvWhere+")<1)  and knb1.kunnr in(select kunnr from "+Kna1.class.getName()+" kna1 where 1=1 "+kna1Where+") "+knb1Where+"";
 			String knvvIds = "select id from "+Knvv.class.getName()+" knvv  where   (knvv.kunnr in(select distinct(kunnr) from "+Knb1.class.getName()+" knb1 where 1=1 "+knb1Where+") or (select count(kunnr) from "+Knb1.class.getName()+" knb1 where 1=1 "+knb1Where+")<1)  and knvv.kunnr in(select kunnr from "+Kna1.class.getName()+" kna1 where 1=1 "+kna1Where+") "+knvvWhere+"";
 			String sql = "from "+Kna1.class.getName()+" t where t.id in ("+kna1Ids+") and t.garden_flag=0 and t.sapclient='"+sapDataCollection.getId()+"'";
-			List<Kna1> kna1ListG = commonService.queryBySql(Kna1.class,sql);
+			List<Kna1> kna1ListG = commonService.executeQuerySql(sql, null);
 			sql = "from "+Knb1.class.getName()+" t where t.id in ("+knb1Ids+") and t.garden_flag=0 and t.sapclient='"+sapDataCollection.getId()+"'";
-			List<Knb1> knb1ListG = commonService.queryBySql(Knb1.class,sql);
+			List<Knb1> knb1ListG = commonService.executeQuerySql(sql, null);
 			sql = "from "+Knvv.class.getName()+" t where t.id in ("+knvvIds+") and t.garden_flag=0 and t.sapclient='"+sapDataCollection.getId()+"'";
-			List<Knvv> knvvListG = commonService.queryBySql(Knvv.class,sql);
+			List<Knvv> knvvListG = commonService.executeQuerySql(sql, null);
 			List<Kna1Compared> kna1CompareDataModelList = new LinkedList<Kna1Compared>();
 			List<Knb1Compared> knb1CompareDataModelList = new LinkedList<Knb1Compared>();
 			List<KnvvCompared> knvvCompareDataModelList = new LinkedList<KnvvCompared>();
 			if(kna1ListG!=null&&kna1ListG.size()>0){
 				for(Kna1 kna1 : kna1ListG){
+					differenceNum+=1;
+					differenceKna1Num+=1;
+					onlyGardenKna1Num+=1;
 					Kna1Compared log = new Kna1Compared(sapDataCollection.getId(),null,kna1);
 					kna1CompareDataModelList.add(log);
 				}
-				commonService.saveList(null, false, sapDataCollection.getId(), user, null, null, kna1CompareDataModelList);
+				commonService.addList(kna1CompareDataModelList);
 			}
 			if(knb1ListG!=null&&knb1ListG.size()>0){
 				for(Knb1 knb1 : knb1ListG){
+					differenceNum+=1;
+					differenceKnb1Num+=1;
+					onlyGardenKnb1Num+=1;
 					Knb1Compared log = new Knb1Compared(sapDataCollection.getId(),null,knb1);
 					knb1CompareDataModelList.add(log);
 				}
-				commonService.saveList(null, false, sapDataCollection.getId(), user, null, null, knb1CompareDataModelList);
+				commonService.addList(knb1CompareDataModelList);
 			}
 			if(knvvListG!=null&&knvvListG.size()>0){
 				for(Knvv knvv : knvvListG){
+					differenceNum+=1;
+					differenceKnvvNum+=1;
+					onlyGardenKnvvNum+=1;
 					KnvvCompared log = new KnvvCompared(sapDataCollection.getId(),null,knvv);
 					knvvCompareDataModelList.add(log);
 				}
-				commonService.saveList(null, false, sapDataCollection.getId(), user, null, null, knvvCompareDataModelList);
+				commonService.addList(knvvCompareDataModelList);
 			}
 		}
 	}
 	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
-	public void comparedDataToLocal(long sapclient,String user,String opttype,List<Kna1Compared> kna1List,List<Knb1Compared> knb1List,List<KnvvCompared> knvvList) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	//@Transactional(propagation=Propagation.REQUIRED)
+	public void comparedDataToLocal(SapDataCollection sapDataCollection,String user,String opttype,List<Kna1Compared> kna1List,List<Knb1Compared> knb1List,List<KnvvCompared> knvvList) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		if(kna1List!=null){
 			for(Kna1Compared kna1Compared : kna1List){
 				String skunnr = kna1Compared.getKunnr();
 				String gkunnr = kna1Compared.getKunnr_old();
+				Kna1 kna1 = new Kna1(kna1Compared);
+				kna1.setId(kna1Compared.getOptid());
+				kna1.setSapclient(sapDataCollection.getId());
+				kna1.setGarden_flag(1);
 				if(skunnr==null||"".equals(skunnr)){
-					commonService.removeById(opttype, true, sapclient, user, Kna1.class, Kna1Log.class, kna1Compared.getOptid());
+					commonService.deleteWithLog(opttype, sapDataCollection.getId(), user, Kna1.class, Kna1Log.class, kna1);
 				}else if(gkunnr==null||"".equals(gkunnr)){
-					Kna1 kna1 = new Kna1(kna1Compared);
-					kna1.setSapclient(sapclient);
-					kna1.setGarden_flag(1);
-					commonService.save(opttype, true, sapclient, user, Kna1.class, Kna1Log.class, kna1);
+					commonService.addWithLog(opttype, sapDataCollection.getId(), user, Kna1.class, Kna1Log.class, kna1);
 				}else{
-					Kna1 kna1 = new Kna1(kna1Compared);
-					kna1.setId(kna1Compared.getOptid());
-					kna1.setSapclient(sapclient);
-					kna1.setGarden_flag(1);
-					commonService.update(opttype, true, sapclient, user, Kna1.class, Kna1Log.class, kna1);
+					JSONObject json = new JSONObject();
+					json.put("id", kna1Compared.getOptid());
+					Kna1 old = (Kna1)commonService.findSingleByCondition(sapDataCollection, "Kna1", json);
+					commonService.updateWithLog(opttype, sapDataCollection.getId(), user, Kna1.class, Kna1Log.class, kna1, old);
 				}
-				commonService.removeById(opttype, false, sapclient, user, Kna1Compared.class, null, kna1Compared.getId());
+				commonService.removeById(kna1Compared.getId(), Kna1Compared.class);
 			}
 		}
 		if(knb1List!=null){
@@ -537,21 +598,23 @@ public class CompareDataServiceImpl implements CompareDataService{
 				String gkunnr = knb1Compared.getKunnr_old();
 				String sbukrs = knb1Compared.getBukrs();
 				String gbukrs = knb1Compared.getBukrs_old();
+				
+				Knb1 knb1 = new Knb1(knb1Compared);
+				knb1.setId(knb1Compared.getOptid());
+				knb1.setSapclient(sapDataCollection.getId());
+				knb1.setGarden_flag(1);
+				knb1.setDatakey(knb1Compared.getDatakey());
 				if(skunnr==null||"".equals(skunnr)||sbukrs==null||"".equals(sbukrs)){
-					commonService.removeById(opttype, true, sapclient, user, Knb1.class, Knb1Log.class, knb1Compared.getOptid());
+					commonService.deleteWithLog(opttype, sapDataCollection.getId(), user, Knb1.class, Knb1Log.class, knb1);
 				}else if(gkunnr==null||"".equals(gkunnr)||gbukrs==null||"".equals(gbukrs)){
-					Knb1 knb1 = new Knb1(knb1Compared);
-					knb1.setSapclient(sapclient);
-					knb1.setGarden_flag(1);
-					commonService.save(opttype, true, sapclient, user, Knb1.class, Knb1Log.class, knb1);
+					commonService.addWithLog(opttype, sapDataCollection.getId(), user, Knb1.class, Knb1Log.class, knb1);
 				}else{
-					Knb1 knb1 = new Knb1(knb1Compared);
-					knb1.setId(knb1Compared.getOptid());
-					knb1.setSapclient(sapclient);
-					knb1.setGarden_flag(1);
-					commonService.update(opttype, true, sapclient, user, Knb1.class, Knb1Log.class, knb1);
+					JSONObject json = new JSONObject();
+					json.put("id", knb1Compared.getOptid());
+					Knb1 old = (Knb1)commonService.findSingleByCondition(sapDataCollection, "Knb1", json);
+					commonService.updateWithLog(opttype, sapDataCollection.getId(), user, Knb1.class, Knb1Log.class, knb1, old);
 				}
-				commonService.removeById(opttype, false, sapclient, user, Knb1Compared.class, null, knb1Compared.getId());
+				commonService.removeById(knb1Compared.getId(), Knb1Compared.class);
 			}
 		}
 		if(knvvList!=null){
@@ -564,26 +627,27 @@ public class CompareDataServiceImpl implements CompareDataService{
 				String gVkorg = knvvCompared.getVkorg_old();
 				String sVtweg = knvvCompared.getVtweg();
 				String gVtweg = knvvCompared.getVtweg_old();
+				Knvv knvv = new Knvv(knvvCompared);
+				knvv.setId(knvvCompared.getOptid());
+				knvv.setSapclient(sapDataCollection.getId());
+				knvv.setGarden_flag(1);
+				knvv.setDatakey(knvvCompared.getDatakey());
 				if(skunnr==null||"".equals(skunnr)||sSpart==null||"".equals(sSpart)||sVkorg==null||"".equals(sVkorg)||sVtweg==null||"".equals(sVtweg)){
-					commonService.removeById(opttype, true, sapclient, user, Knvv.class, KnvvLog.class, knvvCompared.getOptid());
+					commonService.deleteWithLog(opttype, sapDataCollection.getId(), user, Knvv.class, KnvvLog.class, knvv);
 				}else if(gkunnr==null||"".equals(gkunnr)||gSpart==null||"".equals(gSpart)||gVkorg==null||"".equals(gVkorg)||gVtweg==null||"".equals(gVtweg)){
-					Knvv knvv = new Knvv(knvvCompared);
-					knvv.setSapclient(sapclient);
-					knvv.setGarden_flag(1);
-					commonService.save(opttype, true, sapclient, user, Knvv.class, KnvvLog.class, knvv);
+					commonService.addWithLog(opttype, sapDataCollection.getId(), user, Knvv.class, KnvvLog.class, knvv);
 				}else{
-					Knvv knvv = new Knvv(knvvCompared);
-					knvv.setId(knvvCompared.getOptid());
-					knvv.setSapclient(sapclient);
-					knvv.setGarden_flag(1);
-					commonService.update(opttype, true, sapclient, user, Knvv.class, KnvvLog.class, knvv);
+					JSONObject json = new JSONObject();
+					json.put("id", knvvCompared.getOptid());
+					Knvv old = (Knvv)commonService.findSingleByCondition(sapDataCollection, "Knvv", json);
+					commonService.updateWithLog(opttype, sapDataCollection.getId(), user, Knvv.class, KnvvLog.class, knvv, old);
 				}
-				commonService.removeById(opttype, false, sapclient, user, KnvvCompared.class, null, knvvCompared.getId());
+				commonService.removeById(knvvCompared.getId(), KnvvCompared.class);
 			}
 		}
 	}
 	@Override
-	public void sapSynToLocal(long sapclient,String user, String kna1Compareds,String knb1Compareds,String knvvCompareds) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public void compareSapAndGardenDataToLocal(SapDataCollection sapDataCollection,String user, String kna1Compareds,String knb1Compareds,String knvvCompareds) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		// TODO Auto-generated method stub
 		List<Kna1Compared> kna1List = null;
 		List<Knb1Compared> knb1List = null;
@@ -603,14 +667,6 @@ public class CompareDataServiceImpl implements CompareDataService{
 			JSONArray jsonArray = json.getJSONArray("list");
 			knvvList =JSONArray.toList(jsonArray,KnvvCompared.class);
 		}
-		this.comparedDataToLocal(sapclient, user, CommonServiceWithLog.OPTTYPE_COMPAREDATA, kna1List, knb1List, knvvList);
-	}
-	@Override
-	public String getComparedResult(SapDataCollection sapDataCollection) {
-		// TODO Auto-generated method stub
-		long kna1 = commonService.countBySapclient(Kna1Compared.class, sapDataCollection.getId());
-		long knb1 = commonService.countBySapclient(Knb1Compared.class, sapDataCollection.getId());
-		long knvv = commonService.countBySapclient(KnvvCompared.class, sapDataCollection.getId());
-		return "客户一般数据有"+kna1+"条有差异，客户公司代码数据有"+knb1+"条有差异，客户销售数据有"+knvv+"条有差异。";
+		this.comparedDataToLocal(sapDataCollection, user, CommonService.OPTTYPE_COMPAREDATA, kna1List, knb1List, knvvList);
 	}
 }

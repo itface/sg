@@ -56,7 +56,16 @@ $(function(){
 				autoWidth:true,
 				id:"dataGrid",
 				caption:'公司代码',
-				pager:"#tbar"
+				pager:"#tbar",
+				eventModels:{
+					loadComplete:function(json){
+						if(json!=null&&json!=''&&json.rows.length>0){
+							$('#expertExcel').show();
+						}else{
+							$('#expertExcel').hide();
+						}
+					}
+				}
 			});
 		}
 		//new customGrid(dataGridOptions);
@@ -91,7 +100,6 @@ $(function(){
 			var postdata=jQuery('#dataGrid').jqGrid('getGridParam','postData');
 			$.extend(postdata, {companyCode:gsdm});
 			jQuery("#dataGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
-			$('#expertExcel').show();
 			/*
 			$.ajax({
 				url:'${ctx}/application/fi/company/runtimeData/findJqgridData',
