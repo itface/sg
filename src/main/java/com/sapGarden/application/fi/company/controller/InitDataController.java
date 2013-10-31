@@ -24,9 +24,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.excel.service.CommonExpertExcelService;
 import com.sapGarden.application.commons.progress.model.NewProgress;
+import com.sapGarden.application.commons.progress.service.CommonInitDataService;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
-import com.sapGarden.application.fi.company.service.ExportExcelService;
-import com.sapGarden.application.fi.company.service.InitDataService;
 import com.sapGarden.global.json.JsonUtils;
 import com.sapGarden.system.org.model.User;
 
@@ -39,7 +38,8 @@ public class InitDataController {
 	@Qualifier("commonData")
 	private CommonConstructJqgridService commonConstructJqgridService;
 	@Autowired
-	private InitDataService initDataService;
+	@Qualifier("companyInitDataService")
+	private CommonInitDataService initDataService;
 	@Autowired
 	@Qualifier("exportCompanyExcel")
 	private CommonExpertExcelService commonExpertExcelService;
@@ -47,7 +47,7 @@ public class InitDataController {
 	public ModelAndView index(){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("dataGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY));
+		map.put("dataGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY,true));
 		map.put("client", user.getCurrentSapDataCollection().getSapserverclient());
 		return new ModelAndView("/application/synConfig/fi/company/initData",map);
 	}
@@ -75,7 +75,7 @@ public class InitDataController {
 		
 	}
 	@RequestMapping(value=("/doInit"))
-	public @ResponseBody void doInit(HttpServletRequest request,HttpServletResponse response,long progressId) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException{
+	public @ResponseBody void doInit(HttpServletRequest request,HttpServletResponse response,long progressId) throws Exception{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		NewProgress progress = (request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME)==null?null:(NewProgress)((request.getSession()).getAttribute(PROGRESS_SESSIONATTRIBUTE_NAME));
 		if(progress!=null&&progressId==progress.getThreadid()){

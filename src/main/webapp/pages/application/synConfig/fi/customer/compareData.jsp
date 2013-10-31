@@ -30,12 +30,18 @@
 <form>
 <div class="toolbar">
   <div class="prompt_message">本功能用来检查SAP和Garden数据的一致性，有差异的数据可以从SAP同步到Garden。如果数据量大，运行时间可能较长</div>
-  <div class="toolbar_left"> 
-  			
+  <div>
+  			<input type='text' id='kunnr' class='input3' value="客户编号"/>
+			<input type='text' id='bukrs' class='input3' value="公司代码"/>
+			<input type='text' id='vkorg' class='input3' value="销售组织"/>
+			<input type='text' id='vtweg' class='input3' value="分销渠道"/>
+			<input type='text' id='spart' class='input3' value='产口组'/>
+  </div>
+  <div class="toolbar_left" style="padding:5px 0px;clear:both"> 	
     <a href="javascript:void(0);" class="btn" onMouseDown="this.className='btn_mousedown'" id='compareData' onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">开始校对</a> 
     <a href="javascript:void(0);" class="btn" onMouseDown="this.className='btn_mousedown'" id='sapToLocal' onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">从SAP同步到Garden</a>  
-     </div>
-   <div class="check_text" style="padding:0px"></div>
+  	<div class="check_text" style="padding:0px;margin-top:0px"></div>
+  </div>
 </div>
 <div  class="easyui-tabs" style="padding:5px 10px; clear:both" id="mainPanel">
 	    <div title="客户一般数据(KNA1)">
@@ -48,11 +54,6 @@
 			<table id='knvvGrid'></table>
 		</div>
 </div>
-<input type='hidden' id='kunnr' class='input3' value=""/>
-<input type='hidden' id='bukrs' class='input3' value=""/>
-<input type='hidden' id='vkorg' class='input3' value=""/>
-<input type='hidden' id='vtweg' class='input3' value=""/>
-<input type='hidden' id='spart' class='input3' value=''/>
 </form>
 </body>
 <script>
@@ -70,7 +71,7 @@ $(function(){
 		if(kna1GridOptions!=null){
 			$.extend(kna1GridOptions,{
 				contextPath:"${ctx}",
-				height:$(window).height()-220,
+				height:$(window).height()-260,
 				autoWidth:true,
 				caption:'客户一般数据(KNA1)',
 				//loadui:'',
@@ -95,7 +96,7 @@ $(function(){
 		if(knb1GridOptions!=null){
 			$.extend(knb1GridOptions,{
 				contextPath:"${ctx}",
-				height:$(window).height()-220,
+				height:$(window).height()-260,
 				autoWidth:true,
 				caption:'客户公司代码数据(KNB1)',
 				//loadui:'',
@@ -134,7 +135,7 @@ $(function(){
 			$.extend(knvvGridOptions,{
 				contextPath:"${ctx}",
 				autoWidth:true,
-				height:$(window).height()-220,
+				height:$(window).height()-260,
 				pager:"#knvvTbar",
 				caption:'客户销售数据(KNVV)',
 				//loadui:'',
@@ -270,8 +271,12 @@ $(function(){
 				type: "POST",
 				data:{kunnr:kunnr,bukrs:bukrs,vkorg:vkorg,vtweg:vtweg,spart:spart},
 				success:function(json){
-					loadGridData();
-					showCompareResult(json);
+					if(json!=null){
+						loadGridData();
+						showCompareResult(json);
+					}else{
+						alert("Garden中没有客户主数据，请先初始化客户主数据。");
+					}
 				},
 				error:function(XMLHttpRequest,textStatus,errorThrown){
 					alert('校对失败');

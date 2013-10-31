@@ -32,7 +32,7 @@ public class DynamicDb implements ApplicationContextAware,ApplicationListener {
 	public void onApplicationEvent(ApplicationEvent event) {  
 		//如果是容器刷新事件  
 		if(event instanceof ContextRefreshedEvent ){//如果是容器关闭事件  
-			regDynamicBean();
+			//regDynamicBean();
 			//System.out.println(event.getClass().getSimpleName()+" 事件已发生！");
 		}
 	}  

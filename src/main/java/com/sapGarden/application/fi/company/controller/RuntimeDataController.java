@@ -43,7 +43,7 @@ public class RuntimeDataController {
 	public ModelAndView index(){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("dataGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY));
+		map.put("dataGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY,true));
 		return new ModelAndView("/application/synConfig/fi/company/runtimeData",map);
 	}
 	@RequestMapping(value="/findJqgridData")

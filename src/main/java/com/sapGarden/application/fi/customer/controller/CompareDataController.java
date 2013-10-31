@@ -4,13 +4,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,9 +39,9 @@ public class CompareDataController {
 	public ModelAndView index(){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("kna1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNA1));
-		map.put("knb1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNB1));
-		map.put("knvvGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNVV));
+		map.put("kna1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNA1,true));
+		map.put("knb1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNB1,true));
+		map.put("knvvGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNVV,true));
 		return new ModelAndView(basePagePath+"/compareData",map);
 	}
 	@RequestMapping("/compare")
@@ -51,14 +52,15 @@ public class CompareDataController {
 	@RequestMapping("/loadCompareData/{type}")
 	public @ResponseBody Object loadCompareData(@PathVariable String type,String kunnr,String bukrs,String vkorg,String vtweg,String spart,int rows,int page,String sidx,String sord) throws Exception{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		JSONObject json = null;
 		if(type.equals("kna1comare")){
-			return commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), "Kna1Compared", null, rows, page, sidx, sord);
+			json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), "Kna1Compared", null, rows, page, sidx, sord);
 		}else if(type.equals("knb1comare")){
-			return commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), "Knb1Compared", null, rows, page, sidx, sord);
+			json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), "Knb1Compared", null, rows, page, sidx, sord);
 		}else if(type.equals("knvvcomare")){
-			return commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), "KnvvCompared", null, rows, page, sidx, sord);
+			json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(), "KnvvCompared", null, rows, page, sidx, sord);
 		}
-		return "";
+		return json==null?"":json;
 	}
 	@RequestMapping(value="/sapSynToLocal")
 	public @ResponseBody Object sapSynToLocal(String kna1Compareds,String knb1Compareds,String knvvCompareds) throws SecurityException, IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException{

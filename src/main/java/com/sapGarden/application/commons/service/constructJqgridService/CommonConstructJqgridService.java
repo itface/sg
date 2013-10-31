@@ -5,5 +5,5 @@ import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 
 public interface CommonConstructJqgridService{
 
-	public String construct(SapDataCollection sapDataCollection,String type);
+	public String construct(SapDataCollection sapDataCollection,String type,boolean sortable);
 }

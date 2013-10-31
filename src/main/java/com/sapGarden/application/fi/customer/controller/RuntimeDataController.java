@@ -48,33 +48,41 @@ public class RuntimeDataController {
 	public ModelAndView index(){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("kna1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNA1));
-		map.put("knb1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNB1));
-		map.put("knvvGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNVV));
+		map.put("kna1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNA1,true));
+		map.put("knb1GridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNB1,true));
+		map.put("knvvGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_CUSTOMER_KNVV,true));
 		return new ModelAndView(basePagePath+"/runtimeData",map);
 	}
 	@RequestMapping(value = "/kna1",method=RequestMethod.GET)
-	public @ResponseBody Object getKna1Config(int rows,int page,String sidx,String sord){
+	public @ResponseBody Object getKna1Config(String kunnr,int rows,int page,String sidx,String sord){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),"Kna1", null, rows, page, sidx, sord);
+		JSONObject param = new JSONObject();
+		param.put("kunnr", kunnr);
+		JSONObject json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),"Kna1", param, rows, page, sidx, sord);
 		return json==null?"{}":json;
 	}
 	@RequestMapping(value = "/knb1",method=RequestMethod.GET)
-	public @ResponseBody Object getKnb1Config(int rows,int page,String sidx,String sord){
+	public @ResponseBody Object getKnb1Config(String kunnr,int rows,int page,String sidx,String sord){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),"Knb1", null, rows, page, sidx, sord);
+		JSONObject param = new JSONObject();
+		param.put("kunnr", kunnr);
+		JSONObject json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),"Knb1", param, rows, page, sidx, sord);
 		return json==null?"{}":json;
 	}
 	@RequestMapping(value = "/knvv",method=RequestMethod.GET)
-	public @ResponseBody Object getKnvvConfig(int rows,int page,String sidx,String sord){
+	public @ResponseBody Object getKnvvConfig(String kunnr,int rows,int page,String sidx,String sord){
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		JSONObject json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),"Knvv", null, rows, page, sidx, sord);
+		JSONObject param = new JSONObject();
+		param.put("kunnr", kunnr);
+		JSONObject json = commonService.findDataOfJqgridByPage(user.getCurrentSapDataCollection(),"Knvv", param, rows, page, sidx, sord);
 		return json==null?"{}":json;
 	}
 	@RequestMapping(value=("/exportExcel"),method=RequestMethod.GET)
-	public @ResponseBody void exportExcel(HttpServletResponse response,String companyCode) throws SecurityException, IllegalArgumentException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException{
+	public @ResponseBody void exportExcel(HttpServletResponse response,String kunnr) throws SecurityException, IllegalArgumentException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException{
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		commonExpertExcelService.exportExcel(user.getCurrentSapDataCollection(),null, response);
+		JSONObject param = new JSONObject();
+		param.put("kunnr", kunnr);
+		commonExpertExcelService.exportExcel(user.getCurrentSapDataCollection(),param, response);
 	}
 
 }

@@ -63,7 +63,7 @@ public class RuntimeMonitorController {
 		map.put("edateOfMonthRange", edate);
 		map.put("bdateOfWeekRange", lastweekdate);
 		map.put("edateOfWeekRange", edate);
-		map.put("monitorGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY));
+		map.put("monitorGridOptions",commonConstructJqgridService.construct(user.getCurrentSapDataCollection(),SjlxTypeName.TYPE_COMPANY,true));
 		return new ModelAndView("/application/synConfig/fi/company/runtimeMonitor",map);
 	}
 	@RequestMapping(value="/findLog")

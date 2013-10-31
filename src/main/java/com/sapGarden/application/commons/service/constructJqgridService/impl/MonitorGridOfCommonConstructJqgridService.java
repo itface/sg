@@ -21,14 +21,14 @@ public class MonitorGridOfCommonConstructJqgridService implements CommonConstruc
 	private int gridWidth = 0;
 
 	@Override
-	public String construct(SapDataCollection sapDataCollection, String type) {
+	public String construct(SapDataCollection sapDataCollection, String type,boolean sortable) {
 		// TODO Auto-generated method stub
 		/**
 		 * 单例模式，每次要初始化，否则每调一次该方法，gridWidth都会double
 		 */
 		gridWidth = 250;
 		List<RuntimeColumnInfo> list = runtime_ColumnInfo_Service.findAllActiveData(sapDataCollection, type);
-		List<Jqgrid_columnModel> list2 = this.constructColumnModel(list);
+		List<Jqgrid_columnModel> list2 = this.constructColumnModel(list,sortable);
 		Jqgrid_ConfigModel jqgrid_ConfigModel = new Jqgrid_ConfigModel("","",0,gridWidth,"","",true,false,false,this.costructColumnNames(list),list2);
 		return jqgrid_ConfigModel.toJsonString();
 	}
@@ -53,17 +53,17 @@ public class MonitorGridOfCommonConstructJqgridService implements CommonConstruc
 		}
 		return columnNames;
 	}
-	private List<Jqgrid_columnModel> constructColumnModel(List<RuntimeColumnInfo> list){
+	private List<Jqgrid_columnModel> constructColumnModel(List<RuntimeColumnInfo> list,boolean sortable){
 		List<Jqgrid_columnModel> columnModelList = null;
 		if(list!=null&&list.size()>0){
 			columnModelList=new LinkedList<Jqgrid_columnModel>();
-			Jqgrid_columnModel jqgrid_columnModel_1 = new Jqgrid_columnModel("id","id",100,true,true,false,"",false,"text",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_2 = new Jqgrid_columnModel("optflag","optflag",70,true,false,false,"date",true,"date",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_3 = new Jqgrid_columnModel("opttime","opttime",120,true,false,false,"date",true,"date",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_4 = new Jqgrid_columnModel("optuser","optuser",70,true,false,false,"",false,"text",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_5 = new Jqgrid_columnModel("optmsg","optmsg",200,true,false,false,"",false,"text",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_6 = new Jqgrid_columnModel("opt","opt",70,true,false,false,"",false,"text",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_7 = new Jqgrid_columnModel("opttype","opttype",100,true,false,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_1 = new Jqgrid_columnModel("id","id",100,sortable,true,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_2 = new Jqgrid_columnModel("optflag","optflag",70,sortable,false,false,"date",true,"date",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_3 = new Jqgrid_columnModel("opttime","opttime",120,sortable,false,false,"date",true,"date",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_4 = new Jqgrid_columnModel("optuser","optuser",70,sortable,false,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_5 = new Jqgrid_columnModel("optmsg","optmsg",200,sortable,false,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_6 = new Jqgrid_columnModel("opt","opt",70,sortable,false,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_7 = new Jqgrid_columnModel("opttype","opttype",100,sortable,false,false,"",false,"text",null,null,null);
 			columnModelList.add(jqgrid_columnModel_1);
 			columnModelList.add(jqgrid_columnModel_2);
 			columnModelList.add(jqgrid_columnModel_3);
@@ -86,7 +86,7 @@ public class MonitorGridOfCommonConstructJqgridService implements CommonConstruc
 					edittype="date";
 					searchoptions = new Jqgrid_searchoptions(sopt);
 				}
-				Jqgrid_columnModel jqgrid_columnModel = new Jqgrid_columnModel(name,index,width,true,false,editable,edittype,search,searchtype,searchoptions,null,null);
+				Jqgrid_columnModel jqgrid_columnModel = new Jqgrid_columnModel(name,index,width,sortable,false,editable,edittype,search,searchtype,searchoptions,null,null);
 				columnModelList.add(jqgrid_columnModel);
 				String name2 = runtimeColumnInfo.getSourceColumn().toLowerCase()+"_old";
 				String index2 = name2;
@@ -95,7 +95,7 @@ public class MonitorGridOfCommonConstructJqgridService implements CommonConstruc
 				String searchtype2 = "text";
 				boolean editable2 = false;
 				Jqgrid_searchoptions searchoptions2 = null;
-				Jqgrid_columnModel jqgrid_columnModel2 = new Jqgrid_columnModel(name2,index2,width2,true,false,editable2,"",search2,searchtype2,searchoptions2,null,null);
+				Jqgrid_columnModel jqgrid_columnModel2 = new Jqgrid_columnModel(name2,index2,width2,sortable,false,editable2,"",search2,searchtype2,searchoptions2,null,null);
 				columnModelList.add(jqgrid_columnModel2);
 				gridWidth+=200+200;
 			}

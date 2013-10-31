@@ -31,7 +31,7 @@
 <div class="toolbar">
   <div class="prompt_message">本功能用来浏览Garden系统中的数据。直接点击&ldquo;查询&rdquo;查询全部数据，也可以根据关键字查询</div>
   <div class="toolbar_left"> 
-    <!-- input type="text" class="input1" id="companyCode" value="公司代码"-->
+    <input type='text' id='kunnr' class='input3' value="客户编号"/>
     <a href="#" class="btn" id="queryBtn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询</a> 
     <a href="#" class="btn" id="expertExcel" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">导出数据</a>  
   </div>
@@ -58,18 +58,37 @@ $(function(){
 	}
 	function initEvent(){
 		$('#expertExcel').bind('click',function(e){
-			open('${ctx}/application/fi/customer/runtimeData/exportExcel','_self');
+			var kunnr = $('#kunnr').val()=="客户编号"?"":$('#kunnr').val();
+			open('${ctx}/application/fi/customer/runtimeData/exportExcel?kunnr='+kunnr,'_self');
+		});
+		$(".input3").focus(function(){
+			  $(this).attr('class','input3_onfocus');
+			  if($(this).val() ==this.defaultValue){  
+                  $(this).val("");           
+			  } 
+		}).blur(function(){
+			  $(this).attr('class','input3');
+			 if ($(this).val() == '') {
+                $(this).val(this.defaultValue);
+             }
 		});
 		$('#queryBtn').bind('click',function(e){
+			var kunnr = $('#kunnr').val()=="客户编号"?"":$('#kunnr').val();
 			var baseurl = '${ctx}/application/fi/customer/runtimeData/';
 			jQuery('#kna1Grid').jqGrid('setGridParam',{url:baseurl+'kna1',page:1});
 			var postdata=jQuery('#kna1Grid').jqGrid('getGridParam','postData');
+			$.extend(postdata,{kunnr:kunnr});
 			jQuery("#kna1Grid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
+			
 			jQuery('#knb1Grid').jqGrid('setGridParam',{url:baseurl+'knb1',page:1});
-			var postdata=jQuery('#knb1Grid').jqGrid('getGridParam','postData');
+			postdata=jQuery('#knb1Grid').jqGrid('getGridParam','postData');
+			$.extend(postdata,{kunnr:kunnr});
 			jQuery("#knb1Grid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
+			
+			
 			jQuery('#knvvGrid').jqGrid('setGridParam',{url:baseurl+'knvv',page:1});
-			var postdata=jQuery('#knvvGrid').jqGrid('getGridParam','postData');
+			postdata=jQuery('#knvvGrid').jqGrid('getGridParam','postData');
+			$.extend(postdata,{kunnr:kunnr});
 			jQuery("#knvvGrid").jqGrid('setGridParam',{datatype:'json',search:false}).trigger("reloadGrid");
 		});
 	}

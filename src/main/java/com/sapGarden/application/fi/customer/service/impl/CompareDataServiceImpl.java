@@ -95,10 +95,20 @@ public class CompareDataServiceImpl implements CompareDataService{
 		commonService.executeUpdateSql("update Knb1 t set t.garden_flag=0 where t.sapclient=?", new Object[]{sapclient});
 		commonService.executeUpdateSql("update Knvv t set t.garden_flag=0 where t.sapclient=?", new Object[]{sapclient});
 	}
-	public void findGardenTotalNum(SapDataCollection sapDataCollection){
-		totalGardenKna1Num = commonService.findTotalNum(sapDataCollection, "Kna1", null);
-		totalGardenKnb1Num = commonService.findTotalNum(sapDataCollection, "Knb1", null);
-		totalGardenKnvvNum = commonService.findTotalNum(sapDataCollection, "Knvv", null);
+	public void findGardenTotalNum(SapDataCollection sapDataCollection,String kunnr,String bukrs,String vkorg,String vtweg,String spart){
+		JSONObject json = new JSONObject();
+		json.put("kunnr", kunnr);
+		totalGardenKna1Num = commonService.findTotalNum(sapDataCollection, "Kna1", json);
+		json = new JSONObject();
+		json.put("kunnr", kunnr);
+		json.put("bukrs", bukrs);
+		totalGardenKnb1Num = commonService.findTotalNum(sapDataCollection, "Knb1", json);
+		json = new JSONObject();
+		json.put("kunnr", kunnr);
+		json.put("vkorg", vkorg);
+		json.put("vtweg", vtweg);
+		json.put("spart", spart);
+		totalGardenKnvvNum = commonService.findTotalNum(sapDataCollection, "Knvv", json);
 		totalGardenNum=totalGardenKna1Num+totalGardenKnb1Num+totalGardenKnvvNum;
 	}
 	@Override
@@ -129,12 +139,12 @@ public class CompareDataServiceImpl implements CompareDataService{
 		sameKnb1Num=0;
 		sameKnvvNum=0;
 		if(!this.checkInitial(sapDataCollection)){
-			//return;
+			return null;
 		}
 		this.initGardenFlag(sapDataCollection.getId());
 		this.initComaredData(sapDataCollection);
 		this.doCompare(sapDataCollection, user,kunnr,bukrs,vkorg,vtweg,spart);
-		this.findGardenTotalNum(sapDataCollection);
+		this.findGardenTotalNum(sapDataCollection,kunnr,bukrs,vkorg,vtweg,spart);
 		JSONObject json = new JSONObject();
 		json.put("totalSapNum", totalSapNum);
 		json.put("totalSapKna1Num", totalSapKna1Num);

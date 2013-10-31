@@ -33,6 +33,7 @@
 <div class="toolbar">
   <div class="prompt_message">本功能根据数据的关键字,从SAP中读取相应的数据，可以测试系统的连通性，也可以同步指定的SAP数据到Garden</div>
   <div class="toolbar_left"> 
+  	<input type='text' id='kunnr' class='input3' value="客户编号"/>
   	<a href="javascript:void(0);" class="btn" id='testCall' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询SAP数据</a>  
     <a href="javascript:void(0);" class="btn" id='manualSyn' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">从SAP同步到Garden</a>  
    </div>
@@ -68,23 +69,9 @@ $(function(){
 				id:"kna1Grid",
 				multiselect:true,
 				loadui:'',
-				sortable:true,
+				sortable:false,
 				loadonce:true,
-				height:$(window).height()-180,
-				eventModels:{
-					loadComplete:function(json){
-						if(queryflag){
-							$(window).blockUI('remove');
-							queryflag =false;
-							alert('查询成功');
-						}
-						if(json!=null&&json!=''&&json.rows.length>0){
-							$('#manualSyn').show();
-						}else{
-							$('#manualSyn').hide();
-						}
-					}
-				}
+				height:$(window).height()-180
 			}
 		);
 		$.extend(knb1GridOptions,{
@@ -93,21 +80,22 @@ $(function(){
 				id:"knb1Grid",
 				multiselect:true,
 				loadui:'',
-				sortable:true,
+				sortable:false,
 				loadonce:true,
 				height:$(window).height()-180,
 				eventModels:{
-					loadComplete:function(json){
-						if(queryflag){
-							$(window).blockUI('remove');
-							queryflag =false;
-							alert('查询成功');
+					gridComplete:function(){
+						var toppagerWidth = $('#mainPanel .panel-body').css('width');
+						if(toppagerWidth.indexOf('px')>0){
+							toppagerWidth=toppagerWidth.substring(0,toppagerWidth.lastIndexOf('px'));
+							toppagerWidth=toppagerWidth-2;
 						}
-						if(json!=null&&json!=''&&json.rows.length>0){
-							$('#manualSyn').show();
-						}else{
-							$('#manualSyn').hide();
-						}
+						$('#knb1Grid_toppager').css('width',toppagerWidth);
+						$('#gbox_knb1Grid').css('width',toppagerWidth);
+						$('#gview_knb1Grid').css('width',(toppagerWidth));
+						$('#gview_knb1Grid .ui-jqgrid-bdiv').css('width',toppagerWidth);
+						$('#pg_knb1Grid_toppager').css('width',toppagerWidth);
+						$('#gview_knb1Grid .ui-jqgrid-hdiv').css('width',toppagerWidth);
 					}
 				}
 			}
@@ -118,21 +106,22 @@ $(function(){
 				id:"knvvGrid",
 				multiselect:true,
 				loadui:'',
-				sortable:true,
+				sortable:false,
 				loadonce:true,
 				height:$(window).height()-180,
 				eventModels:{
-					loadComplete:function(json){
-						if(queryflag){
-							$(window).blockUI('remove');
-							queryflag =false;
-							alert('查询成功');
+					gridComplete:function(){
+						var toppagerWidth = $('#mainPanel .panel-body').css('width');
+						if(toppagerWidth.indexOf('px')>0){
+							toppagerWidth=toppagerWidth.substring(0,toppagerWidth.lastIndexOf('px'));
+							toppagerWidth=toppagerWidth-2;
 						}
-						if(json!=null&&json!=''&&json.rows.length>0){
-							$('#manualSyn').show();
-						}else{
-							$('#manualSyn').hide();
-						}
+						$('#knvvGrid_toppager').css('width',toppagerWidth);
+						$('#gbox_knvvGrid').css('width',toppagerWidth);
+						$('#gview_knvvGrid').css('width',(toppagerWidth));
+						$('#gview_knvvGrid .ui-jqgrid-bdiv').css('width',toppagerWidth);
+						$('#pg_knvvGrid_toppager').css('width',toppagerWidth);
+						$('#gview_knvvGrid .ui-jqgrid-hdiv').css('width',toppagerWidth);
 					}
 				}
 			}
@@ -154,21 +143,37 @@ $(function(){
                 $(this).val(this.defaultValue);
              }
 		});
+		$(".input3").focus(function(){
+			  $(this).attr('class','input3_onfocus');
+			  if($(this).val() ==this.defaultValue){  
+                  $(this).val("");           
+			  } 
+		}).blur(function(){
+			  $(this).attr('class','input3');
+			 if ($(this).val() == '') {
+                $(this).val(this.defaultValue);
+             }
+		});
 		$('#testCall').bind('click',function(e){
+			if($('#kunnr').val()==null||$('#kunnr').val()==''||$('#kunnr').val()=='客户编号'){
+				alert('客户编号不能为空。');
+				return false;
+			}
 			$(window).blockUI();
-			jQuery("#resultGrid").jqGrid('setGridParam',{datatype:'json',url:'${ctx}/application/fi/company/manualSyn/testCall',search:false}).trigger("reloadGrid");
-			queryflag =true;
-			//$('#manualSyn').show();
-			/*
 			$.ajax({
-				url:'${ctx}/application/fi/company/manualSyn/testCall',
+				url:'${ctx}/application/fi/customer/manualSyn/getSapData',
 				type: "GET",
+				data:{kunnr:$('#kunnr').val()},
 				dataType:"json",
 				success:function(json){
 						try{
 							if(json!=null){
-								jQuery("#resultGrid").clearGridData(true);
-								jQuery("#resultGrid")[0].addJSONData(json);
+								jQuery("#kna1Grid").clearGridData(true);
+								jQuery("#knb1Grid").clearGridData(true);
+								jQuery("#knvvGrid").clearGridData(true);
+								jQuery("#kna1Grid")[0].addJSONData(json.kna1);
+								jQuery("#knb1Grid")[0].addJSONData(json.knb1);
+								jQuery("#knvvGrid")[0].addJSONData(json.knvv);
 							}
 							alert('查询成功');
 							$('#manualSyn').show();
@@ -183,46 +188,94 @@ $(function(){
 					$(window).blockUI('remove');
 				}
 			});
-			*/
 		});
 		$('#manualSyn').bind('click',function(e){
 			$(window).blockUI();
-			var rowData = jQuery('#resultGrid').jqGrid('getGridParam','selarrrow');
-			var s = '';
-		    if(rowData.length) {
-		        for(var i=0;i<rowData.length;i++){
-		           var ret = jQuery("#resultGrid").jqGrid('getRowData',rowData[i]);
-		           s+="{";
-		           for(var name in ret){
-		           		s+=name+":'"+ret[name]+"',";
-		           }
-		           s=s.substring(0,s.lastIndexOf(','))+"},";
-		        }
-		        s=s.substring(0,s.lastIndexOf(','));
-		        s="{data:["+s+"]}"
+			var kna1rowData = jQuery('#kna1Grid').jqGrid('getGridParam','selarrrow');
+			var knb1rowData = jQuery('#knb1Grid').jqGrid('getGridParam','selarrrow');
+			var knvvrowData = jQuery('#knvvGrid').jqGrid('getGridParam','selarrrow');
+			var kna1s  = '';
+			var knb1s  = '';
+			var knvvs  = '';
+		    if(kna1rowData.length||knb1rowData.length||knvvrowData.length) {
+		    	if(kna1rowData.length){
+		    		kna1s  = '{"list":[';
+		    		for(var i=0;i<kna1rowData.length;i++){
+			           var ret = jQuery("#kna1Grid").jqGrid('getRowData',kna1rowData[i]);
+			           kna1s+="{";
+			           for(var name in ret){
+			           		kna1s+=name+":'"+ret[name]+"',";
+			           }
+			           kna1s=kna1s.substring(0,kna1s.lastIndexOf(','))+"},";
+			        }
+			        kna1s=kna1s.substring(0,kna1s.lastIndexOf(','));
+			        kna1s+="]}";
+		    	}
+		        if(knb1rowData.length){
+			        knb1s  = '{"list":[';
+			        for(var i=0;i<knb1rowData.length;i++){
+			           var ret = jQuery("#knb1Grid").jqGrid('getRowData',knb1rowData[i]);
+			           knb1s+="{";
+			           for(var name in ret){
+			           		knb1s+=name+":'"+ret[name]+"',";
+			           }
+			           knb1s=knb1s.substring(0,knb1s.lastIndexOf(','))+"},";
+			        }
+			        knb1s=knb1s.substring(0,knb1s.lastIndexOf(','));
+			        knb1s+="]}";
+			    }
+			    if(knvvrowData.length){
+			        knvvs  = '{"list":[';
+			        for(var i=0;i<knvvrowData.length;i++){
+			           var ret = jQuery("#knvvGrid").jqGrid('getRowData',knvvrowData[i]);
+			           knvvs+="{";
+			           for(var name in ret){
+			           		knvvs+=name+":'"+ret[name]+"',";
+			           }
+			           knvvs=knvvs.substring(0,knvvs.lastIndexOf(','))+"},";
+			        }
+			        knvvs=knvvs.substring(0,knvvs.lastIndexOf(','));
+			        knvvs+="]}";
+			   }
 		    }else{
 		    	alert("请选择要同步的记录");
 		    	$(window).blockUI('remove');
 		    	return false;
 		    }
 			$.ajax({
-				url:'${ctx}/application/fi/company/manualSyn/syn',
-				data:{list:s},
+				url:'${ctx}/application/fi/customer/manualSyn/syn',
+				data:{kna1s:kna1s,knb1s:knb1s,knvvs:knvvs},
+				type:'POST',
 				success:function(){
 					try{
-						/*
-						if(json!=null){
-							jQuery("#resultGrid").clearGridData(true);
-							jQuery("#resultGrid")[0].addJSONData(json);
-						}*/
-						rowData = jQuery('#resultGrid').jqGrid('getGridParam','selarrrow');
+						kna1rowData = jQuery('#kna1Grid').jqGrid('getGridParam','selarrrow');
+						knb1rowData = jQuery('#knb1Grid').jqGrid('getGridParam','selarrrow');
+						knvvrowData = jQuery('#knvvGrid').jqGrid('getGridParam','selarrrow');
 						var rowids = [];
-						if(rowData.length) {
-			        		for(var i=0;i<rowData.length;i++){
-			        			rowids.push(rowData[i]);
+						if(kna1rowData.length) {
+			        		for(var i=0;i<kna1rowData.length;i++){
+			        			rowids.push(kna1rowData[i]);
 			           		}
 				           	for(var i in rowids){
-			           			var ret = jQuery("#resultGrid").jqGrid('delRowData',rowids[i]);
+			           			var ret = jQuery("#kna1Grid").jqGrid('delRowData',rowids[i]);
+			           		}
+			           	}
+			           	rowids = [];
+						if(knb1rowData.length) {
+			        		for(var i=0;i<knb1rowData.length;i++){
+			        			rowids.push(knb1rowData[i]);
+			           		}
+				           	for(var i in rowids){
+			           			var ret = jQuery("#knb1Grid").jqGrid('delRowData',rowids[i]);
+			           		}
+			           	}
+			           	rowids = [];
+						if(knvvrowData.length) {
+			        		for(var i=0;i<knvvrowData.length;i++){
+			        			rowids.push(knvvrowData[i]);
+			           		}
+				           	for(var i in rowids){
+			           			var ret = jQuery("#knvvGrid").jqGrid('delRowData',rowids[i]);
 			           		}
 			           	}
 						alert('选择的数据从SAP同步到Garden同步成功。');

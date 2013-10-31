@@ -20,7 +20,7 @@ public class RegisterConnection{
 
 	public synchronized static void registerConnection(List<SapDataCollection> list) {
 		// TODO Auto-generated method stub
-		/*
+
 		//注册bean
 		if(list!=null&&list.size()>0){
 			DefaultListableBeanFactory beanFactory = BeanFactoryAwareBean.getDefaultListableBeanFactory();
@@ -58,7 +58,7 @@ public class RegisterConnection{
 			//修改完bean属性，需要执行afterPropertiesSet生效
 			dataSource.afterPropertiesSet();
 			
-		}*/
+		}
 	}
 
 }

@@ -20,14 +20,14 @@ public class CompareDataGrid2OfCommonConstructJqgridService implements CommonCon
 	private Runtime_ColumnInfo_Service runtime_ColumnInfo_Service;
 	private int gridWidth = 0;
 	@Override
-	public String construct(SapDataCollection sapDataCollection, String type) {
+	public String construct(SapDataCollection sapDataCollection, String type,boolean sortable) {
 		// TODO Auto-generated method stub
 		/**
 		 * 单例模式，每次要初始化，否则每调一次该方法，gridWidth都会double
 		 */
 		gridWidth = 200;
 		List<RuntimeColumnInfo> list = runtime_ColumnInfo_Service.findAll(sapDataCollection, type);
-		List<Jqgrid_columnModel> list2 = this.constructColumnModel(list);
+		List<Jqgrid_columnModel> list2 = this.constructColumnModel(list,sortable);
 		Jqgrid_ConfigModel jqgrid_ConfigModel = new Jqgrid_ConfigModel("","",0,gridWidth,"","",true,false,false,this.costructColumnNames(list),list2);
 		return jqgrid_ConfigModel.toJsonString();
 	}
@@ -48,13 +48,13 @@ public class CompareDataGrid2OfCommonConstructJqgridService implements CommonCon
 		}
 		return columnNames;
 	}
-	private List<Jqgrid_columnModel> constructColumnModel(List<RuntimeColumnInfo> list){
+	private List<Jqgrid_columnModel> constructColumnModel(List<RuntimeColumnInfo> list,boolean sortable){
 		List<Jqgrid_columnModel> columnModelList = null;
 		if(list!=null&&list.size()>0){
 			columnModelList=new LinkedList<Jqgrid_columnModel>();
-			Jqgrid_columnModel jqgrid_columnModel_1 = new Jqgrid_columnModel("id","id",100,true,true,false,"",false,"text",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_2 = new Jqgrid_columnModel("optid","optid",100,true,true,false,"",false,"text",null,null,null);
-			Jqgrid_columnModel jqgrid_columnModel_3 = new Jqgrid_columnModel("datakey","datakey",100,true,true,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_1 = new Jqgrid_columnModel("id","id",100,sortable,true,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_2 = new Jqgrid_columnModel("optid","optid",100,sortable,true,false,"",false,"text",null,null,null);
+			Jqgrid_columnModel jqgrid_columnModel_3 = new Jqgrid_columnModel("datakey","datakey",100,sortable,true,false,"",false,"text",null,null,null);
 			columnModelList.add(jqgrid_columnModel_1);
 			columnModelList.add(jqgrid_columnModel_2);
 			columnModelList.add(jqgrid_columnModel_3);
@@ -73,7 +73,7 @@ public class CompareDataGrid2OfCommonConstructJqgridService implements CommonCon
 					edittype="date";
 					searchoptions = new Jqgrid_searchoptions(sopt);
 				}
-				Jqgrid_columnModel jqgrid_columnModel = new Jqgrid_columnModel(name,index,width,true,false,editable,edittype,search,searchtype,searchoptions,null,null);
+				Jqgrid_columnModel jqgrid_columnModel = new Jqgrid_columnModel(name,index,width,sortable,false,editable,edittype,search,searchtype,searchoptions,null,null);
 				columnModelList.add(jqgrid_columnModel);
 				String name2 = runtimeColumnInfo.getSourceColumn().toLowerCase()+"_old";
 				String index2 = name2;
@@ -82,7 +82,7 @@ public class CompareDataGrid2OfCommonConstructJqgridService implements CommonCon
 				String searchtype2 = "text";
 				boolean editable2 = false;
 				Jqgrid_searchoptions searchoptions2 = null;
-				Jqgrid_columnModel jqgrid_columnModel2 = new Jqgrid_columnModel(name2,index2,width2,true,false,editable2,"",search2,searchtype2,searchoptions2,null,null);
+				Jqgrid_columnModel jqgrid_columnModel2 = new Jqgrid_columnModel(name2,index2,width2,sortable,false,editable2,"",search2,searchtype2,searchoptions2,null,null);
 				columnModelList.add(jqgrid_columnModel2);
 				gridWidth += 150+150;
 			}

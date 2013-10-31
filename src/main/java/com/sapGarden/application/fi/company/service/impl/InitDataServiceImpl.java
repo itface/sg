@@ -17,12 +17,12 @@ import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.jco.model.CommonSynModel;
 import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.progress.model.NewProgress;
+import com.sapGarden.application.commons.progress.service.CommonInitDataService;
 import com.sapGarden.application.commons.sysdb.service.SysDbService;
 import com.sapGarden.application.fi.company.model.Company;
 import com.sapGarden.application.fi.company.service.GetSapDataService;
-import com.sapGarden.application.fi.company.service.InitDataService;
-@Service
-public class InitDataServiceImpl implements InitDataService{
+@Service("companyInitDataService")
+public class InitDataServiceImpl implements CommonInitDataService{
 
 	@Autowired
 	private SysDbService sysDbService;
