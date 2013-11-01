@@ -23,9 +23,6 @@ import com.sapGarden.application.commons.constants.SjlxTypeName;
 import com.sapGarden.application.commons.excel.service.CommonExpertExcelService;
 import com.sapGarden.application.commons.log.service.CommonService;
 import com.sapGarden.application.commons.service.constructJqgridService.CommonConstructJqgridService;
-import com.sapGarden.application.fi.customer.model.Kna1;
-import com.sapGarden.application.fi.customer.model.Knb1;
-import com.sapGarden.application.fi.customer.model.Knvv;
 import com.sapGarden.system.org.model.User;
 
 @Controller("customer_RuntimeDataController")
@@ -37,6 +34,7 @@ public class RuntimeDataController {
 	@Qualifier("commonData")
 	private CommonConstructJqgridService commonConstructJqgridService;
 
+	
 	@Autowired
 	@Qualifier("commonService")
 	private CommonService commonService;

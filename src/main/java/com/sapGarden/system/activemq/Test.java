@@ -10,7 +10,7 @@ public class Test {
 	}
 	public void sendMsg(){
 		try{  
-		    for(int i=0;i<5;i++){  
+		    for(int i=0;i<1;i++){  
 		        //准备发送jms消息  
 		        InvokeMessage im = new  InvokeMessage();  
 		        im.setMsg(i+":有人查询用户列表了！["+new Date()+"]");  

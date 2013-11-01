@@ -1,26 +1,21 @@
 package com.sapGarden.system.activemq;
 
-import javax.jms.Queue;
-
 import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.stereotype.Component;
+@Component("producerOfManual")
+public class ProducerOfManual {
 
-public class InvokeMessageProducer {
-
+	@Autowired
 	private JmsTemplate template;  
-	  
-    private Queue destination;  
   
     public void setTemplate(JmsTemplate template) {  
         this.template = template;  
     }  
-  
-    public void setDestination(Queue destination) {  
-        this.destination = destination;  
-    }  
-  
-    public void send(InvokeMessage invokeMessage) {  
-    	template.convertAndSend(this.destination, invokeMessage);  
+    public void send() {  
+    	//template.setSessionTransacted(true);
+    	//template.setSessionAcknowledgeMode(0);
     	ActiveMQQueue msgQueue = new ActiveMQQueue();
 		msgQueue.setPhysicalName("hellomq");
 		template.convertAndSend(msgQueue,"hello mqwolrd,i'm coming!!!");
