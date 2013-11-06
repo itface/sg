@@ -26,8 +26,10 @@
 }
 </style>
 </head>
-<body>
+<body onload="setTimeout('removeMask()',200)">
 <form>
+<div class="transparent_class blockUI_class" style="position: absolute; z-index: 1000; background-color: rgb(220, 226, 241);top: 0px; left: 0px; padding: 0px; margin: 0px; width: 100%; height: 100%;"></div>
+<div class="blockUI_progress" style="position: absolute; z-index: 1001; margin: 0px; padding: 0px; top: 290.5px; left: 540px;"></div>
 <div class="toolbar">
   <div class="prompt_message">本功能用来检查SAP和Garden数据的一致性，有差异的数据可以从SAP同步到Garden。如果数据量大，运行时间可能较长</div>
   <div>
@@ -57,12 +59,28 @@
 </form>
 </body>
 <script>
+function removeMask(){
+	$('.blockUI_class').remove();
+	$('.blockUI_progress').remove();
+}
 $(function(){
 	var type='${type}';
 	init();
 	function init(){
 		dynamicGrid();
 		initElEvent();
+		initTab();
+		initGridTitle('kna1Grid');
+		initGridTitle('knb1Grid');
+		initGridTitle('knvvGrid');
+	}
+	function initTab(){
+		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
+		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
+		$('#mainPanel .tabs').css('padding-left',0);
+	}
+	function initGridTitle(gridId){
+		$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
 	}
 	function dynamicGrid(){
 		var kna1GridOptions=${kna1GridOptions};
@@ -71,7 +89,7 @@ $(function(){
 		if(kna1GridOptions!=null){
 			$.extend(kna1GridOptions,{
 				contextPath:"${ctx}",
-				height:$(window).height()-260,
+				height:$(window).height()-227,
 				autoWidth:true,
 				caption:'客户一般数据(KNA1)',
 				//loadui:'',
@@ -96,7 +114,7 @@ $(function(){
 		if(knb1GridOptions!=null){
 			$.extend(knb1GridOptions,{
 				contextPath:"${ctx}",
-				height:$(window).height()-260,
+				height:$(window).height()-227,
 				autoWidth:true,
 				caption:'客户公司代码数据(KNB1)',
 				//loadui:'',
@@ -135,7 +153,7 @@ $(function(){
 			$.extend(knvvGridOptions,{
 				contextPath:"${ctx}",
 				autoWidth:true,
-				height:$(window).height()-260,
+				height:$(window).height()-227,
 				pager:"#knvvTbar",
 				caption:'客户销售数据(KNVV)',
 				//loadui:'',

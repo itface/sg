@@ -39,7 +39,7 @@
 	   <div style='float:right'><a href="#" style="margin-right:0px;" class="btn"  onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" onclick="zwyd();">变更运行状态</a></div> 
    </div>
 </div>
-<div id="mainTabPanel" class="easyui-tabs" style="padding:5px 10px; clear:both">
+<div id="mainPanel" class="easyui-tabs" style="padding:5px 10px; clear:both">
 	<div title="客户一般数据(KNA1)">
 		<table id="pna1Grid"></table>
 	</div>
@@ -77,8 +77,19 @@ $(function(){
 		createKnb1Grid();
 		createKnvvGrid();
 		initElEvent();
+		initTab();
+		initGridTitle('pna1Grid');
+		initGridTitle('pnb1Grid');
+		initGridTitle('pnvvGrid');
 	}
-
+	function initGridTitle(gridId){
+			$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
+	}
+	function initTab(){
+		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
+		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
+		$('#mainPanel .tabs').css('padding-left',0);
+	}
 	/**
 	*给页面元素绑定事件
 	*/
@@ -93,7 +104,7 @@ $(function(){
 			id:gridId,
 			caption:'客户一般数据',
 			rownum:900,
-			height:$(window).height()-185,
+			height:$(window).height()-155,
 			width:900,
 			autoWidth:true,
 			multiselectWidth:60,
@@ -199,7 +210,7 @@ $(function(){
 			id:gridId,
 			caption:'客户公司代码数据',
 			rownum:10000,
-			height:$(window).height()-185,
+			height:$(window).height()-155,
 			width:900,
 			autoWidth:true,
 			multiselectWidth:60,
@@ -303,7 +314,7 @@ $(function(){
 			id:gridId,
 			caption:'客户销售数据',
 			rownum:10000,
-			height:$(window).height()-185,
+			height:$(window).height()-155,
 			width:900,
 			autoWidth:true,
 			multiselectWidth:60,
@@ -424,6 +435,7 @@ $(function(){
 			    	*/
 			    }
 			},
+			columnNames:['ID','SAP字段','SAP字段名称','Garden字段','Garden字段名称','状态','类型','ifKey','是否是查询字段','查询类型'],
 			columnModel:[
 		   		{name:'id',index:'id',hidden:true, width:1,key:true},
 		   		{name:'sourceColumn',index:'sourceColumn',width:200,editable:true,editrules:{required:true},formoptions:{ elmprefix:"",elmsuffix:"  <font color=red>*</font>" }},

@@ -63,7 +63,7 @@ a{ font-size:12px; text-decoration:none}
 		</td>
       </tr>
       <tr class='runStatusRow'>
-        <td align="left" class="alert_right_bold" >定时同步，起始时间：</td>
+        <td align="left" class="alert_right_bold" >实时同步，起始时间：</td>
         <td>
         	<div class="schedule">
         		<input type='text' class="input2" onclick="WdatePicker()" value="${begindate}" id="begindate"/>

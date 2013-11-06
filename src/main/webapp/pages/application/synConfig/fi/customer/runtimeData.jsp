@@ -26,8 +26,10 @@
 }
 </style>
 </head>
-<body>
+<body onload="setTimeout('removeMask()',200)">
 <form>
+<div class="transparent_class blockUI_class" style="position: absolute; z-index: 1000; background-color: rgb(220, 226, 241);top: 0px; left: 0px; padding: 0px; margin: 0px; width: 100%; height: 100%;"></div>
+<div class="blockUI_progress" style="position: absolute; z-index: 1001; margin: 0px; padding: 0px; top: 290.5px; left: 540px;"></div>
 <div class="toolbar">
   <div class="prompt_message">本功能用来浏览Garden系统中的数据。直接点击&ldquo;查询&rdquo;查询全部数据，也可以根据关键字查询</div>
   <div class="toolbar_left"> 
@@ -50,11 +52,27 @@
 </form>
 </body>
 <script>
+function removeMask(){
+	$('.blockUI_class').remove();
+	$('.blockUI_progress').remove();
+}
 $(function(){
 	init();
 	function init(){
 		initEvent();
 		dynamicGrid();
+		initTab();
+		initGridTitle('kna1Grid');
+		initGridTitle('knb1Grid');
+		initGridTitle('knvvGrid');
+	}
+	function initTab(){
+		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
+		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
+		$('#mainPanel .tabs').css('padding-left',0);
+	}
+	function initGridTitle(gridId){
+		$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
 	}
 	function initEvent(){
 		$('#expertExcel').bind('click',function(e){
@@ -99,7 +117,7 @@ $(function(){
 		if(kna1GridOptions!=null){
 			$.extend(kna1GridOptions,{
 				contextPath:"${ctx}",
-				height:$(window).height()-215,
+				height:$(window).height()-185,
 				autoWidth:true,
 				pager:"#tbar",
 				id:"kna1Grid",
@@ -119,7 +137,7 @@ $(function(){
 		if(knb1GridOptions!=null){
 			$.extend(knb1GridOptions,{
 				contextPath:"${ctx}",
-				height:$(window).height()-215,
+				height:$(window).height()-185,
 				autoWidth:true,
 				id:"knb1Grid",
 				pager:"#tbar1",
@@ -148,7 +166,7 @@ $(function(){
 		if(knvvGridOptions!=null){
 			$.extend(knvvGridOptions,{
 				contextPath:"${ctx}",
-				height:$(window).height()-215,
+				height:$(window).height()-185,
 				autoWidth:true,
 				id:"knvvGrid",
 				pager:"#tbar2",

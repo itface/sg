@@ -40,6 +40,9 @@ public class CommonSchedulingServiceImpl implements CommonSchedulingService{
 		// TODO Auto-generated method stub
 		dao.update(job);
 		schedulingUtil.update(job,sapDataCollection);
+		if(job.getJobstatus()==0){
+			dao.deleteById(CommonScheduling.class, job.getId());
+		}
 	}
 
 	@Override

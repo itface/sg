@@ -25,8 +25,10 @@
 }
 </style>
 </head>
-<body>
+<body onload="setTimeout('removeMask()',1000)">
 <form>
+	<div class="transparent_class blockUI_class" style="position: absolute; z-index: 1000; background-color: rgb(220, 226, 241);top: 0px; left: 0px; padding: 0px; margin: 0px; width: 100%; height: 100%;"></div>
+	<div class="blockUI_progress" style="position: absolute; z-index: 1001; margin: 0px; padding: 0px; top: 290.5px; left: 540px;"></div>
 	<div class="toolbar">
 	  <div class="toolbar_left"> 
 	  	  <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfMonthRange" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">一月内异常日志</a> 
@@ -61,6 +63,10 @@
 </form>
 </body>
 <script>
+function removeMask(){
+	$('.blockUI_class').remove();
+	$('.blockUI_progress').remove();
+}
 $(function(){
 	var type='${type}';
 	var queryCondition;
@@ -68,6 +74,23 @@ $(function(){
 	function init(){
 		dynamicGrid();
 		initElEvent();
+		initTab();
+		initGridTitle('kna1Grid');
+		initGridTitle('knb1Grid');
+		initGridTitle('knvvGrid');
+	}
+	function initTab(){
+		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
+		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
+		$('#mainPanel .tabs').css('padding-left',0);
+	}
+	function initGridTitle(gridId){
+		$('#'+gridId+'_toppager_left').append($('#gbox_'+gridId+' .ui-jqgrid-title'));
+		$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
+		$('#gbox_'+gridId+' .ui-jqgrid-title').wrap("<div class='extendGridTitle' style='font-weight: bold;  color: #515151;  font-size: 12px;  font-family: 宋体;padding: .3em .2em .2em 15px;'></div>");
+	}
+	function setGridTitle(gridId,title){
+		$('#gbox_'+gridId+' .ui-jqgrid-title').html(title);
 	}
 	function dynamicGrid(){
 		var kna1GridOptions=${kna1GridOptions};
@@ -78,9 +101,9 @@ $(function(){
 				contextPath:"${ctx}",
 				autoWidth:true,
 				id:"kna1Grid",
-				height:$(window).height()-180,//
+				height:$(window).height()-148,//
 				multiselect:false,
-				caption:'运行监控',
+				caption:'运行日志',
 				pager:"#monitorGridTbar",
 				eventModels:{
 					loadComplete: function(){
@@ -98,9 +121,9 @@ $(function(){
 				contextPath:"${ctx}",
 				autoWidth:true,
 				id:"knb1Grid",
-				height:$(window).height()-180,//
+				height:$(window).height()-148,//
 				multiselect:false,
-				caption:'运行监控',
+				caption:'运行日志',
 				pager:"#monitorGridTbar",
 				eventModels:{
 					loadComplete: function(){
@@ -131,9 +154,9 @@ $(function(){
 				contextPath:"${ctx}",
 				autoWidth:true,
 				id:"knvvGrid",
-				height:$(window).height()-180,//
+				height:$(window).height()-148,//
 				multiselect:false,
-				caption:'运行监控',
+				caption:'运行日志',
 				pager:"#monitorGridTbar",
 				eventModels:{
 					loadComplete: function(){
@@ -194,22 +217,25 @@ $(function(){
 				bdate = $("#bdate").val();
 				edate = $("#edate").val();
 				errorLog = $("#errorLog").attr('checked')=='checked'?'E':'';
-				jQuery("#kna1Grid").jqGrid('setCaption',"检索日志");
-				jQuery("#knb1Grid").jqGrid('setCaption',"检索日志");
-				jQuery("#knvvGrid").jqGrid('setCaption',"检索日志");
+				//jQuery("#kna1Grid").jqGrid('setCaption',"检索日志");
+				//jQuery("#knb1Grid").jqGrid('setCaption',"检索日志");
+				//jQuery("#knvvGrid").jqGrid('setCaption',"检索日志");
+				setGridTitle('kna1Grid',"检索日志");
+				setGridTitle('knb1Grid',"检索日志");
+				setGridTitle('knvvGrid',"检索日志");
 			}else if(id=='queryLogOfMonthRange'){
 				bdate = $("#bdateOfMonthRange").val();
 				edate = $("#edateOfMonthRange").val();
 				errorLog = 'E';
-				jQuery("#kna1Grid").jqGrid('setCaption',"一个月内异常日志");
-				jQuery("#knb1Grid").jqGrid('setCaption',"一个月内异常日志");
-				jQuery("#knvvGrid").jqGrid('setCaption',"一个月内异常日志");
+				setGridTitle('kna1Grid',"一个月内异常日志");
+				setGridTitle('knb1Grid',"一个月内异常日志");
+				setGridTitle('knvvGrid',"一个月内异常日志");
 			}else if(id=='queryLogOfWeekRange'){
 				bdate = $("#bdateOfWeekRange").val();
 				edate = $("#edateOfWeekRange").val();
-				jQuery("#kna1Grid").jqGrid('setCaption',"一周内日志");
-				jQuery("#knb1Grid").jqGrid('setCaption',"一周内日志");
-				jQuery("#knvvGrid").jqGrid('setCaption',"一周内日志");
+				setGridTitle('kna1Grid',"一周内日志");
+				setGridTitle('knb1Grid',"一周内日志");
+				setGridTitle('knvvGrid',"一周内日志");
 			}
 			queryCondition={bdate:bdate,edate:edate,optflag:errorLog};
 			var url = '${ctx}/application/fi/customer/runtimeMonitor/findLog/kna1';

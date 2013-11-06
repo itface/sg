@@ -28,8 +28,10 @@
 }
 </style>
 </head>
-<body>
+<body onload="setTimeout('removeMask()',200)">
 <form>
+<div class="transparent_class blockUI_class" style="position: absolute; z-index: 1000; background-color: rgb(220, 226, 241);top: 0px; left: 0px; padding: 0px; margin: 0px; width: 100%; height: 100%;"></div>
+<div class="blockUI_progress" style="position: absolute; z-index: 1001; margin: 0px; padding: 0px; top: 290.5px; left: 540px;"></div>
 <div class="toolbar">
   <div class="prompt_message">本功能根据数据的关键字,从SAP中读取相应的数据，可以测试系统的连通性，也可以同步指定的SAP数据到Garden</div>
   <div class="toolbar_left"> 
@@ -53,11 +55,28 @@
 </body>
 <script>
 var queryflag = false;
+function removeMask(){
+	$('.blockUI_class').remove();
+	$('.blockUI_progress').remove();
+}
 $(function(){
 	init();
 	function init(){
 		initElEvent();
 		dynamicGrid();
+		initTab();
+		initGridTitle('kna1Grid');
+		initGridTitle('knb1Grid');
+		initGridTitle('knvvGrid');
+	}
+	function initTab(){
+		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
+		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
+		$('#mainPanel .tabs').css('padding-left',0);
+	}
+	function initGridTitle(gridId){
+		$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
+		$('#'+gridId+'_toppager').remove();
 	}
 	function dynamicGrid(){
 		var kna1GridOptions=${kna1GridOptions};
@@ -71,7 +90,7 @@ $(function(){
 				loadui:'',
 				sortable:false,
 				loadonce:true,
-				height:$(window).height()-180
+				height:$(window).height()-150
 			}
 		);
 		$.extend(knb1GridOptions,{
@@ -82,7 +101,7 @@ $(function(){
 				loadui:'',
 				sortable:false,
 				loadonce:true,
-				height:$(window).height()-180,
+				height:$(window).height()-150,
 				eventModels:{
 					gridComplete:function(){
 						var toppagerWidth = $('#mainPanel .panel-body').css('width');
@@ -108,7 +127,7 @@ $(function(){
 				loadui:'',
 				sortable:false,
 				loadonce:true,
-				height:$(window).height()-180,
+				height:$(window).height()-150,
 				eventModels:{
 					gridComplete:function(){
 						var toppagerWidth = $('#mainPanel .panel-body').css('width');

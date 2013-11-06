@@ -69,6 +69,12 @@ public class ExcelServiceImpl implements ExcelService{
 					if(value instanceof Date){
 						SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						excelWriter.setCell(j, sf.format(value));
+					}else if("optflag".equals(field)){
+						if("E".equals(value)){
+							excelWriter.setCell(j, "操作失败");
+						}else if("S".equals(value)){
+							excelWriter.setCell(j, "操作成功");
+						}
 					}else{
 						excelWriter.setCell(j, value);
 					}
