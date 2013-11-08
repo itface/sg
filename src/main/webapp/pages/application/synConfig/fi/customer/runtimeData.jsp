@@ -33,7 +33,7 @@
 <div class="toolbar">
   <div class="prompt_message">本功能用来浏览Garden系统中的数据。直接点击&ldquo;查询&rdquo;查询全部数据，也可以根据关键字查询</div>
   <div class="toolbar_left"> 
-    <input type='text' id='kunnr' class='input3' value="客户编号"/>
+    <input type='text' id='kunnr' class='input4' value="客户编号"/>
     <a href="#" class="btn" id="queryBtn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询</a> 
     <a href="#" class="btn" id="expertExcel" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">导出数据</a>  
   </div>
@@ -52,9 +52,19 @@
 </form>
 </body>
 <script>
+var queryCondition=false;
 function removeMask(){
 	$('.blockUI_class').remove();
 	$('.blockUI_progress').remove();
+}
+function checkData(){
+	var kna1dataLength =$('#kna1Grid').jqGrid('getRowData').length;
+	var knb1dataLength =$('#knb1Grid').jqGrid('getRowData').length;
+	var knvvdataLength =$('#knvvGrid').jqGrid('getRowData').length;
+	if(kna1dataLength>0||knb1dataLength>0||knvvdataLength>0){
+		return true;
+	}
+	return false;
 }
 $(function(){
 	init();
@@ -70,6 +80,9 @@ $(function(){
 		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
 		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
 		$('#mainPanel .tabs').css('padding-left',0);
+		$('.tabs-panels').css('border-left','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-right','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-bottom','1px solid #c5c5c5');
 	}
 	function initGridTitle(gridId){
 		$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
@@ -79,18 +92,21 @@ $(function(){
 			var kunnr = $('#kunnr').val()=="客户编号"?"":$('#kunnr').val();
 			open('${ctx}/application/fi/customer/runtimeData/exportExcel?kunnr='+kunnr,'_self');
 		});
-		$(".input3").focus(function(){
-			  $(this).attr('class','input3_onfocus');
+		$(".input4").focus(function(){
+			  $(this).attr('class','input4_onfocus');
 			  if($(this).val() ==this.defaultValue){  
                   $(this).val("");           
 			  } 
 		}).blur(function(){
-			  $(this).attr('class','input3');
 			 if ($(this).val() == '') {
                 $(this).val(this.defaultValue);
+                $(this).attr('class','input4');
+             }else{
+             	$(this).attr('class','input4_onblur_haveValue');
              }
 		});
 		$('#queryBtn').bind('click',function(e){
+			queryCondition=true;
 			var kunnr = $('#kunnr').val()=="客户编号"?"":$('#kunnr').val();
 			var baseurl = '${ctx}/application/fi/customer/runtimeData/';
 			jQuery('#kna1Grid').jqGrid('setGridParam',{url:baseurl+'kna1',page:1});
@@ -128,6 +144,9 @@ $(function(){
 							$('#expertExcel').show();
 						}else{
 							$('#expertExcel').hide();
+						}
+						if(queryCondition){
+							setTimeout("if(!checkData()){alert('没有符合条件的数据');}",200);
 						}
 					}
 				}

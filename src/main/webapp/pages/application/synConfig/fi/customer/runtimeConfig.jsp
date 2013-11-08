@@ -89,6 +89,9 @@ $(function(){
 		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
 		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
 		$('#mainPanel .tabs').css('padding-left',0);
+		$('.tabs-panels').css('border-left','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-right','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-bottom','1px solid #c5c5c5');
 	}
 	/**
 	*给页面元素绑定事件
@@ -97,12 +100,13 @@ $(function(){
 		
 	}
 	function createKna1Grid(){
-		var basePath = '${ctx}/application/common/columnInfo/kna1';
+		var basePath = '/application/common/columnInfo/kna1';
 		var gridId = "pna1Grid";
 		var checked = '';
 		var config ={
 			id:gridId,
 			caption:'客户一般数据',
+			contextPath:"${ctx}",
 			rownum:900,
 			height:$(window).height()-155,
 			width:900,
@@ -203,11 +207,12 @@ $(function(){
 		$('#cb_'+gridId).hide();
 	}
 	function createKnb1Grid(){
-		var basePath = '${ctx}/application/common/columnInfo/knb1';
+		var basePath = '/application/common/columnInfo/knb1';
 		var gridId = "pnb1Grid";
 		var checked = '';
 		var config ={
 			id:gridId,
+			contextPath:"${ctx}",
 			caption:'客户公司代码数据',
 			rownum:10000,
 			height:$(window).height()-155,
@@ -307,11 +312,12 @@ $(function(){
 		$('#cb_'+gridId).hide();
 	}
 	function createKnvvGrid(){
-		var basePath = '${ctx}/application/common/columnInfo/knvv';
+		var basePath = '/application/common/columnInfo/knvv';
 		var gridId = "pnvvGrid";
 		var checked = '';
 		var config ={
 			id:gridId,
+			contextPath:"${ctx}",
 			caption:'客户销售数据',
 			rownum:10000,
 			height:$(window).height()-155,

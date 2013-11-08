@@ -35,7 +35,7 @@
 <div class="toolbar">
   <div class="prompt_message">本功能根据数据的关键字,从SAP中读取相应的数据，可以测试系统的连通性，也可以同步指定的SAP数据到Garden</div>
   <div class="toolbar_left"> 
-  	<input type='text' id='kunnr' class='input3' value="客户编号"/>
+  	<input type='text' id='kunnr' class='input4'  value="客户编号"/>
   	<a href="javascript:void(0);" class="btn" id='testCall' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询SAP数据</a>  
     <a href="javascript:void(0);" class="btn" id='manualSyn' onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">从SAP同步到Garden</a>  
    </div>
@@ -73,6 +73,9 @@ $(function(){
 		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
 		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
 		$('#mainPanel .tabs').css('padding-left',0);
+		$('.tabs-panels').css('border-left','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-right','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-bottom','1px solid #c5c5c5');
 	}
 	function initGridTitle(gridId){
 		$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
@@ -151,26 +154,17 @@ $(function(){
 		$("#knvvGrid").extendJqgrid(knvvGridOptions);
 	}
 	function initElEvent(){
-		$(".input1").focus(function(){
-			  $(this).attr('class','input1_onfocus');
+		$(".input4").focus(function(){
+			  $(this).attr('class','input4_onfocus');
 			  if($(this).val() ==this.defaultValue){  
                   $(this).val("");           
 			  } 
 		}).blur(function(){
-			  $(this).attr('class','input1');
 			 if ($(this).val() == '') {
                 $(this).val(this.defaultValue);
-             }
-		});
-		$(".input3").focus(function(){
-			  $(this).attr('class','input3_onfocus');
-			  if($(this).val() ==this.defaultValue){  
-                  $(this).val("");           
-			  } 
-		}).blur(function(){
-			  $(this).attr('class','input3');
-			 if ($(this).val() == '') {
-                $(this).val(this.defaultValue);
+                $(this).attr('class','input4');
+             }else{
+             	$(this).attr('class','input4_onblur_haveValue');
              }
 		});
 		$('#testCall').bind('click',function(e){
@@ -182,6 +176,7 @@ $(function(){
 			$.ajax({
 				url:'${ctx}/application/fi/customer/manualSyn/getSapData',
 				type: "GET",
+				cache:false,
 				data:{kunnr:$('#kunnr').val()},
 				dataType:"json",
 				success:function(json){
@@ -193,9 +188,16 @@ $(function(){
 								jQuery("#kna1Grid")[0].addJSONData(json.kna1);
 								jQuery("#knb1Grid")[0].addJSONData(json.knb1);
 								jQuery("#knvvGrid")[0].addJSONData(json.knvv);
+								if(json.kna1.records<=0&&json.knb1.records<=0&&json.knvv.records<=0){
+									$('#manualSyn').hide();
+									alert('没有符合条件的数据');
+								}else{
+									$('#manualSyn').show();
+								}
+							}else{
+								$('#manualSyn').hide();
+								alert('没有符合条件的数据');
 							}
-							alert('查询成功');
-							$('#manualSyn').show();
 							$(window).blockUI('remove');
 						}catch(e){
 							$(window).blockUI('remove');

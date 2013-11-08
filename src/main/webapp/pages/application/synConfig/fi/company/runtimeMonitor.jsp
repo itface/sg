@@ -21,18 +21,20 @@
 }
 </style>
 </head>
-<body>
+<body onload="setTimeout('removeMask()',200)">
 <form>
+	<div class="transparent_class blockUI_class" style="position: absolute; z-index: 1000; background-color: rgb(220, 226, 241);top: 0px; left: 0px; padding: 0px; margin: 0px; width: 100%; height: 100%;"></div>
+	<div class="blockUI_progress" style="position: absolute; z-index: 1001; margin: 0px; padding: 0px; top: 290.5px; left: 540px;"></div>
 	<div class="toolbar">
 	  <div class="toolbar_left"> 
 	  	  <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfMonthRange" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">一月内异常日志</a> 
 	  	  <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfWeekRange" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">一周内日志</a> 
 	  </div>
 	  <div class="toolbar_right">
-	      <input type="text" class="input1" id="bdate"   onclick="WdatePicker()" value="${bdate}">
+	      <input type="text" class="input4 input4_onblur_haveValue" id="bdate"   onclick="WdatePicker()" value="${bdate}">
 	      <span style='float:left;margin-right:5px;line-height:25px' id='dataSpan'>-</span>
-	      <input type="text" class="input1" id="edate" onclick="WdatePicker()" value="${edate}">
-	    <input type="text"  class="input1" id="companyCode" value="公司代码">
+	      <input type="text" class="input4 input4_onblur_haveValue" id="edate" onclick="WdatePicker()" value="${edate}">
+	    <input type="text"  class="input4" id="companyCode" value="公司代码">
 	    <span style="float:left;padding:5px"><input type="checkbox" id="errorLog">&nbsp;仅异常日志</span>
 	    <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfCommon" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">检索日志</a> 
 	    <a href="javascript:void(0);" class="btn" id="expertExcel" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">导出日志</a> 
@@ -48,6 +50,10 @@
 </form>
 </body>
 <script>
+function removeMask(){
+	$('.blockUI_class').remove();
+	$('.blockUI_progress').remove();
+}
 $(function(){
 	var type='${type}';
 	var queryCondition;
@@ -63,9 +69,9 @@ $(function(){
 				contextPath:"${ctx}",
 				autoWidth:true,
 				id:"monitorGrid",
-				height:$(window).height()-140,//
+				height:$(window).height()-110,//
 				multiselect:false,
-				caption:'运行监控',
+				caption:'运行日志',
 				pager:"#monitorGridTbar",
 				eventModels:{
 					loadComplete: function(){
@@ -74,6 +80,10 @@ $(function(){
 							$(v).attr('title',value);
 							$(v).html(value);
 						});
+						var dataLength =$('#monitorGrid').jqGrid('getRowData').length;
+						if(queryCondition&&dataLength<1){
+							alert('没有符合条件的数据');
+						}
 					}
 				}
 			});
@@ -82,15 +92,18 @@ $(function(){
 		$("#monitorGrid").extendJqgrid(monitorGridOptions);
 	}
 	function initElEvent(){
-		$(".input1").focus(function(){
-			  $(this).attr('class','input1_onfocus');
+		$(".input4").focus(function(){
+			  $(this).attr('class','input4_onfocus');
 			  if($(this).val() ==this.defaultValue){  
                   $(this).val("");           
 			  } 
 		}).blur(function(){
-			  $(this).attr('class','input1');
+			$(this).attr('class','input4_onblur_haveValue');
 			 if ($(this).val() == '') {
                 $(this).val(this.defaultValue);
+                if($(this).attr('id')=='companyCode'){
+                	$(this).attr('class','input4');
+                }
              }
 		});
 		$('#expertExcel').bind('click',function(e){
@@ -116,18 +129,27 @@ $(function(){
 				edate = $("#edate").val();
 				companyCode = ($("#companyCode").val()=='公司代码'?'':$("#companyCode").val());
 				errorLog = $("#errorLog").attr('checked')=='checked'?'E':'';
-				jQuery("#monitorGrid").jqGrid('setCaption',"检索日志");
+				var b = bdate.replace('-','').replace('-','');
+				var e = edate.replace('-','').replace('-','');
+				var title = (errorLog=='E'?'异常':'完整')+"运行日志（"+b+"-"+e+"）";
+				jQuery("#kna1Grid").extendJqgrid('resetCaption',{caption:title,id:'monitorGrid'});
 			}else if(id=='queryLogOfMonthRange'){
 				bdate = $("#bdateOfMonthRange").val();
 				edate = $("#edateOfMonthRange").val();
 				companyCode = '';
 				errorLog = 'E';
-				jQuery("#monitorGrid").jqGrid('setCaption',"一个月内异常日志");
+				var b = bdate.replace('-','').replace('-','');
+				var e = edate.replace('-','').replace('-','');
+				var title = "一个月内异常运行日志（"+b+"-"+e+"）";
+				jQuery("#kna1Grid").extendJqgrid('resetCaption',{caption:title,id:'monitorGrid'});
 			}else if(id=='queryLogOfWeekRange'){
 				bdate = $("#bdateOfWeekRange").val();
 				edate = $("#edateOfWeekRange").val();
 				companyCode = '';
-				jQuery("#monitorGrid").jqGrid('setCaption',"一周内日志");
+				var b = bdate.replace('-','').replace('-','');
+				var e = edate.replace('-','').replace('-','');
+				var title = "一周内完整运行日志（"+b+"-"+e+"）";
+				jQuery("#kna1Grid").extendJqgrid('resetCaption',{caption:title,id:'monitorGrid'});
 			}
 			queryCondition={bdate:bdate,edate:edate,companyCode:companyCode,optflag:errorLog};
 			$.extend(postdata, {bdate:bdate,edate:edate,companyCode:companyCode,optflag:errorLog});

@@ -221,6 +221,33 @@ a.btn_mousedown {
 	margin-right:5px;
 		color:#747373
 }
+.input4 {
+	border:1px solid #d8d8d8;
+	width:100px;
+	height:26px;
+	padding:0px 10px;
+	float:left;
+	margin-right:5px;
+	color:#747373
+}
+.input4_onblur_haveValue {
+	border:1px solid #d8d8d8;
+	width:100px;
+	height:26px;
+	padding:0px 10px;
+	float:left;
+	margin-right:5px;
+	color:#000000
+}
+.input4_onfocus {
+	border:1px solid #9b9b9b;
+	width:100px;
+	height:26px;
+	padding:0px 10px;
+	float:left;
+	margin-right:5px;
+	color:#000000;
+}
 .schedule_icon {
 	background:url(../../images/schedule.png);
 	height:16px;

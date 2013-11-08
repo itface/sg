@@ -86,6 +86,18 @@
 		$('#gbox_'+options.id+' .jqgfirstrow').css('height',1);
 		$('#gbox_'+options.id+' .jqgfirstrow td[role="gridcell"]').css('border',0);
 	}
+	function initGridTitle(options){
+		var caption = $('#'+options.id).jqGrid('getGridParam','caption');
+		var contextPath = options.contextPath;
+		$('#gbox_'+options.id+' .ui-jqgrid-titlebar').remove();
+		var s = "<div class='extendGridTitle' style='font-weight: bold;  color: #515151;  font-size: 12px;  font-family: 宋体;padding: 5px .2em .2em 15px;'>";
+			s+="	<span class='ui-jqgrid-title'><img src='"+contextPath+"/images/grid.png' height='13px'>&nbsp;&nbsp;<span id='extendCaption-"+options.id+"'>"+caption+"</span></span>";
+			s+="</div>";
+		$('#'+options.id+'_toppager_left').append(s);
+	}
+	function setGridTitle(container,param){
+		$('#extendCaption-'+param.id).html(param.caption);
+	}
 	$.fn.extendJqgrid=function(options, param){
 		var container = this;
 		//如果options是字符串，则说明是调用方法
@@ -102,6 +114,10 @@
 		init:function(container,options){
 			constructGrid(container,options);
 			initGridStyle(options);
+			initGridTitle(options);
+		},
+		resetCaption:function(container,param){
+			setGridTitle(container,param);
 		},
 		test:function(container,param){
 			alert(param);

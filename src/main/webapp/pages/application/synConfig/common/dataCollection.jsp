@@ -93,6 +93,14 @@ $(function(){
 		$("#list_toppager_center", topPagerDiv).remove();
 		//$("#del_list_top", topPagerDiv).remove();
 		$(".ui-paging-info", topPagerDiv).remove();
+		$("#search_list_top").remove();
+		
+		$('#gbox_list .ui-jqgrid-titlebar').remove();
+		var s = "<td width='150px'><div class='extendGridTitle' style='font-weight: bold;  color: #515151;  font-size: 12px;  font-family: 宋体;padding: 5px .2em .2em 15px;'>";
+			s+="	<span class='ui-jqgrid-title'><img src='${ctx}/images/grid.png' height='13px'>&nbsp;&nbsp;<span>SAP数据集定义</span></span>";
+			s+="</div></td>";
+		$('#add_list_top').before(s);
+		$('#add_list_top').before($('.ui-state-disabled'));
 	}
 	
 	function createExternalUserGrid(){
@@ -113,9 +121,9 @@ $(function(){
 		   	colNames:['ID','接入系统名称','接入系统地址（url）','接入使用的Garden User','Garden里的SAP数据集','说明'],
 		   	colModel:[
 		   		{name:'id',index:'id',hidden:true, width:1,key:true},
-		   		{name:'externalsystemname',index:'externalsystemname',width:250,editable:true,editrules:{required:true}},
-		   		{name:'externalsystemurl',index:'externalsystemurl', width:250,editable:true,editrules:{required:true}},
-		   		{name:'username',index:'username',edittype:'select',editable:true,editrules:{required:true},
+		   		{name:'externalsystemname',index:'externalsystemname',sortable:false,search:false,width:250,editable:true,editrules:{required:true}},
+		   		{name:'externalsystemurl',index:'externalsystemurl',sortable:false,search:false, width:250,editable:true,editrules:{required:true}},
+		   		{name:'username',index:'username',edittype:'select',sortable:false,search:false,editable:true,editrules:{required:true},
 		   			editoptions:{
 		   				dataUrl:"${ctx}/system/user/getUserSelect",
 		   				dataInit:function(el){
@@ -126,14 +134,14 @@ $(function(){
 		   				}
 		   			}
 		   		},
-		   		{name:'sapdatacollection',index:'sapdatacollection',width:250,editable:true,editrules:{required:true},
+		   		{name:'sapdatacollection',index:'sapdatacollection',width:250,search:false,editable:true,editrules:{required:true},
 		   			editoptions:{
 		   				dataInit:function(el){
 		   					$(el).attr('readonly',true);
 		   				}
 		   			}
 		   		},
-		   		{name:'descriptioninfo',index:'descriptioninfo',editable:true,edittype:'textarea'}
+		   		{name:'descriptioninfo',index:'descriptioninfo',editable:true,search:false,edittype:'textarea'}
 		   	],
 		   	pginput:false,
 		   	toppager: true,
@@ -156,6 +164,13 @@ $(function(){
 		$("#edit_externalUserGrid_top", topPagerDiv).remove();
 		$("#externalUserGrid_toppager_center", topPagerDiv).remove();
 		$(".ui-paging-info", topPagerDiv).remove();
+		$("#search_externalUserGrid_top").remove();
+		$('#gbox_externalUserGrid .ui-jqgrid-titlebar').remove();
+		var s = "<td width='150px'><div class='extendGridTitle' style='font-weight: bold;  color: #515151;  font-size: 12px;  font-family: 宋体;padding: 5px .2em .2em 15px;'>";
+			s+="	<span class='ui-jqgrid-title'><img src='${ctx}/images/grid.png' height='13px'>&nbsp;&nbsp;<span>Garden接入系统定义表</span></span>";
+			s+="</div></td>";
+		$('#add_externalUserGrid_top').before(s);
+		$('#add_externalUserGrid_top').before($('#externalUserGrid_toppager_left .ui-state-disabled'));
 	}
 	/*
 	function createGrid2(){

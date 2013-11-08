@@ -3,6 +3,7 @@ package com.sapGarden.application.fi.customer.service.impl;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -78,16 +79,19 @@ public class ExportCustomerExcelServiceImpl implements CommonExpertExcelService{
 			k++;
 		}
 		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+		String today = sf.format(c.getTime());
+		String frefixOfFileName = "customer_"+today;
 		if(kna1totalNum>0){
 			long pages = kna1totalNum%PERSIZE==0?kna1totalNum/PERSIZE:kna1totalNum/PERSIZE+1;
 			if(pages>1){
 				for(int i=1;i<=pages;i++){
 					List<Kna1> datas = commonService.findByPage(sapDataCollection,"Kna1", json, PERSIZE, i,null,null);
-					String filename = "customer_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_kna1_"+i;
+					String filename = frefixOfFileName+"_kna1_"+i;
 					path = excelService.generateExcel(kna1titles,kna1fields, datas,Kna1.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 				}
 			}else{
-				String filename = "customer_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_kna1";
+				String filename = frefixOfFileName+"_kna1";
 				List<Kna1> datas = commonService.findByPage(sapDataCollection,"Kna1", json, PERSIZE, 1,null,null);
 				path = excelService.generateExcel(kna1titles,kna1fields, datas,Kna1.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 			}
@@ -97,11 +101,11 @@ public class ExportCustomerExcelServiceImpl implements CommonExpertExcelService{
 			if(pages>1){
 				for(int i=1;i<=pages;i++){
 					List<Knb1> datas = commonService.findByPage(sapDataCollection,"Knb1", json, PERSIZE, i,null,null);
-					String filename = "customer_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_knb1_"+i;
+					String filename = frefixOfFileName+"_knb1_"+i;
 					path = excelService.generateExcel(knb1titles,knb1fields, datas,Knb1.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 				}
 			}else{
-				String filename = "customer_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_knb1";
+				String filename = frefixOfFileName+"_knb1";
 				List<Knb1> datas = commonService.findByPage(sapDataCollection,"Knb1", json, PERSIZE, 1,null,null);
 				path = excelService.generateExcel(knb1titles,knb1fields, datas,Knb1.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 			}
@@ -111,16 +115,16 @@ public class ExportCustomerExcelServiceImpl implements CommonExpertExcelService{
 			if(pages>1){
 				for(int i=1;i<=pages;i++){
 					List<Knvv> datas = commonService.findByPage(sapDataCollection,"Knvv", json, PERSIZE, i,null,null);
-					String filename = "customer_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_knvv_"+i;
+					String filename = frefixOfFileName+"_knvv_"+i;
 					path = excelService.generateExcel(knvvtitles,knvvfields, datas,Knvv.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 				}
 			}else{
-				String filename = "customer_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_knvv";
+				String filename = frefixOfFileName+"_knvv";
 				List<Knvv> datas = commonService.findByPage(sapDataCollection,"Knvv", json, PERSIZE, 1,null,null);
 				path = excelService.generateExcel(knvvtitles,knvvfields, datas,Knvv.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 			}
 		}
-		String zipname = "customer_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
+		String zipname = frefixOfFileName;
 		excelService.downloadZip(path, zipname, response);
 		excelService.deleteByFilePath(path);
 	}
@@ -212,6 +216,9 @@ public class ExportCustomerExcelServiceImpl implements CommonExpertExcelService{
 		long knb1totalNum = commonLogService.findTotalNum(sapDataCollection,"Knb1Log", json, optflag, bdate, edate);
 		long knvvtotalNum = commonLogService.findTotalNum(sapDataCollection,"KnvvLog", json, optflag, bdate, edate);
 		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+		String today = sf.format(c.getTime());
+		String frefixOfFileName = "customerLog_"+today;
 		long kna1pages = kna1totalNum%PERSIZE==0?kna1totalNum/PERSIZE:kna1totalNum/PERSIZE+1;
 		long knb1pages = knb1totalNum%PERSIZE==0?knb1totalNum/PERSIZE:knb1totalNum/PERSIZE+1;
 		long knvvpages = knvvtotalNum%PERSIZE==0?knvvtotalNum/PERSIZE:knvvtotalNum/PERSIZE+1;
@@ -219,37 +226,37 @@ public class ExportCustomerExcelServiceImpl implements CommonExpertExcelService{
 		if(kna1pages>1){
 			for(int i=1;i<=kna1pages;i++){
 				List<CompanyLog> datas = commonLogService.findByPage(sapDataCollection,"Kna1Log", json, optflag, bdate, edate, PERSIZE, i, null, null);
-				String filename = "CustomerLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_kna1_"+i;
+				String filename = frefixOfFileName+"_kna1_"+i;
 				path = excelService.generateExcel(kna1titles,kna1fields, datas,Kna1Log.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 			}
 		}else{
-			String filename = "CustomerLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_kna1";
+			String filename = frefixOfFileName+"_kna1";
 			List<CompanyLog> datas = commonLogService.find(sapDataCollection,"Kna1Log", json, optflag, bdate, edate);
 			path = excelService.generateExcel(kna1titles,kna1fields, datas,Kna1Log.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 		}
 		if(knb1pages>1){
 			for(int i=1;i<=knb1pages;i++){
 				List<CompanyLog> datas = commonLogService.findByPage(sapDataCollection,"Knb1Log", json, optflag, bdate, edate, PERSIZE, i, null, null);
-				String filename = "CustomerLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_knb1_"+i;
+				String filename = frefixOfFileName+"_knb1_"+i;
 				path = excelService.generateExcel(knb1titles,knb1fields, datas,Knb1Log.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 			}
 		}else{
-			String filename = "CustomerLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_knb1";
+			String filename = frefixOfFileName+"_knb1";
 			List<CompanyLog> datas = commonLogService.find(sapDataCollection,"Knb1Log", json, optflag, bdate, edate);
 			path = excelService.generateExcel(knb1titles,knb1fields, datas,Knb1Log.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 		}
 		if(knvvpages>1){
 			for(int i=1;i<=knvvpages;i++){
 				List<CompanyLog> datas = commonLogService.findByPage(sapDataCollection,"KnvvLog", json, optflag, bdate, edate, PERSIZE, i, null, null);
-				String filename = "CustomerLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_knvv_"+i;
+				String filename = frefixOfFileName+"_knvv_"+i;
 				path = excelService.generateExcel(knvvtitles,knvvfields, datas,KnvvLog.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 			}
 		}else{
-			String filename = "CustomerLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_knvv";
+			String filename = frefixOfFileName+"_knvv";
 			List<CompanyLog> datas = commonLogService.find(sapDataCollection,"KnvvLog", json, optflag, bdate, edate);
 			path = excelService.generateExcel(knvvtitles,knvvfields, datas,KnvvLog.class, sapDataCollection, SjlxTypeName.TYPE_CUSTOMER, filename);
 		}
-		String zipname = "customerLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
+		String zipname = frefixOfFileName;
 		excelService.downloadZip(path, zipname, response);
 		excelService.deleteByFilePath(path);
 	}

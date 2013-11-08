@@ -19,8 +19,11 @@
 <script src="<c:url value='/script/jquery.easyui/jquery.easyui.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/script/lhgdialog/lhgdialog.js?skin=default'/>" type="text/javascript"></script>
 </head>
-<body>
+<body onload="setTimeout('removeMask()',200)">
 <form>
+<div class="transparent_class blockUI_class" style="position: absolute; z-index: 1000; background-color: rgb(220, 226, 241);top: 0px; left: 0px; padding: 0px; margin: 0px; width: 100%; height: 100%;"></div>
+<div class="blockUI_progress" style="position: absolute; z-index: 1001; margin: 0px; padding: 0px; top: 290.5px; left: 540px;"></div>
+
 <div class="toolbar">
   <div class="prompt_message">慎重操作！本功能用来将SAP中的数据初始化到Garden系统中。初始化将校验数据结构，然后清空Garden中已有的数据，最后从SAP导入数据。数据清空后无法恢复。</div>
   <div class="toolbar_left"> 
@@ -35,6 +38,10 @@
 </form>
 </body>
 <script>
+function removeMask(){
+	$('.blockUI_class').remove();
+	$('.blockUI_progress').remove();
+}
 $(function(){
 		init();
 		function init(){

@@ -42,6 +42,7 @@ jQuery("#list").jqGrid({
     jsonReader:{
     	repeatitems:false
     },
+    hidegrid:false,
 	autowidth: false,
 	width:1000,
     height:400,
@@ -97,6 +98,16 @@ $("#edit_list_top", topPagerDiv).remove();
 //$("#refresh_list_top", topPagerDiv).remove();
 $("#list_toppager_center", topPagerDiv).remove();
 $(".ui-paging-info", topPagerDiv).remove();
+
+
+
+$('#gbox_list .ui-jqgrid-titlebar').remove();
+var s = "<td width='130px'><div class='extendGridTitle' style='font-weight: bold;  color: #515151;  font-size: 12px;  font-family: 宋体;padding: 5px .2em .2em 15px;'>";
+	s+="	<span class='ui-jqgrid-title'><img src='${ctx}/images/grid.png' height='13px'>&nbsp;&nbsp;<span>用户管理</span></span>";
+	s+="</div></td>";
+$('#add_list_top').before(s);
+$('#add_list_top').before($('.ui-state-disabled'));
+
 //**************************************************************************grid end***************************************************
 });
 </script>

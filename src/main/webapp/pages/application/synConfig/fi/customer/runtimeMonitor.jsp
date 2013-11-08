@@ -35,9 +35,9 @@
 	  	  <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfWeekRange" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">一周内日志</a> 
 	  </div>
 	  <div class="toolbar_right">
-	      <input type="text" class="input1" id="bdate"   onclick="WdatePicker()" value="${bdate}">
+	      <input type="text" class="input4 input4_onblur_haveValue" id="bdate"   onclick="WdatePicker()" value="${bdate}">
 	      <span style='float:left;margin-right:5px;line-height:25px' id='dataSpan'>-</span>
-	      <input type="text" class="input1" id="edate" onclick="WdatePicker()" value="${edate}">
+	      <input type="text" class="input4 input4_onblur_haveValue" id="edate" onclick="WdatePicker()" value="${edate}">
 	    <!-- input type="text"  class="input1" id="companyCode" value="公司代码"-->
 	    <span style="float:left;padding:5px"><input type="checkbox" id="errorLog">&nbsp;仅异常日志</span>
 	    <a href="javascript:void(0);" class="btn queryLogBtn" id="queryLogOfCommon" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">检索日志</a> 
@@ -67,6 +67,15 @@ function removeMask(){
 	$('.blockUI_class').remove();
 	$('.blockUI_progress').remove();
 }
+function checkData(){
+	var kna1dataLength =$('#kna1Grid').jqGrid('getRowData').length;
+	var knb1dataLength =$('#knb1Grid').jqGrid('getRowData').length;
+	var knvvdataLength =$('#knvvGrid').jqGrid('getRowData').length;
+	if(kna1dataLength>0||knb1dataLength>0||knvvdataLength>0){
+		return true;
+	}
+	return false;
+}
 $(function(){
 	var type='${type}';
 	var queryCondition;
@@ -75,23 +84,32 @@ $(function(){
 		dynamicGrid();
 		initElEvent();
 		initTab();
+		/*
 		initGridTitle('kna1Grid');
 		initGridTitle('knb1Grid');
 		initGridTitle('knvvGrid');
+		*/
 	}
 	function initTab(){
 		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
 		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
 		$('#mainPanel .tabs').css('padding-left',0);
+		$('.tabs-panels').css('border-left','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-right','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-bottom','1px solid #c5c5c5');
 	}
+	/*
 	function initGridTitle(gridId){
-		$('#'+gridId+'_toppager_left').append($('#gbox_'+gridId+' .ui-jqgrid-title'));
-		$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
-		$('#gbox_'+gridId+' .ui-jqgrid-title').wrap("<div class='extendGridTitle' style='font-weight: bold;  color: #515151;  font-size: 12px;  font-family: 宋体;padding: .3em .2em .2em 15px;'></div>");
+		var caption = $('#'+gridId).jqGrid('getGridParam','caption');
+		var s = "<div class='extendGridTitle' style='font-weight: bold;  color: #515151;  font-size: 12px;  font-family: 宋体;padding: 0px .2em .2em 15px;'>";
+			s+="	<span class='ui-jqgrid-title'><img src='${ctx}/images/grid.png' height='13px'>&nbsp;&nbsp;<span class='ui-jqgrid-title-extend'>"+caption+"</span></span>";
+			s+="</div>";
+		$('#'+gridId+'_toppager_left').append(s);
 	}
 	function setGridTitle(gridId,title){
-		$('#gbox_'+gridId+' .ui-jqgrid-title').html(title);
+		$('#gbox_'+gridId+' .ui-jqgrid-title-extend').html(title);
 	}
+	*/
 	function dynamicGrid(){
 		var kna1GridOptions=${kna1GridOptions};
 		var knb1GridOptions=${knb1GridOptions};
@@ -112,6 +130,9 @@ $(function(){
 							$(v).attr('title',value);
 							$(v).html(value);
 						});
+						if(queryCondition){
+							setTimeout("if(!checkData()){alert('没有符合条件的数据');}",200);
+						}
 					}
 				}
 			});
@@ -187,13 +208,13 @@ $(function(){
 		$("#knvvGrid").extendJqgrid(knvvGridOptions);
 	}
 	function initElEvent(){
-		$(".input1").focus(function(){
-			  $(this).attr('class','input1_onfocus');
+		$(".input4_onblur_haveValue").focus(function(){
+			  $(this).attr('class','input4_onfocus');
 			  if($(this).val() ==this.defaultValue){  
                   $(this).val("");           
 			  } 
 		}).blur(function(){
-			  $(this).attr('class','input1');
+			$(this).attr('class','input4_onblur_haveValue');
 			 if ($(this).val() == '') {
                 $(this).val(this.defaultValue);
              }
@@ -209,6 +230,7 @@ $(function(){
 			}
 		});
 		$(".queryLogBtn").bind('click',function(e){
+			loadFlag = false;
 			var bdate = '';
 			var edate = '';
 			var errorLog = '';
@@ -216,26 +238,36 @@ $(function(){
 			if(id=='queryLogOfCommon'){
 				bdate = $("#bdate").val();
 				edate = $("#edate").val();
+				var b = bdate.replace('-','').replace('-','');
+				var e = edate.replace('-','').replace('-','');
 				errorLog = $("#errorLog").attr('checked')=='checked'?'E':'';
+				var title = (errorLog=='E'?'异常':'完整')+"运行日志（"+b+"-"+e+"）";
 				//jQuery("#kna1Grid").jqGrid('setCaption',"检索日志");
 				//jQuery("#knb1Grid").jqGrid('setCaption',"检索日志");
 				//jQuery("#knvvGrid").jqGrid('setCaption',"检索日志");
-				setGridTitle('kna1Grid',"检索日志");
-				setGridTitle('knb1Grid',"检索日志");
-				setGridTitle('knvvGrid',"检索日志");
+				jQuery("#kna1Grid").extendJqgrid('resetCaption',{caption:title,id:'kna1Grid'});
+				jQuery("#knb1Grid").extendJqgrid('resetCaption',{caption:title,id:'knb1Grid'});
+				jQuery("#knvvGrid").extendJqgrid('resetCaption',{caption:title,id:'knvvGrid'});
+				
 			}else if(id=='queryLogOfMonthRange'){
 				bdate = $("#bdateOfMonthRange").val();
 				edate = $("#edateOfMonthRange").val();
+				var b = bdate.replace('-','').replace('-','');
+				var e = edate.replace('-','').replace('-','');
+				var title = "一个月内异常运行日志（"+b+"-"+e+"）";
 				errorLog = 'E';
-				setGridTitle('kna1Grid',"一个月内异常日志");
-				setGridTitle('knb1Grid',"一个月内异常日志");
-				setGridTitle('knvvGrid',"一个月内异常日志");
+				jQuery("#kna1Grid").extendJqgrid('resetCaption',{caption:title,id:'kna1Grid'});
+				jQuery("#knb1Grid").extendJqgrid('resetCaption',{caption:title,id:'knb1Grid'});
+				jQuery("#knvvGrid").extendJqgrid('resetCaption',{caption:title,id:'knvvGrid'});
 			}else if(id=='queryLogOfWeekRange'){
 				bdate = $("#bdateOfWeekRange").val();
 				edate = $("#edateOfWeekRange").val();
-				setGridTitle('kna1Grid',"一周内日志");
-				setGridTitle('knb1Grid',"一周内日志");
-				setGridTitle('knvvGrid',"一周内日志");
+				var b = bdate.replace('-','').replace('-','');
+				var e = edate.replace('-','').replace('-','');
+				var title = "一周内完整运行日志（"+b+"-"+e+"）";
+				jQuery("#kna1Grid").extendJqgrid('resetCaption',{caption:title,id:'kna1Grid'});
+				jQuery("#knb1Grid").extendJqgrid('resetCaption',{caption:title,id:'knb1Grid'});
+				jQuery("#knvvGrid").extendJqgrid('resetCaption',{caption:title,id:'knvvGrid'});
 			}
 			queryCondition={bdate:bdate,edate:edate,optflag:errorLog};
 			var url = '${ctx}/application/fi/customer/runtimeMonitor/findLog/kna1';

@@ -22,12 +22,15 @@
 }
 </style>
 </head>
-<body>
+<body onload="setTimeout('removeMask()',200)">
 <form>
+<div class="transparent_class blockUI_class" style="position: absolute; z-index: 1000; background-color: rgb(220, 226, 241);top: 0px; left: 0px; padding: 0px; margin: 0px; width: 100%; height: 100%;"></div>
+<div class="blockUI_progress" style="position: absolute; z-index: 1001; margin: 0px; padding: 0px; top: 290.5px; left: 540px;"></div>
+
 <div class="toolbar">
   <div class="prompt_message">本功能用来浏览Garden系统中的数据。直接点击&ldquo;查询&rdquo;查询全部数据，也可以根据关键字查询</div>
   <div class="toolbar_left"> 
-    <input type="text" class="input1" id="companyCode" value="公司代码">
+    <input type="text" class="input4" id="companyCode" value="公司代码">
     <a href="#" class="btn" id="queryBtn" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">查询</a> 
     <a href="#" class="btn" id="expertExcel" onMouseDown="this.className='btn_mousedown'" onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'" style="display:none">导出数据</a>  
   </div>
@@ -40,6 +43,11 @@
 </form>
 </body>
 <script>
+function removeMask(){
+	$('.blockUI_class').remove();
+	$('.blockUI_progress').remove();
+}
+var queryCondition=false;
 $(function(){
 	var type='${type}';
 	init();
@@ -63,6 +71,9 @@ $(function(){
 							$('#expertExcel').show();
 						}else{
 							$('#expertExcel').hide();
+							if(queryCondition){
+								alert('没有符合条件的数据');
+							}
 						}
 					}
 				}
@@ -72,15 +83,17 @@ $(function(){
 		$("#dataGrid").extendJqgrid(dataGridOptions);
 	}
 	function initEvent(){
-		$(".input1").focus(function(){
-			  $(this).attr('class','input1_onfocus');
+		$(".input4").focus(function(){
+			  $(this).attr('class','input4_onfocus');
 			  if($(this).val() ==this.defaultValue){  
                   $(this).val("");           
 			  } 
 		}).blur(function(){
-			  $(this).attr('class','input1');
 			 if ($(this).val() == '') {
                 $(this).val(this.defaultValue);
+                $(this).attr('class','input4');
+             }else{
+             	$(this).attr('class','input4_onblur_haveValue');
              }
 		});
 		$('#expertExcel').bind('click',function(e){
@@ -95,6 +108,7 @@ $(function(){
 			if(gsdm=='公司代码'){
 				gsdm='';
 			}
+			queryCondition=true;
 			var url = '${ctx}/application/fi/company/runtimeData/findJqgridData';
 			jQuery('#dataGrid').jqGrid('setGridParam',{url:url,page:1});
 			var postdata=jQuery('#dataGrid').jqGrid('getGridParam','postData');

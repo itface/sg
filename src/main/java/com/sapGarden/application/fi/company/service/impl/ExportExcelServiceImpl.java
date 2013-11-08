@@ -3,6 +3,7 @@ package com.sapGarden.application.fi.company.service.impl;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -51,19 +52,22 @@ public class ExportExcelServiceImpl implements CommonExpertExcelService{
 		}
 		if(totalNum>0){
 			Calendar c = Calendar.getInstance();
+			SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+			String today = sf.format(c.getTime());
+			String frefixOfFileName = "companycode_"+today;
 			long pages = totalNum%PERSIZE==0?totalNum/PERSIZE:totalNum/PERSIZE+1;
 			if(pages>1){
 				String path = "";
 				for(int i=1;i<=pages;i++){
 					List<Company> datas = companyService.findByPage(sapDataCollection,"Company", json, PERSIZE, i,null,null);
-					String filename = "companycode_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_"+i;
+					String filename = frefixOfFileName+"_"+i;
 					path = excelService.generateExcel(titles,fields, datas,Company.class, sapDataCollection, SjlxTypeName.TYPE_COMPANY, filename);
 				}
-				String zipname = "companycode_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
+				String zipname = frefixOfFileName;
 				excelService.downloadZip(path, zipname, response);
 				excelService.deleteByFilePath(path);
 			}else{
-				String filename = "companycode_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
+				String filename = frefixOfFileName;
 				List<Company> datas = companyService.findByPage(sapDataCollection,"Company", json, PERSIZE, 1,null,null);
 				excelService.downloadExcel(response, titles,fields, datas,Company.class, sapDataCollection, SjlxTypeName.TYPE_COMPANY, filename);
 			}
@@ -103,19 +107,22 @@ public class ExportExcelServiceImpl implements CommonExpertExcelService{
 		}
 		long totalNum = companyLogService.findTotalNum(sapDataCollection,"CompanyLog", json, optflag, bdate, edate);
 		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+		String today = sf.format(c.getTime());
+		String frefixOfFileName = "companyLog_"+today;
 		long pages = totalNum%PERSIZE==0?totalNum/PERSIZE:totalNum/PERSIZE+1;
 		if(pages>1){
 			String path = "";
 			for(int i=1;i<=pages;i++){
 				List<CompanyLog> datas = companyLogService.findByPage(sapDataCollection,"CompanyLog", json, optflag, bdate, edate, PERSIZE, i, null, null);
-				String filename = "companyLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE)+"_"+i;
+				String filename = frefixOfFileName+"_"+i;
 				path = excelService.generateExcel(titles,fields, datas,CompanyLog.class, sapDataCollection, SjlxTypeName.TYPE_COMPANYLOG, filename);
 			}
-			String zipname = "companyLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
+			String zipname = frefixOfFileName;
 			excelService.downloadZip(path, zipname, response);
 			excelService.deleteByFilePath(path);
 		}else{
-			String filename = "companyLog_"+sapDataCollection.getSapserverclient()+"_"+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DATE);
+			String filename = frefixOfFileName;
 			List<CompanyLog> datas = companyLogService.find(sapDataCollection,"CompanyLog", json, optflag, bdate, edate);
 			excelService.downloadExcel(response,titles,fields, datas,CompanyLog.class, sapDataCollection, SjlxTypeName.TYPE_COMPANYLOG, filename);
 		}

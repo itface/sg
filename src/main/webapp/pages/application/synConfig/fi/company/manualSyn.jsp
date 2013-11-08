@@ -28,8 +28,11 @@
 }
 </style>
 </head>
-<body>
+<body onload="setTimeout('removeMask()',200)">
 <form>
+<div class="transparent_class blockUI_class" style="position: absolute; z-index: 1000; background-color: rgb(220, 226, 241);top: 0px; left: 0px; padding: 0px; margin: 0px; width: 100%; height: 100%;"></div>
+<div class="blockUI_progress" style="position: absolute; z-index: 1001; margin: 0px; padding: 0px; top: 290.5px; left: 540px;"></div>
+
 <div class="toolbar">
   <div class="prompt_message">本功能根据数据的关键字,从SAP中读取相应的数据，可以测试系统的连通性，也可以同步指定的SAP数据到Garden</div>
   <div class="toolbar_left"> 
@@ -43,6 +46,10 @@
 </form>
 </body>
 <script>
+function removeMask(){
+	$('.blockUI_class').remove();
+	$('.blockUI_progress').remove();
+}
 var queryflag = false;
 $(function(){
 	init();
@@ -58,6 +65,7 @@ $(function(){
 				id:"resultGrid",
 				multiselect:true,
 				loadui:'',
+				caption:'SAP公司代码',
 				sortable:true,
 				loadonce:true,
 				height:$(window).height()-150,

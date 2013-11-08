@@ -33,11 +33,11 @@
 <div class="toolbar">
   <div class="prompt_message">本功能用来检查SAP和Garden数据的一致性，有差异的数据可以从SAP同步到Garden。如果数据量大，运行时间可能较长</div>
   <div>
-  			<input type='text' id='kunnr' class='input3' value="客户编号"/>
-			<input type='text' id='bukrs' class='input3' value="公司代码"/>
-			<input type='text' id='vkorg' class='input3' value="销售组织"/>
-			<input type='text' id='vtweg' class='input3' value="分销渠道"/>
-			<input type='text' id='spart' class='input3' value='产口组'/>
+  			<input type='text' id='kunnr' class='input4'  value="客户编号"/>
+			<input type='text' id='bukrs' class='input4'  value="公司代码"/>
+			<input type='text' id='vkorg' class='input4'  value="销售组织"/>
+			<input type='text' id='vtweg' class='input4'  value="分销渠道"/>
+			<input type='text' id='spart' class='input4'  value='产品组'/>
   </div>
   <div class="toolbar_left" style="padding:5px 0px;clear:both"> 	
     <a href="javascript:void(0);" class="btn" onMouseDown="this.className='btn_mousedown'" id='compareData' onMouseUp="this.className='btn'" onMouseOver="this.className='btn_hover'" onMouseOut="this.className='btn'">开始校对</a> 
@@ -78,6 +78,9 @@ $(function(){
 		$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
 		$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
 		$('#mainPanel .tabs').css('padding-left',0);
+		$('.tabs-panels').css('border-left','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-right','1px solid #c5c5c5');
+		$('.tabs-panels').css('border-bottom','1px solid #c5c5c5');
 	}
 	function initGridTitle(gridId){
 		$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
@@ -266,15 +269,17 @@ $(function(){
 		$(window).blockUI('remove');
 	}
 	function initElEvent(){
-		$(".input3").focus(function(){
-			  $(this).attr('class','input3_onfocus');
+		$(".input4").focus(function(){
+			  $(this).attr('class','input4_onfocus');
 			  if($(this).val() ==this.defaultValue){  
                   $(this).val("");           
 			  } 
 		}).blur(function(){
-			  $(this).attr('class','input3');
 			 if ($(this).val() == '') {
                 $(this).val(this.defaultValue);
+                $(this).attr('class','input4');
+             }else{
+             	$(this).attr('class','input4_onblur_haveValue');
              }
 		});
 		$('#compareData').bind('click',function(e){
@@ -283,7 +288,7 @@ $(function(){
 			var bukrs=$('#bukrs').val()=="公司代码"?"":$('#bukrs').val();
 			var vkorg=$('#vkorg').val()=="销售组织"?"":$('#vkorg').val();
 			var vtweg=$('#vtweg').val()=="分销渠道"?"":$('#vtweg').val();
-			var spart=$('#spart').val()=="产口组"?"":$('#spart').val();
+			var spart=$('#spart').val()=="产品组"?"":$('#spart').val();
 			$.ajax({
 				url:'${ctx}/application/fi/customer/compareData/compare',
 				type: "POST",

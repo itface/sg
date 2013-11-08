@@ -64,6 +64,9 @@ $(function(){
 			$('#mainPanel .tabs-header').css('border-top','1px solid #c5c5c5');
 			$('#mainPanel .tabs-header').css('border-right','1px solid #c5c5c5');
 			$('#mainPanel .tabs').css('padding-left',0);
+			$('.tabs-panels').css('border-left','1px solid #c5c5c5');
+			$('.tabs-panels').css('border-right','1px solid #c5c5c5');
+			$('.tabs-panels').css('border-bottom','1px solid #c5c5c5');
 		}
 		function initGridTitle(gridId){
 			$('#gbox_'+gridId+' .ui-jqgrid-titlebar').remove();
