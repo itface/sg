@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.sapGarden.system.cache.CurrentUserService;
 import com.sapGarden.system.org.model.NewUser;
 import com.sapGarden.system.org.service.UserService;
 
@@ -17,14 +18,15 @@ import com.sapGarden.system.org.service.UserService;
 @RequestMapping(value="/system/user")
 public class UserController {
 
+	@Autowired
 	private UserService userService;
 	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
+	private CurrentUserService currentUserService;
+
 
 	@RequestMapping
 	public ModelAndView index(){
+		System.out.println(currentUserService.findUser("admin"));
 		return new ModelAndView("/sys_user_manage");
 	}
 	@RequestMapping(value=("/data"),method = RequestMethod.GET)

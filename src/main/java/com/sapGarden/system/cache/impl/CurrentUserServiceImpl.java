@@ -10,7 +10,6 @@ import com.google.code.ssm.api.ParameterValueKeyProvider;
 import com.google.code.ssm.api.ReadThroughAssignCache;
 import com.google.code.ssm.api.ReadThroughMultiCache;
 import com.google.code.ssm.api.ReadThroughMultiCacheOption;
-import com.google.code.ssm.api.ReadThroughSingleCache;
 import com.google.code.ssm.api.UpdateAssignCache;
 import com.sapGarden.system.cache.CurrentUserService;
 import com.sapGarden.system.org.model.User;
@@ -19,21 +18,21 @@ public class CurrentUserServiceImpl implements CurrentUserService{
 
 
 	@Override
-	@ReadThroughMultiCache(option = @ReadThroughMultiCacheOption(generateKeysFromResult = true),namespace = "currentUser")
-	public List<User> findAllUser() {
+	@ReadThroughMultiCache(option = @ReadThroughMultiCacheOption(generateKeysFromResult = true, addNullsToCache = false, skipNullsInResult = true),namespace = "currentUser")
+	public List<User> findAllUser(@ParameterValueKeyProvider List<String> userids) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	@ReadThroughAssignCache(namespace = "currentUser", expiration = 3000)
+	@ReadThroughAssignCache(assignedKey = "username",namespace = "currentUser", expiration = 120)
 	public User findUser(@ParameterValueKeyProvider String userid) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	@UpdateAssignCache(assignedKey = "username",namespace = "currentUser", expiration = 3000)
+	@UpdateAssignCache(assignedKey = "username",namespace = "currentUser", expiration = 120)
 	public void setUser(@ParameterValueKeyProvider @ParameterDataUpdateContent User user) {
 		// TODO Auto-generated method stub
 		

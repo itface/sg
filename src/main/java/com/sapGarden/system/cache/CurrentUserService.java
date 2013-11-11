@@ -7,7 +7,7 @@ import com.sapGarden.system.org.model.User;
 public interface CurrentUserService {
 
 	public User findUser(String userid);
-	public List<User> findAllUser();
+	public List<User> findAllUser(List<String> userids);
 	public void setUser(User user);
 	public void removeUser(String userid);
 }
