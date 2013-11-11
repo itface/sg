@@ -16,6 +16,7 @@ import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.dataCollection.service.SapDataCollectionService;
 import com.sapGarden.global.constants.SystemConstants;
 import com.sapGarden.global.exception.CustomException;
+import com.sapGarden.system.cache.CurrentUserService;
 import com.sapGarden.system.org.model.User;
 import com.sapGarden.system.org.service.UserService;
 
@@ -26,7 +27,8 @@ public class ValidatedUsernamePasswordAuthenticationFilter  extends UsernamePass
 	private SapDataCollectionService sapDataCollectionService;
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
+	private CurrentUserService currentUserService;
 	@Transactional(propagation = Propagation.REQUIRED)
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)throws AuthenticationException {
 		Authentication authentication = null;
@@ -36,6 +38,7 @@ public class ValidatedUsernamePasswordAuthenticationFilter  extends UsernamePass
 			authentication = super.attemptAuthentication(request, response);	
 			if(authentication!=null){
 				User user = (User)authentication.getPrincipal();
+				currentUserService.setUser(user);
 				String s = request.getParameter("sapDataCollection");
 				if(SystemConstants.SUPER_ADMINISTRATOR.equals(user.getUsername())){
 					SapDataCollection sapDataCollection = null;

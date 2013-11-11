@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.application.commons.dataCollection.service.SapDataCollectionService;
+import com.sapGarden.system.cache.CurrentUserService;
 import com.sapGarden.system.login.service.LoginService;
 import com.sapGarden.system.org.model.User;
 @Controller
@@ -28,6 +29,9 @@ public class LoginController {
 	private LoginService loginService;
 	@Autowired
 	private SapDataCollectionService sapDataCollectionService;
+	@Autowired
+	private CurrentUserService currentUserService;
+	
 	@RequestMapping("/login")
 	public ModelAndView getLoginPage(@RequestParam(value = "error", required = false) boolean error,@RequestParam(value = "expired", required = false) boolean expired,ModelMap model){
 		if(error){
@@ -49,6 +53,7 @@ public class LoginController {
 	
 	public ModelAndView loginCommon(HttpServletRequest request) {
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		System.out.println(currentUserService.findAllUser());
 		return new ModelAndView("/front_main","sapclient",user.getCurrentSapDataCollection().getAlias());
 	}
 	@RequestMapping(value=("/common/console"),method = RequestMethod.GET)

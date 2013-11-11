@@ -33,6 +33,12 @@
    <import resource="simplesm-context.xml" />
    <!-- 启用aspectj aop代理 -->
    <aop:aspectj-autoproxy/>
+   <!-- 
+   Since 3.2.0 SSM cache advice runs before transaction advice. The default SSM cache advice order value is 0. The order can be set in the application context file to any custom value
+    -->
+   <bean class="com.google.code.ssm.Settings">
+	  <property name="order" value="500" />
+	</bean>
    <bean name="defaultMemcachedClient" class="com.google.code.ssm.CacheFactory">
 	    <property name="cacheClientFactory">
 	      <bean name="cacheClientFactory" class="com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl" />
