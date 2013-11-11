@@ -4,6 +4,7 @@ import java.util.concurrent.TimeoutException;
 
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
+import net.rubyeye.xmemcached.utils.AddrUtil;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
@@ -13,6 +14,7 @@ public class CurrentUserCache implements Cache{
 	private MemcachedClient client ;
 	private String name;
 	private static final int defaultWeight = 0;
+	//AddrUtil.getAddresses("192.168.0.85:11222");
 	
 	public CurrentUserCache(){
 		
