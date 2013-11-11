@@ -22,7 +22,9 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	@Override
 	public void delete(T t) {
 		// TODO Auto-generated method stub
-		em.remove(t);
+		if(t!=null){
+			em.remove(t);
+		}
 	}
 
 	@Override
@@ -66,14 +68,21 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	@Override
 	public T persist(T t) {
 		// TODO Auto-generated method stub
-		em.persist(t);
+		if(t!=null){
+			em.persist(t);
+		}
 		return t;
 	}
 
 	@Override
 	public T update(T t) {
 		// TODO Auto-generated method stub
-		return em.merge(t);
+		if(t!=null){
+			return em.merge(t);
+		}else{
+			return t;
+		}
+		
 	}
 	
 
