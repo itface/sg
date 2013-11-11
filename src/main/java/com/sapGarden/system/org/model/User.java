@@ -1,8 +1,8 @@
 package com.sapGarden.system.org.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
@@ -27,6 +26,7 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.google.code.ssm.api.CacheKeyMethod;
 import com.sapGarden.application.commons.dataCollection.model.SapDataCollection;
 import com.sapGarden.global.utils.commonUtils.DateUtils;
 
@@ -188,6 +188,7 @@ public class User implements UserDetails,Serializable{
 	}
 	@Override
 	@Column(name = "username")
+	@CacheKeyMethod
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return username;

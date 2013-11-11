@@ -29,8 +29,25 @@
    		</property>
    </bean>
    <bean id="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"/> 
+   <!-- simplesm-context.xml封装在simple-spring-memcached-*.jar文件当中 -->
+   <import resource="simplesm-context.xml" />
    <!-- 启用aspectj aop代理 -->
    <aop:aspectj-autoproxy/>
+   <bean name="defaultMemcachedClient" class="com.google.code.ssm.CacheFactory">
+	    <property name="cacheClientFactory">
+	      <bean name="cacheClientFactory" class="com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl" />
+	    </property>
+	    <property name="addressProvider">
+	      <bean class="com.google.code.ssm.config.DefaultAddressProvider">
+	        <property name="address" value="127.0.0.1:11211" />
+	      </bean>
+	    </property>
+	    <property name="configuration">
+	      <bean class="com.google.code.ssm.providers.CacheConfiguration">
+	        <property name="consistentHashing" value="true" />
+	      </bean>
+	    </property>
+  </bean>
    <!--bean id="exceptionLog" class="com.sapGarden.system.log.CommonLog"/>
    <aop:config>
    		<aop:aspect ref="exceptionLog">
