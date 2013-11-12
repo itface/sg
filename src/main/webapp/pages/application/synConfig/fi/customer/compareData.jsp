@@ -196,7 +196,7 @@ $(function(){
 	}
 	function showCompareResult(json){
 		var s = "";
-		if(json!=null){
+		if(json!=null&&json!=''){
 			var totalSapNum= json.totalSapNum;
 			var totalSapKna1Num=	json.totalSapKna1Num;
 			var totalSapKnb1Num=	json.totalSapKnb1Num;
@@ -221,27 +221,27 @@ $(function(){
 			var sameKna1Num=json.sameKna1Num;
 			var sameKnb1Num=json.sameKnb1Num;
 			var sameKnvvNum=json.sameKnvvNum;
-		}
-		if(parseInt(differenceNum)>0){
-			 s = "数据校对有差异。SAP有主数据"+totalSapNum+"条，kna1："+totalSapKna1Num+"条、knb1："+totalSapKnb1Num+"条、knvv："+totalSapKnvvNum+"条。Garden有主数据"+totalGardenNum+"条，kna1："+totalGardenKna1Num+"条、knb1："+totalGardenKnb1Num+"条、knvv："+totalGardenKnvvNum+"条。";
-			 if(parseInt(differenceKna1Num)>0){
-			 	s+="kna1有"+differenceKna1Num+"条有差异。";
-			 }else{
-			 	s+="kna1无差异。";
-			 }
-			  if(parseInt(differenceKnb1Num)>0){
-			 	s+="knb1有"+differenceKnb1Num+"条有差异。";
-			 }else{
-			 	s+="knb1无差异。";
-			 }
-			  if(parseInt(differenceKnvvNum)>0){
-			 	s+="knvv有"+differenceKnvvNum+"条有差异。";
-			 }else{
-			 	s+="knvv无差异。";
-			 }
-			 $("#sapToLocal").show();
-		}else{
-			 s = "数据校对无差异。SAP有主数据"+totalSapNum+"条:kna1"+totalSapKna1Num+"条、knb1"+totalSapKnb1Num+"条、knvv"+totalSapKnvvNum+"条。Garden有主数据"+totalGardenNum+"条:kna1"+totalGardenKna1Num+"条、knb1"+totalGardenKnb1Num+"条、knvv"+totalGardenKnvvNum+"条。";
+			if(parseInt(differenceNum)>0){
+				 s = "数据校对有差异。SAP有主数据"+totalSapNum+"条，kna1："+totalSapKna1Num+"条、knb1："+totalSapKnb1Num+"条、knvv："+totalSapKnvvNum+"条。Garden有主数据"+totalGardenNum+"条，kna1："+totalGardenKna1Num+"条、knb1："+totalGardenKnb1Num+"条、knvv："+totalGardenKnvvNum+"条。";
+				 if(parseInt(differenceKna1Num)>0){
+				 	s+="kna1有"+differenceKna1Num+"条有差异。";
+				 }else{
+				 	s+="kna1无差异。";
+				 }
+				  if(parseInt(differenceKnb1Num)>0){
+				 	s+="knb1有"+differenceKnb1Num+"条有差异。";
+				 }else{
+				 	s+="knb1无差异。";
+				 }
+				  if(parseInt(differenceKnvvNum)>0){
+				 	s+="knvv有"+differenceKnvvNum+"条有差异。";
+				 }else{
+				 	s+="knvv无差异。";
+				 }
+				 $("#sapToLocal").show();
+			}else{
+				 s = "数据校对无差异。SAP有主数据"+totalSapNum+"条:kna1"+totalSapKna1Num+"条、knb1"+totalSapKnb1Num+"条、knvv"+totalSapKnvvNum+"条。Garden有主数据"+totalGardenNum+"条:kna1"+totalGardenKna1Num+"条、knb1"+totalGardenKnb1Num+"条、knvv"+totalGardenKnvvNum+"条。";
+			}
 		}
 		$(".check_text").empty();
 		$(".check_text").append(s);
@@ -294,10 +294,11 @@ $(function(){
 				type: "POST",
 				data:{kunnr:kunnr,bukrs:bukrs,vkorg:vkorg,vtweg:vtweg,spart:spart},
 				success:function(json){
-					if(json!=null){
+					if(json!=null&&json!=''){
 						loadGridData();
 						showCompareResult(json);
 					}else{
+						$(window).blockUI('remove');
 						alert("Garden中没有客户主数据，请先初始化客户主数据。");
 					}
 				},
