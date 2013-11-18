@@ -33,6 +33,9 @@
 	<root>
 		<level value="INFO"></level>
 		<appender-ref ref="CONSOLE"/>
-		<!-- appender-ref ref="ACCESSFILE"/-->
+		<!-- 
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="ACCESSFILE"/>
+		 -->
 	</root>
 </log4j:configuration>

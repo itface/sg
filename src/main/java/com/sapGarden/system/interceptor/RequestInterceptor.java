@@ -44,14 +44,16 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
 		if(uid==null||"".equals(uid.trim())){
 			
 		}
-		//璁板綍璇锋眰鎿嶄綔鏃ュ織
+		//
 		String url = request.getRequestURI();
 		accessLogger.info(url);
 		*/
 		String uri = request.getRequestURI();
 		if(uri!=null&&uri.indexOf("/sg/application")==0){
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			DbContextHolder.setDbType("dataSource"+user.getCurrentSapDataCollection().getId());
+			if(SecurityContextHolder.getContext()!=null&&SecurityContextHolder.getContext().getAuthentication()!=null){
+				User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				DbContextHolder.setDbType("dataSource"+user.getCurrentSapDataCollection().getId());
+			}
 		}
 		return true;
 	}

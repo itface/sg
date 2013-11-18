@@ -31,14 +31,15 @@ public class Kna1Log extends CommonLogModel implements Serializable{
 	 */
 	private static final long serialVersionUID = 5631765794491750909L;
 	@Id
-	@TableGenerator(name = "kna1_log_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
-	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
-	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
-	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
-	                pkColumnValue = "kna1_log_pk",//在持久化的表中，该生成策略所对应的主键
-	                initialValue = 100,             //默认主键值为50
-	                allocationSize = 1)           //每次主键值增加的大小
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "kna1_log_gen")
+//	@TableGenerator(name = "kna1_log_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
+//	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
+//	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
+//	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
+//	                pkColumnValue = "kna1_log_pk",//在持久化的表中，该生成策略所对应的主键
+//	                initialValue = 100,             //默认主键值为50
+//	                allocationSize = 1)           //每次主键值增加的大小
+//	@GeneratedValue(strategy = GenerationType.TABLE, generator = "kna1_log_gen")
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date opttime;

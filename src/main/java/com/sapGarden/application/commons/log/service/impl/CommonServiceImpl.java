@@ -9,6 +9,7 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.baseDao.BaseDao;
@@ -127,10 +128,11 @@ public class CommonServiceImpl implements CommonService<Object>{
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRED)
 	public void addList(List t) {
 		// TODO Auto-generated method stub
 		dao.saveList(t);
+		//dao.saveBatchList(t);
 	}
 
 	@Override

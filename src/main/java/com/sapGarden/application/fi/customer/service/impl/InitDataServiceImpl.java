@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sapGarden.application.commons.basetable.model.BaseTableModel;
 import com.sapGarden.application.commons.basetable.service.BaseTableService;
@@ -108,7 +109,7 @@ public class InitDataServiceImpl implements CommonInitDataService{
 		String knvvs = getSapDataService.getColumnNames(knvvRuntimeColumnInfoList);
 		progress.setPercentage(27);
 		int totalNum=0;
-		int perNum=100;
+		int perNum=300;
 		sapDataModel = getSapDataService.getSapData(sapDataCollection, perNum, kna1RuntimeColumnInfoList, knb1RuntimeColumnInfoList, knvvRuntimeColumnInfoList, kna1s, knb1s, knvvs, O_CONTROL1, O_CONTROL2, O_CONTROL3, O_CONTROL4, O_CONTROL5, O_CONTROL6,"","","","","");
 		totalNum=sapDataModel.getTotalNum();
 		progress.setTotalNum(sapDataModel.getTotalNum());
@@ -147,7 +148,12 @@ public class InitDataServiceImpl implements CommonInitDataService{
 						progress.setPercentage(progress.getPercentage()+(int)getsapdatatime);
 					}
 				}
-				commonService.addList(kna1List);
+				if(kna1List!=null&&kna1List.size()>0){
+					this.save(kna1List);
+//					for(Kna1 kna1 : kna1List){
+//						commonService.add(kna1);
+//					}
+				}
 				double kna1savetime = (persize-getsapdatatime)*(kna1List.size()*1.0/totle);
 				//当保存每一条记录所占进度大于百分之一时，取整
 				if(kna1savetime>1){
@@ -166,7 +172,12 @@ public class InitDataServiceImpl implements CommonInitDataService{
 				if(progress.isCancel()){
 					return;
 				}
-				commonService.addList(knb1List);
+				if(knb1List!=null&&knb1List.size()>0){
+					this.save(knb1List);
+//					for(Knb1 knb1 : knb1List){
+//						commonService.add(knb1);
+//					}
+				}
 				double knb1savetime = (persize-getsapdatatime)*(knb1List.size()*1.0/totle);
 				//当保存每一条记录所占进度大于百分之一时，取整
 				if(knb1savetime>1){
@@ -185,7 +196,13 @@ public class InitDataServiceImpl implements CommonInitDataService{
 				if(progress.isCancel()){
 					return;
 				}
-				commonService.addList(knvvList);
+				if(knvvList!=null&&knvvList.size()>0){
+					this.save(knvvList);
+//					for(Knvv knvv : knvvList){
+//						commonService.add(knvv);
+//					}
+				}
+				
 				double knvvsavetime = (persize-getsapdatatime)*(knvvList.size()*1.0/totle);
 				//当保存每一条记录所占进度大于百分之一时，取整
 				if(knvvsavetime>1){
@@ -213,5 +230,8 @@ public class InitDataServiceImpl implements CommonInitDataService{
 		progress.setEndtime((new Date()).getTime());
 		progress.setRunstatus(false);
 		progress.setOver(true);
+	}
+	public void save(List list){
+		commonService.addList(list);
 	}
 }

@@ -25,14 +25,15 @@ public class KnvvCompared implements Serializable{
 	 */
 	private static final long serialVersionUID = 6392042951638682954L;
 	@Id
-	@TableGenerator(name = "knvv_compared_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
-	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
-	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
-	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
-	                pkColumnValue = "knvv_compared_pk",//在持久化的表中，该生成策略所对应的主键
-	                initialValue = 100,             //默认主键值为50
-	                allocationSize = 1)           //每次主键值增加的大小
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "knvv_compared_gen")
+//	@TableGenerator(name = "knvv_compared_gen", //该表主键生成策略的名称,被@GeneratedValue.generator引用。
+//	                table = "sys_tb_generator",       //表生成策略所持久化的表名。
+//	                pkColumnName = "gen_name",    //在持久化的表中，该主键生成策略所对应键值的名称。
+//	                valueColumnName = "gen_value", //在持久化的表中， 该主键当前所生成的值，它的值将会随着每次创建而加。
+//	                pkColumnValue = "knvv_compared_pk",//在持久化的表中，该生成策略所对应的主键
+//	                initialValue = 100,             //默认主键值为50
+//	                allocationSize = 1)           //每次主键值增加的大小
+//	@GeneratedValue(strategy = GenerationType.TABLE, generator = "knvv_compared_gen")
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	private long sapclient;
 	private long optid;

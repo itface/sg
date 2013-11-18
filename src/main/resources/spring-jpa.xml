@@ -49,7 +49,7 @@
 	      <property name="username" value="SAP_GARDEN"/>   
 	      <property name="password" value="SAPGARDEN"/>   
     </bean>
-    <!--bean id="dataSource22" class="org.springframework.jdbc.datasource.DriverManagerDataSource">   
+    <!-- bean id="dataSource22" class="org.springframework.jdbc.datasource.DriverManagerDataSource">   
 	      <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>   
 	      <property name="url" value="jdbc:oracle:thin:@192.168.9.116:1521:SAP700"/>   
 	      <property name="username" value="SAP_GARDEN"/>   
@@ -60,7 +60,9 @@
         <property name="targetDataSources">  
             <map key-type="java.lang.String">  
                 <entry key="defaultDataSource" value-ref="defaultDataSource"/>
-                <!--entry key="dataSource22" value-ref="dataSource22"/-->
+                <!-- 
+                <entry key="dataSource22" value-ref="dataSource22"/>
+                -->
             </map>  
         </property>  
         <property name="defaultTargetDataSource" ref="defaultDataSource"/>
@@ -100,7 +102,7 @@
 	<!-- enables interpretation of the @PersistenceUnit/@PersistenceContext annotations providing convenient
  access to EntityManagerFactory/EntityManager -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<!--property name="dataSource" ref="dataSource"/-->
+		<property name="dataSource" ref="dataSource"/>
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager"/>

@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +20,6 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@PersistenceContext
     private EntityManager em; 
-	
 	
 	@Override
 	public void delete(T t) {
@@ -153,4 +155,6 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 			}
 		}
 	}
+
+
 }
