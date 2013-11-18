@@ -93,7 +93,7 @@ function okBtnEvent(){
 	closeWin();
 }
 function init(){
-		interval=setInterval(getPercentage, 100);
+		interval=setInterval(getPercentage, 500);
 		$.ajax({
 			url:'${ctx}/application/fi/customer/initData/validateTable',
 			async:false,

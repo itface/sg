@@ -55,6 +55,7 @@
         <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    
     <!-- 
     结束配置OpenEntityManagerInViewFilter，用了这类Filter以后会降低一定的运行效率，但是一般的web项目都会加入一些开源的缓存管理框架，这样一来，对效率的影响就变得很小了。
      -->
@@ -73,10 +74,11 @@
     <!-- 支持Spring的session, request, 自定义scope
     如果你用Spring Web MVC，即用SpringDispatcherServlet或DispatcherPortlet来处理请求，则不需要做特别的配置：DispatcherServlet 和 DispatcherPortlet已经处理了所有有关的状态.
     当使用了Spring's DispatcherServlet以外的Servlet 2.4及以上的Web容器时（如使用JSF或Struts），你需要在添加此定义
-     -->
+     
 	<listener>
 		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
 	</listener>
+	-->
     <filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
