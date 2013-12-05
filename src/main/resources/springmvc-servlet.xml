@@ -68,7 +68,19 @@
 	<!-- 自定义异常处理，用于记录日志-->
 	<bean id="exceptionResolver" class="com.sapGarden.system.log.ExceptionLog"/>  
 	
+	<!-- 
+		声明了一个bookXmlView bean 为了初始化XStreamMarshaller，
+		这个类会把我们接口中得到结果以XML文档形式展现出来
 	
+	<bean id="bookXmlView" 
+		  class="org.springframework.web.servlet.view.xml.MarshallingView">
+		<constructor-arg>
+			<bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+				<property name="autodetectAnnotations" value="true"/>
+			</bean>
+		</constructor-arg>
+	</bean>
+	 -->
     <!-- Mapping exception to the handler view -->  
     <!--bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
         <property name="defaultErrorView" value="/commons/error"/>  

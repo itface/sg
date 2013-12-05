@@ -27,7 +27,7 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
 	
 	
 	//private EntityManagerFactory entityManagerFactory;
-	private final String[]  SYS_RESOURCE = {"/common/front"};
+	private final String[]  SYS_RESOURCE = {"/common/front","/fi/customer/external/new"};
 	private ResourceService resourceService;
 	
 	

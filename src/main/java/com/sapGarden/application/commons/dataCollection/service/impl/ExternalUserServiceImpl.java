@@ -35,14 +35,12 @@ public class ExternalUserServiceImpl implements ExternalUserService{
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
 	public List<ExternalUser> findAll() {
 		// TODO Auto-generated method stub
 		return extendDao.find("from ExternalUser t");
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
 	public JSONObject findAllJson() {
 		// TODO Auto-generated method stub
 		List<ExternalUser> list  = this.findAll();
@@ -55,7 +53,6 @@ public class ExternalUserServiceImpl implements ExternalUserService{
 	}
 
 	@Override
-	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
 	public ExternalUser findById(long id) {
 		// TODO Auto-generated method stub
 		return extendDao.find(ExternalUser.class, id);
@@ -66,6 +63,13 @@ public class ExternalUserServiceImpl implements ExternalUserService{
 	public void updateOne(ExternalUser externalUser) {
 		// TODO Auto-generated method stub
 		extendDao.save(externalUser);
+	}
+
+	@Override
+	public List<ExternalUser> findByUsernameAndSapclient(String username,String sapclientAlias){
+		// TODO Auto-generated method stub
+		List list = extendDao.findNotInContext("from ExternalUser t where t.username=?1 and t.sapdatacollection=?2", new Object[]{username,sapclientAlias});
+		return list;
 	}
 
 }

@@ -176,4 +176,14 @@ public class SapDataCollectionServiceImpl implements SapDataCollectionService{
 		return count;
 	}
 
+	@Override
+	public SapDataCollection findByAlias(String alias) {
+		// TODO Auto-generated method stub
+		List<SapDataCollection> list = extendDao.findNotInContext("from SapDataCollection t where t.alias=?1", new Object[]{alias});
+		if(list!=null&&list.size()>0){
+			return list.get(0);
+		}
+		return null;
+	}
+
 }

@@ -14,4 +14,5 @@ public interface ExternalUserService {
 	public void addOne(ExternalUser externalUser);
 	public void updateOne(ExternalUser externalUser);
 	public void deleteOne(Long id);
+	public List<ExternalUser> findByUsernameAndSapclient(String username,String sapclientAlias);
 }

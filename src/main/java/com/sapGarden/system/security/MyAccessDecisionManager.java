@@ -27,7 +27,7 @@ public class MyAccessDecisionManager implements AccessDecisionManager{
 	 * 用于存放不是菜单的资源，比如登录验证成功之后执行的url。这些url不用权限校验，但必须在平台启动时加进资源列表中，这样
 	 * 说明这个url是平台资源，需要校验登录验证
 	 */
-	private final String[]  SYS_RESOURCE = {"/common/front"};
+	private final String[]  SYS_RESOURCE = {"/common/front","/fi/customer/external/new"};
 	@Override
 	/**
 	 * 	这个方法的第一个参数Authentication 是你登陆的角色所具有的权限列表。

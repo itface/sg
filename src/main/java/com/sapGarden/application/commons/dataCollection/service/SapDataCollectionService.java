@@ -14,6 +14,7 @@ public interface SapDataCollectionService {
 	public JSONObject findAllJson();
 	public List<SapDataCollection> findAll();
 	public SapDataCollection findById(long id);
+	public SapDataCollection findByAlias(String alias);
 	public String addOneByNewSapClient(NewSapDataCollection newSapDataCollection);
 	public String updateOne(NewSapDataCollection newSapDataCollection);
 	public void deleteOne(Long id);
